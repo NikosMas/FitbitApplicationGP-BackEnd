@@ -4,19 +4,34 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import javax.script.ScriptException;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class FitbitApplication {
 	
 	static Logger LOGGER = LoggerFactory.getLogger("FITBIT_GRAD_APP");
 
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+	
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
+
 
 	public static void main(String[] args) throws IOException, URISyntaxException, ScriptException{
-		SpringApplication.run(FitbitApplication.class, args);
+		ConfigurableApplicationContext appContext = SpringApplication.run(FitbitApplication.class, args);
 		
 		LOGGER.info("- THE FOLLOWING LOGS DESCRIBE THE APPROACH TO FITBIT API FOR AUTHORIZATION CODE -");
 			String URI = "https://www.fitbit.com/oauth2/authorize?"
@@ -38,7 +53,7 @@ public class FitbitApplication {
 		
 		LOGGER.info("-> THE PROCEDURE OF ACCESS_TOKEN RETRIEVER, DATA RETRIEVER AND SAVE COULD START BY NOW");    
 		
-		new FitbitCalls().dataCalls();
+		appContext.getBean(FitbitCalls.class).dataCalls();
 
 		LOGGER.info("-> FINALLY DATA ARE NOW SAVED WITH THE VIEW OF COLLECTIONS INTO THE MONGO DATABASE");
 	}
