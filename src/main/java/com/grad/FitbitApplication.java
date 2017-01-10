@@ -12,12 +12,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.web.client.RestTemplate;
+
+import com.mongodb.MongoClient;
 
 @SpringBootApplication
 public class FitbitApplication {
 	
-	static Logger LOGGER = LoggerFactory.getLogger("FITBIT_GRAD_APP");
+	static Logger log = LoggerFactory.getLogger("Fitbit application");
 
 	@Bean
 	public RestTemplate restTemplate() {
@@ -25,38 +29,53 @@ public class FitbitApplication {
 	}
 	
 	@Bean
+	public MongoTemplate mongoTemplate() {
+		final String DB_NAME = "fitbit";
+		final String MONGO_HOST = "localhost";
+		final int MONGO_PORT = 27017;
+		
+		MongoClient mongo = new MongoClient(MONGO_HOST, MONGO_PORT);
+		return new MongoTemplate(mongo, DB_NAME);
+	}
+	
+	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
-
+	
+	@Bean
+	JedisConnectionFactory jedisConnectionFactory() {
+		return new JedisConnectionFactory();
+	 }
 
 	public static void main(String[] args) throws IOException, URISyntaxException, ScriptException{
 		ConfigurableApplicationContext appContext = SpringApplication.run(FitbitApplication.class, args);
 		
-		LOGGER.info("- THE FOLLOWING LOGS DESCRIBE THE APPROACH TO FITBIT API FOR AUTHORIZATION CODE -");
-			String URI = "https://www.fitbit.com/oauth2/authorize?"
-					+ "redirect_uri=http://localhost:8080"
-					+ "&response_type=code"
-					+ "&client_id=227MLG"
-					+ "&scope=activity%20nutrition%20heartrate%20profile%20settings%20sleep%20social%20weight"
-					+ "&expires_in=2592000"
-					+ "&prompt=login";
+		log.info("-- THE FOLLOWING LOGS DESCRIBE THE APPROACH TO FITBIT API FOR AUTHORIZATION CODE --");
+		
+		String URI = "https://www.fitbit.com/oauth2/authorize?"
+				+ "redirect_uri=http://localhost:8080"
+				+ "&response_type=code"
+				+ "&client_id=227MLG"
+				+ "&scope=activity%20nutrition%20heartrate%20profile%20settings%20sleep%20social%20weight"
+				+ "&expires_in=2592000"
+				+ "&prompt=login";
 			
-		LOGGER.info("-> WE JUST CREATE THE URI TO BE SENT TO THE FITBIT API WITH THE REQUIRED HEADERS AND SEND IT TO A BROWSER");
+		log.info("-> WE JUST CREATE THE URI TO BE SENT TO THE FITBIT API WITH THE REQUIRED HEADERS AND SEND IT TO A BROWSER <-");
+		
 		Runtime open_browser = Runtime.getRuntime();
 		open_browser.exec( "rundll32 url.dll,FileProtocolHandler " + URI);
 		   
-		LOGGER.info("-> WE PUT A DELAY OF 30 SECONDS WAITING THE USER TO COMPLETE THE VERIFICATION REQUIRED AND THE AUTHORIZATION CODE SUCCESSFULLY BE SAVED TO REDIS");
+		log.info("-> WE PUT A DELAY OF 30 SECONDS WAITING THE USER TO COMPLETE THE VERIFICATION REQUIRED AND THE AUTHORIZATION CODE SUCCESSFULLY BE SAVED TO REDIS <-");
+		
 		try {TimeUnit.SECONDS.sleep(30);
 		}catch (InterruptedException e)
 		{e.printStackTrace();}
 		
-		LOGGER.info("-> THE PROCEDURE OF ACCESS_TOKEN RETRIEVER, DATA RETRIEVER AND SAVE COULD START BY NOW");    
+		log.info("-> THE PROCEDURE OF ACCESS_TOKEN RETRIEVER, DATA RETRIEVER AND SAVE COULD START BY NOW <-");    
 		
 		appContext.getBean(FitbitCalls.class).dataCalls();
 
-		LOGGER.info("-> FINALLY DATA ARE NOW SAVED WITH THE VIEW OF COLLECTIONS INTO THE MONGO DATABASE");
+		log.info("-> DATA ARE NOW SAVED INTO THE MONGO DATABASE <-");
 	}
 }
-
-		    

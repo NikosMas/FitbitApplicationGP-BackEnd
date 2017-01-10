@@ -2,20 +2,12 @@ package com.grad;
 
 import java.io.IOException;
 import org.codehaus.jackson.JsonProcessingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FitbitCalls {
-	Logger LOGGER = LoggerFactory.getLogger("FITBIT_GRAD_APP");
-
-	public String starting_process_log(){
-		LOGGER.info("-> THE DATA RETRIEVING AND SAVING STARTS RIGHT NOW");
-		return null;
-	}
-
+	
 	@Autowired
 	private FitbitDataRequests fitbit;
 	
@@ -80,5 +72,4 @@ public class FitbitCalls {
 		fitbit.caloriesJun16_Aug16();
 		fitbit.caloriesSep16_Nov16();
 	}
-	
 }

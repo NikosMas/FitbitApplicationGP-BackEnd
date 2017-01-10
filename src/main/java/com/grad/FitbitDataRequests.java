@@ -5,30 +5,24 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
 import com.mongodb.util.JSON;
 import com.grad.FitbitToken;
 
 @Service
 public class FitbitDataRequests {
 
-	private String access_token;
-	@SuppressWarnings("deprecation")
-	Mongo mongo = new Mongo("localhost", 27017);
-	@SuppressWarnings("deprecation")
-	DB db = mongo.getDB("fitbit");
-	
-//	@Autowired
-//	private MongoTemplate mongoTemplate;
+	private static String access_token;
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
 	@Autowired
 	private FitbitToken fitbitToken;
@@ -44,9 +38,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/profile.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("profile");
 		DBObject profile = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(profile);
+		mongoTemplate.insert(profile, "profile");
 		return rootGet.toString();
 	}
 
@@ -55,9 +48,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_timeInBed");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_timeInBed");
 		return rootGet.toString();
 	}
 	
@@ -65,9 +57,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_timeInBed");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_timeInBed");
 		return rootGet.toString();
 	}
 	
@@ -75,9 +66,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_timeInBed");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_timeInBed");
 		return rootGet.toString();
 	}
 	
@@ -85,9 +75,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_timeInBed");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_timeInBed");
 		return rootGet.toString();
 	}
 	
@@ -96,9 +85,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
 		return rootGet.toString();
 	}
 	
@@ -106,9 +94,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
 		return rootGet.toString();
 	}
 	
@@ -116,9 +103,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
 		return rootGet.toString();
 	}
 	
@@ -126,9 +112,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
 		return rootGet.toString();
 	}
 	
@@ -137,9 +122,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAwake");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAwake");
 		return rootGet.toString();
 	}
 	
@@ -147,9 +131,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAwake");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAwake");
 		return rootGet.toString();
 	}
 	
@@ -157,9 +140,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAwake");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAwake");
 		return rootGet.toString();
 	}
 	
@@ -167,9 +149,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAwake");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAwake");
 		return rootGet.toString();
 	}
 	
@@ -178,9 +159,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAfterWakeUp");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
 		return rootGet.toString();
 	}
 	
@@ -188,9 +168,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAfterWakeUp");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
 		return rootGet.toString();
 	}
 	
@@ -198,9 +177,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAfterWakeUp");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
 		return rootGet.toString();
 	}
 	
@@ -208,9 +186,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesAfterWakeUp");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
 		return rootGet.toString();
 	}
 	
@@ -219,9 +196,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesToFallAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
 		return rootGet.toString();
 	}
 	
@@ -229,9 +205,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesToFallAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
 		return rootGet.toString();
 	}
 	
@@ -239,9 +214,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesToFallAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
 		return rootGet.toString();
 	}
 	
@@ -249,9 +223,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_minutesToFallAsleep");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
 		return rootGet.toString();
 	}
 	
@@ -260,9 +233,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_efficiency");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_efficiency");
 		return rootGet.toString();
 	}
 	
@@ -270,9 +242,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_efficiency");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_efficiency");
 		return rootGet.toString();
 	}
 	
@@ -280,9 +251,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_efficiency");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_efficiency");
 		return rootGet.toString();
 	}
 	
@@ -290,9 +260,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("sleep_efficiency");
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(sleep);
+		mongoTemplate.insert(sleep, "sleep_efficiency");
 		return rootGet.toString();
 	}
 	
@@ -301,9 +270,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_heart");
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(heart);
+		mongoTemplate.insert(heart, "activities_heart");
 		return rootGet.toString();
 	}
 	
@@ -311,9 +279,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_heart");
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(heart);
+		mongoTemplate.insert(heart, "activities_heart");
 		return rootGet.toString();
 	}
 	
@@ -321,9 +288,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_heart");
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(heart);
+		mongoTemplate.insert(heart, "activities_heart");
 		return rootGet.toString();
 	}
 	
@@ -331,9 +297,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_heart");
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(heart);
+		mongoTemplate.insert(heart, "activities_heart");
 		return rootGet.toString();
 	}
 	
@@ -342,9 +307,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_steps");
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(steps);
+		mongoTemplate.insert(steps, "activities_steps");
 		return rootGet.toString();
 	}
 	
@@ -352,9 +316,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_steps");
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(steps);
+		mongoTemplate.insert(steps, "activities_steps");
 		return rootGet.toString();
 	}
 	
@@ -362,9 +325,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_steps");
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(steps);
+		mongoTemplate.insert(steps, "activities_steps");
 		return rootGet.toString();
 	}
 	
@@ -372,9 +334,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_steps");
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(steps);
+		mongoTemplate.insert(steps, "activities_steps");
 		return rootGet.toString();
 	}
 	
@@ -383,9 +344,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_floors");
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(floors);
+		mongoTemplate.insert(floors, "activities_floors");
 		return rootGet.toString();
 	}
 	
@@ -393,9 +353,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_floors");
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(floors);
+		mongoTemplate.insert(floors, "activities_floors");
 		return rootGet.toString();
 	}
 	
@@ -403,9 +362,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_floors");
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(floors);
+		mongoTemplate.insert(floors, "activities_floors");
 		return rootGet.toString();
 	}
 	
@@ -413,9 +371,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_floors");
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(floors);
+		mongoTemplate.insert(floors, "activities_floors");
 		return rootGet.toString();
 	}	
 	
@@ -424,9 +381,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_distance");
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(distance);
+		mongoTemplate.insert(distance, "activities_distance");
 		return rootGet.toString();
 	}
 	
@@ -434,9 +390,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_distance");
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(distance);
+		mongoTemplate.insert(distance, "activities_distance");
 		return rootGet.toString();
 	}
 	
@@ -444,9 +399,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_distance");
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(distance);
+		mongoTemplate.insert(distance, "activities_distance");
 		return rootGet.toString();
 	}
 	
@@ -454,9 +408,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_distance");
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(distance);
+		mongoTemplate.insert(distance, "activities_distance");
 		return rootGet.toString();
 	}
 	
@@ -465,9 +418,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2015-12-01/2016-02-29.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_calories");
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(calories);
+		mongoTemplate.insert(calories, "activities_calories");
 		return rootGet.toString();
 	}
 	
@@ -475,9 +427,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2016-03-01/2016-05-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_calories");
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(calories);
+		mongoTemplate.insert(calories, "activities_calories");
 		return rootGet.toString();
 	}
 	
@@ -485,9 +436,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2016-06-01/2016-08-31.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_calories");
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(calories);
+		mongoTemplate.insert(calories, "activities_calories");
 		return rootGet.toString();
 	}
 	
@@ -495,9 +445,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2016-09-01/2016-11-30.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_calories");
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(calories);
+		mongoTemplate.insert(calories, "activities_calories");
 		return rootGet.toString();
 	}	
 	
@@ -506,9 +455,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_lifetime");
 		DBObject activities = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(activities);
+		mongoTemplate.insert(activities, "activities_lifetime");
 		return rootGet.toString();
 	}	
 	
@@ -517,9 +465,8 @@ public class FitbitDataRequests {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/frequence.json";
 		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBCollection collection = db.getCollection("activities_frequence");
 		DBObject frequence = (DBObject) JSON.parse(rootGet.toString());
-		collection.insert(frequence);
+		mongoTemplate.insert(frequence, "activities_frequence");
 		return rootGet.toString();
 	}	
 	
@@ -533,7 +480,6 @@ public class FitbitDataRequests {
 		if (access_token == null) {
 			access_token = fitbitToken.token();
 		}
-		
 		return access_token;
 	}
 }
