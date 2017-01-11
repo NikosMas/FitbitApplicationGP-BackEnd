@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import javax.script.ScriptException;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +14,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.web.client.RestTemplate;
-
 import com.mongodb.MongoClient;
+
+/**
+ * main class. includes the beans. sending the GET request through browser. calls the dataCalls 
+ * 
+ * @author nikos_mas
+ *
+ */
 
 @SpringBootApplication
 public class FitbitApplication {
