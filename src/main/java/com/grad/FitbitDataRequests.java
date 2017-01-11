@@ -16,6 +16,13 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.grad.FitbitToken;
 
+/**
+ * requests to Fitbit API for user data  
+ * 
+ * @author nikos_mas
+ *
+ */
+
 @Service
 public class FitbitDataRequests {
 

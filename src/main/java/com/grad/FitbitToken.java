@@ -18,6 +18,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * create a rest template to execute the requests to receive the Token required for the data calls
+ * 
+ * @author nikos_mas
+ *
+ */
+
 @Service
 public class FitbitToken {
 
