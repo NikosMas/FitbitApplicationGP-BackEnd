@@ -58,7 +58,7 @@ public class FitbitApplication {
 		
 		log.info("-- THE FOLLOWING LOGS DESCRIBE THE APPROACH TO FITBIT API FOR AUTHORIZATION CODE --");
 		
-		String URI = "https://www.fitbit.com/oauth2/authorize?"
+		final String URI = "https://www.fitbit.com/oauth2/authorize?"
 				+ "redirect_uri=http://localhost:8080"
 				+ "&response_type=code"
 				+ "&client_id=227MLG"

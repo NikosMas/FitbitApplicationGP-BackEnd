@@ -27,6 +27,25 @@ import com.grad.FitbitToken;
 public class FitbitDataRequests {
 
 	private static String access_token;
+	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
+	private static final String URI_PROFILE = "https://api.fitbit.com/1/user/-/profile.json";
+	private static final String URI_TIME_IN_BED = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/";
+	private static final String URI_MINUTES_ASLEEP = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/";
+	private static final String URI_MINUTES_AWAKE = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/";
+	private static final String URI_TO_FALL_ASLEEP = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/";
+	private static final String URI_AFTER_WAKE_UP = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/";
+	private static final String URI_EFFICIENCY = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/";
+	private static final String URI_STEPS = "https://api.fitbit.com/1/user/-/activities/steps/date/";
+	private static final String URI_FLOORS = "https://api.fitbit.com/1/user/-/activities/floors/date/";
+	private static final String URI_DISTANCE = "https://api.fitbit.com/1/user/-/activities/distance/date";
+	private static final String URI_CALORIES = "https://api.fitbit.com/1/user/-/activities/calories/date/";
+	private static final String URI_FREQUENCE = "https://api.fitbit.com/1/user/-/activities/frequence.json";
+	private static final String URI_LIFETIME = "https://api.fitbit.com/1/user/-/activities.json";
+
+	private static final String FIRST = "2015-12-01/2016-02-29.json";
+	private static final String SECOND = "2016-03-01/2016-05-31.json";
+	private static final String THIRD = "2016-06-01/2016-08-31.json";
+	private static final String FOURTH = "2016-09-01/2016-11-30.json";
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -42,8 +61,7 @@ public class FitbitDataRequests {
 	
 ///////////////////////////////////////////PROFILE//////////////////////////////////////////////////
 	public String profile() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/profile.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject profile = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(profile, "profile");
@@ -52,8 +70,7 @@ public class FitbitDataRequests {
 
 /////////////////////////////////////TIME IN BED/////////////////////////////////////////////////////	
 	public String timeInBedDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_timeInBed");
@@ -61,8 +78,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String timeInBedMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_timeInBed");
@@ -70,8 +86,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String timeInBedJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_timeInBed");
@@ -79,8 +94,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String timeInBedSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/timeInBed/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_timeInBed");
@@ -89,8 +103,7 @@ public class FitbitDataRequests {
 	
 /////////////////////////////////////////MINUTES ASLEEP////////////////////////////////////////////////////////////////////	
 	public String minutesAsleepDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
@@ -98,8 +111,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAsleepMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
@@ -107,8 +119,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAsleepJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
@@ -116,8 +127,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAsleepSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
@@ -126,8 +136,7 @@ public class FitbitDataRequests {
 	
 /////////////////////////////////////////////MINUTES AWAKE////////////////////////////////////////////////////////	
 	public String minutesAwakeDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAwake");
@@ -135,8 +144,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAwakeMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAwake");
@@ -144,8 +152,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAwakeJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAwake");
@@ -153,8 +160,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAwakeSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAwake");
@@ -163,8 +169,7 @@ public class FitbitDataRequests {
 	
 ////////////////////////////////////////////////MINUTES AFTER WAKE UP////////////////////////////////////////////////////////
 	public String minutesAfterWakeupDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
@@ -172,8 +177,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAfterWakeupMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
@@ -181,8 +185,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAfterWakeupJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
@@ -190,8 +193,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesAfterWakeupSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
@@ -200,8 +202,7 @@ public class FitbitDataRequests {
 	
 //////////////////////////////////////////////////MINUTES TO FALL ASLEEP//////////////////////////////////////////////////	
 	public String minutesToFallAsleepDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
@@ -209,8 +210,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesToFallAsleepMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
@@ -218,8 +218,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesToFallAsleepJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
@@ -227,8 +226,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String minutesToFallAsleepSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
@@ -237,8 +235,7 @@ public class FitbitDataRequests {
 	
 ////////////////////////////////////////////////////SLEEP EFFICIENCY////////////////////////////////////////////////	
 	public String efficiencyDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_efficiency");
@@ -246,8 +243,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String efficiencyMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_efficiency");
@@ -255,8 +251,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String efficiencyJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_efficiency");
@@ -264,8 +259,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String efficiencySep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(sleep, "sleep_efficiency");
@@ -274,8 +268,7 @@ public class FitbitDataRequests {
 	
 /////////////////////////////////////////HEART RATE////////////////////////////////////////////////	
 	public String heartDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(heart, "activities_heart");
@@ -284,7 +277,7 @@ public class FitbitDataRequests {
 	
 	public String heartMar16_May16() throws JsonProcessingException, IOException {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(heart, "activities_heart");
@@ -293,16 +286,17 @@ public class FitbitDataRequests {
 	
 	public String heartJun16_Aug16() throws JsonProcessingException, IOException {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(heart, "activities_heart");
 		return rootGet.toString();
 	}
 	
+	
 	public String heartSep16_Nov16() throws JsonProcessingException, IOException {
 		String uriGet = "https://api.fitbit.com/1/user/-/activities/heart/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(heart, "activities_heart");
@@ -311,8 +305,7 @@ public class FitbitDataRequests {
 	
 ///////////////////////////////////////////////STEPS//////////////////////////////////////////////////////////////
 	public String stepsDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_STEPS + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(steps, "activities_steps");
@@ -320,8 +313,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String stepsMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_STEPS + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(steps, "activities_steps");
@@ -329,8 +321,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String stepsJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_STEPS + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(steps, "activities_steps");
@@ -338,8 +329,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String stepsSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/steps/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_STEPS + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(steps, "activities_steps");
@@ -348,8 +338,7 @@ public class FitbitDataRequests {
 	
 ////////////////////////////////////////////FLOORS////////////////////////////////////////////////	
 	public String floorsDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FLOORS + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(floors, "activities_floors");
@@ -357,8 +346,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String floorsMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FLOORS + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(floors, "activities_floors");
@@ -366,8 +354,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String floorsJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FLOORS + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(floors, "activities_floors");
@@ -375,8 +362,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String floorsSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/floors/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FLOORS + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(floors, "activities_floors");
@@ -385,8 +371,7 @@ public class FitbitDataRequests {
 	
 ////////////////////////////////////////////DISTANCE////////////////////////////////////////////////
 	public String distanceDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_DISTANCE + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(distance, "activities_distance");
@@ -394,8 +379,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String distanceMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_DISTANCE + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(distance, "activities_distance");
@@ -403,8 +387,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String distanceJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_DISTANCE + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(distance, "activities_distance");
@@ -412,8 +395,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String distanceSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/distance/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_DISTANCE + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(distance, "activities_distance");
@@ -422,8 +404,7 @@ public class FitbitDataRequests {
 	
 ////////////////////////////////////////////CALORIES////////////////////////////////////////////////	
 	public String caloriesDec15_Feb16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2015-12-01/2016-02-29.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_CALORIES + FIRST, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(calories, "activities_calories");
@@ -431,8 +412,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String caloriesMar16_May16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2016-03-01/2016-05-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_CALORIES + SECOND, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(calories, "activities_calories");
@@ -440,8 +420,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String caloriesJun16_Aug16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2016-06-01/2016-08-31.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_CALORIES + THIRD, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(calories, "activities_calories");
@@ -449,8 +428,7 @@ public class FitbitDataRequests {
 	}
 	
 	public String caloriesSep16_Nov16() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/calories/date/2016-09-01/2016-11-30.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_CALORIES + FOURTH, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(calories, "activities_calories");
@@ -459,8 +437,7 @@ public class FitbitDataRequests {
 	
 ///////////////////////////////////////////////TOTAL - LIFETIME///////////////////////////////////////////	
 	public String activities() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject activities = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(activities, "activities_lifetime");
@@ -469,8 +446,7 @@ public class FitbitDataRequests {
 	
 //////////////////////////////////////////////FREQUENCE////////////////////////////////////////////////////	
 	public String frequence() throws JsonProcessingException, IOException {
-		String uriGet = "https://api.fitbit.com/1/user/-/activities/frequence.json";
-		ResponseEntity<String> data = restTemplateGet.exchange(uriGet, HttpMethod.GET, getEntity(), String.class);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, getEntity(), String.class);
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject frequence = (DBObject) JSON.parse(rootGet.toString());
 		mongoTemplate.insert(frequence, "activities_frequence");
