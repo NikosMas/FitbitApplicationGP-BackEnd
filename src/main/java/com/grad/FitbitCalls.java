@@ -5,6 +5,11 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.grad.data.req.FitbitActivitiesData;
+import com.grad.data.req.FitbitHeartData;
+import com.grad.data.req.FitbitOtherData;
+import com.grad.data.req.FitbitSleepData;
+
 /**
  * data-request caller class. 
  * 
@@ -16,67 +21,76 @@ import org.springframework.stereotype.Service;
 public class FitbitCalls {
 	
 	@Autowired
-	private FitbitDataRequests fitbit;
+	private FitbitActivitiesData data_activities;
+	
+	@Autowired
+	private FitbitHeartData data_heart;
+	
+	@Autowired
+	private FitbitOtherData data_other;
+	
+	@Autowired
+	private FitbitSleepData data_sleep;
 	
 	public void dataCalls() throws JsonProcessingException, IOException{
 		
-		fitbit.profile();
-		fitbit.activities();
-		fitbit.frequence();
+		data_other.profile();
+		data_other.activities();
+		data_other.frequence();
 		
-		fitbit.timeInBedDec15_Feb16();
-		fitbit.timeInBedMar16_May16();
-		fitbit.timeInBedJun16_Aug16();
-		fitbit.timeInBedSep16_Nov16();
+		data_heart.heartDec15_Feb16();
+		data_heart.heartMar16_May16();
+		data_heart.heartJun16_Aug16();
+		data_heart.heartSep16_Nov16();
 		
-		fitbit.minutesAsleepDec15_Feb16();
-		fitbit.minutesAsleepMar16_May16();
-		fitbit.minutesAsleepJun16_Aug16();
-		fitbit.minutesAsleepSep16_Nov16();
+		data_sleep.timeInBedDec15_Feb16();
+		data_sleep.timeInBedMar16_May16();
+		data_sleep.timeInBedJun16_Aug16();
+		data_sleep.timeInBedSep16_Nov16();
 		
-		fitbit.minutesAwakeDec15_Feb16();
-		fitbit.minutesAwakeMar16_May16();
-		fitbit.minutesAwakeJun16_Aug16();
-		fitbit.minutesAwakeSep16_Nov16();
+		data_sleep.minutesAsleepDec15_Feb16();
+		data_sleep.minutesAsleepMar16_May16();
+		data_sleep.minutesAsleepJun16_Aug16();
+		data_sleep.minutesAsleepSep16_Nov16();
 		
-		fitbit.minutesAfterWakeupDec15_Feb16();
-		fitbit.minutesAfterWakeupMar16_May16();
-		fitbit.minutesAfterWakeupJun16_Aug16();
-		fitbit.minutesAfterWakeupSep16_Nov16();
+		data_sleep.minutesAwakeDec15_Feb16();
+		data_sleep.minutesAwakeMar16_May16();
+		data_sleep.minutesAwakeJun16_Aug16();
+		data_sleep.minutesAwakeSep16_Nov16();
 		
-		fitbit.minutesToFallAsleepDec15_Feb16();
-		fitbit.minutesToFallAsleepMar16_May16();
-		fitbit.minutesToFallAsleepJun16_Aug16();
-		fitbit.minutesToFallAsleepSep16_Nov16();
+		data_sleep.minutesAfterWakeupDec15_Feb16();
+		data_sleep.minutesAfterWakeupMar16_May16();
+		data_sleep.minutesAfterWakeupJun16_Aug16();
+		data_sleep.minutesAfterWakeupSep16_Nov16();
 		
-		fitbit.efficiencyDec15_Feb16();
-		fitbit.efficiencyMar16_May16();
-		fitbit.efficiencyJun16_Aug16();
-		fitbit.efficiencySep16_Nov16();
+		data_sleep.minutesToFallAsleepDec15_Feb16();
+		data_sleep.minutesToFallAsleepMar16_May16();
+		data_sleep.minutesToFallAsleepJun16_Aug16();
+		data_sleep.minutesToFallAsleepSep16_Nov16();
 		
-		fitbit.heartDec15_Feb16();
-		fitbit.heartMar16_May16();
-		fitbit.heartJun16_Aug16();
-		fitbit.heartSep16_Nov16();
+		data_sleep.efficiencyDec15_Feb16();
+		data_sleep.efficiencyMar16_May16();
+		data_sleep.efficiencyJun16_Aug16();
+		data_sleep.efficiencySep16_Nov16();
 		
-		fitbit.stepsDec15_Feb16();
-		fitbit.stepsMar16_May16();
-		fitbit.stepsJun16_Aug16();
-		fitbit.stepsSep16_Nov16();
+		data_activities.stepsDec15_Feb16();
+		data_activities.stepsMar16_May16();
+		data_activities.stepsJun16_Aug16();
+		data_activities.stepsSep16_Nov16();
 		
-		fitbit.floorsDec15_Feb16();
-		fitbit.floorsMar16_May16();
-		fitbit.floorsJun16_Aug16();
-		fitbit.floorsSep16_Nov16();
+		data_activities.floorsDec15_Feb16();
+		data_activities.floorsMar16_May16();
+		data_activities.floorsJun16_Aug16();
+		data_activities.floorsSep16_Nov16();
 		
-		fitbit.distanceDec15_Feb16();
-		fitbit.distanceMar16_May16();
-		fitbit.distanceJun16_Aug16();
-		fitbit.distanceSep16_Nov16();
+		data_activities.distanceDec15_Feb16();
+		data_activities.distanceMar16_May16();
+		data_activities.distanceJun16_Aug16();
+		data_activities.distanceSep16_Nov16();
 		
-		fitbit.caloriesDec15_Feb16();
-		fitbit.caloriesMar16_May16();
-		fitbit.caloriesJun16_Aug16();
-		fitbit.caloriesSep16_Nov16();
+		data_activities.caloriesDec15_Feb16();
+		data_activities.caloriesMar16_May16();
+		data_activities.caloriesJun16_Aug16();
+		data_activities.caloriesSep16_Nov16();
 	}
 }
