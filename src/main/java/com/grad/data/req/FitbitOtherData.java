@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @Service
-public class FitbitOtherData extends FitbitDataSave{
+public class FitbitOtherData {
 
 	private static final String URI_PROFILE = "https://api.fitbit.com/1/user/-/profile.json";
 	private static final String URI_FREQUENCE = "https://api.fitbit.com/1/user/-/activities/frequence.json";
@@ -25,22 +25,25 @@ public class FitbitOtherData extends FitbitDataSave{
 	@Autowired
 	private RestTemplate restTemplateGet;
 	
+	@Autowired
+	private FitbitDataSave fdata;
+	
 ///////////////////////////////////////////PROFILE//////////////////////////////////////////////////
 	public String profile() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, getEntity(), String.class);
-		return data_profile(data);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, fdata.getEntity(), String.class);
+		return fdata.data_profile(data);
 	}
 
 ///////////////////////////////////////////////TOTAL - LIFETIME///////////////////////////////////////////	
 	public String activities() throws JsonProcessingException, IOException {
-	ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, getEntity(), String.class);
-	return data_activities(data);
+	ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, fdata.getEntity(), String.class);
+	return fdata.data_activities(data);
 	}
 
 //////////////////////////////////////////////FREQUENCE////////////////////////////////////////////////////	
 	public String frequence() throws JsonProcessingException, IOException {
-	ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, getEntity(), String.class);
-	return data_frequence(data);
+	ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, fdata.getEntity(), String.class);
+	return fdata.data_frequence(data);
 	}
 
 	

@@ -17,8 +17,7 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @Service
-public class FitbitHeartData extends FitbitDataSave{
-
+public class FitbitHeartData {
 	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
 
 	private static final String FIRST = "2015-12-01/2016-02-29.json";
@@ -29,24 +28,27 @@ public class FitbitHeartData extends FitbitDataSave{
 	@Autowired
 	private RestTemplate restTemplateGet;
 	
+	@Autowired
+	private FitbitDataSave fdata;
+	
 	public String heartDec15_Feb16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + FIRST, HttpMethod.GET, getEntity(), String.class);
-		return data_heart(data);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
+		return fdata.data_heart(data);
 	}
 
 	public String heartMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + SECOND, HttpMethod.GET, getEntity(), String.class);
-		return data_heart(data);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
+		return fdata.data_heart(data);
 	}
 	
 	public String heartJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + THIRD, HttpMethod.GET, getEntity(), String.class);
-		return data_heart(data);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
+		return fdata.data_heart(data);
 	}
 	
 	public String heartSep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + FOURTH, HttpMethod.GET, getEntity(), String.class);
-		return data_heart(data);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_HEART + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
+		return fdata.data_heart(data);
 	}
 	
 }

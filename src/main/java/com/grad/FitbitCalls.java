@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grad.data.req.FitbitActivitiesData;
+import com.grad.data.req.FitbitDataSave;
 import com.grad.data.req.FitbitHeartData;
 import com.grad.data.req.FitbitOtherData;
 import com.grad.data.req.FitbitSleepData;
@@ -32,7 +33,12 @@ public class FitbitCalls {
 	@Autowired
 	private FitbitSleepData data_sleep;
 	
+	@Autowired
+	private FitbitDataSave fdata;
+	
 	public void dataCalls() throws JsonProcessingException, IOException{
+		
+		fdata.collectionsCreate();
 		
 		data_other.profile();
 		data_other.activities();

@@ -37,7 +37,23 @@ public class FitbitDataSave {
 	
 	private static String access_token;
 
-
+	public void collectionsCreate(){
+		mongoTemplate.createCollection("sleep_timeInBed");
+		mongoTemplate.createCollection("sleep_minutesAsleep");
+		mongoTemplate.createCollection("sleep_minutesAwake");
+		mongoTemplate.createCollection("sleep_minutesAfterWakeUp");
+		mongoTemplate.createCollection("sleep_minutesToFallAsleep");
+		mongoTemplate.createCollection("sleep_efficiency");
+		mongoTemplate.createCollection("activities_heart");
+		mongoTemplate.createCollection("activities_steps");
+		mongoTemplate.createCollection("activities_floors");
+		mongoTemplate.createCollection("activities_distance");
+		mongoTemplate.createCollection("activities_calories");
+		mongoTemplate.createCollection("activities_frequence");
+		mongoTemplate.createCollection("activities_lifetime");
+		mongoTemplate.createCollection("profile");
+	}
+	
 	protected String data_timeInBed(ResponseEntity<String> data) throws IOException, JsonProcessingException {
 		JsonNode rootGet = mapperGet.readTree(data.getBody());
 		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
