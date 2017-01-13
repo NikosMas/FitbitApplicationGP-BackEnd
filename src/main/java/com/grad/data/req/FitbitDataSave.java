@@ -1,7 +1,8 @@
 package com.grad.data.req;
 
 import java.io.IOException;
-
+import java.util.Arrays;
+import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.grad.FitbitToken;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -26,6 +26,24 @@ import com.mongodb.util.JSON;
 @Service
 public class FitbitDataSave {
 	
+	private static final String PROFILE = "profile";
+	private static final String ACTIVITIES_LIFETIME = "activities_lifetime";
+	private static final String ACTIVITIES_FREQUENCE = "activities_frequence";
+	private static final String ACTIVITIES_CALORIES = "activities_calories";
+	private static final String ACTIVITIES_DISTANCE = "activities_distance";
+	private static final String ACTIVITIES_FLOORS = "activities_floors";
+	private static final String ACTIVITIES_STEPS = "activities_steps";
+	private static final String ACTIVITIES_HEART = "activities_heart";
+	private static final String SLEEP_EFFICIENCY = "sleep_efficiency";
+	private static final String SLEEP_MINUTES_TO_FALL_ASLEEP = "sleep_minutesToFallAsleep";
+	private static final String SLEEP_MINUTES_AFTER_WAKE_UP = "sleep_minutesAfterWakeUp";
+	private static final String SLEEP_MINUTES_AWAKE = "sleep_minutesAwake";
+	private static final String SLEEP_MINUTES_ASLEEP = "sleep_minutesAsleep";
+	private static final String SLEEP_TIME_IN_BED = "sleep_timeInBed";
+	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE, ACTIVITIES_CALORIES
+			,ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART, SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP
+			,SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE, SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED);
+
 	@Autowired
 	private ObjectMapper mapperGet;
 	
@@ -38,124 +56,22 @@ public class FitbitDataSave {
 	private static String access_token;
 
 	public void collectionsCreate(){
-		mongoTemplate.createCollection("sleep_timeInBed");
-		mongoTemplate.createCollection("sleep_minutesAsleep");
-		mongoTemplate.createCollection("sleep_minutesAwake");
-		mongoTemplate.createCollection("sleep_minutesAfterWakeUp");
-		mongoTemplate.createCollection("sleep_minutesToFallAsleep");
-		mongoTemplate.createCollection("sleep_efficiency");
-		mongoTemplate.createCollection("activities_heart");
-		mongoTemplate.createCollection("activities_steps");
-		mongoTemplate.createCollection("activities_floors");
-		mongoTemplate.createCollection("activities_distance");
-		mongoTemplate.createCollection("activities_calories");
-		mongoTemplate.createCollection("activities_frequence");
-		mongoTemplate.createCollection("activities_lifetime");
-		mongoTemplate.createCollection("profile");
+		
+		for(String temp : collections){ 
+		mongoTemplate.createCollection(temp);
+		}
 	}
 	
-	protected String data_timeInBed(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(sleep, "sleep_timeInBed");
-		return rootGet.toString();
+	public void dataTypeInsert(ResponseEntity<String> dataReceived, String collectionName) throws IOException, JsonProcessingException {
+		JsonNode dataBody = mapperGet.readTree(dataReceived.getBody());
+		DBObject dataToInsert = (DBObject) JSON.parse(dataBody.toString());
+		mongoTemplate.insert(dataToInsert, collectionName);
 	}
-	
-	protected String data_minutesAsleep(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(sleep, "sleep_minutesAsleep");
-		return rootGet.toString();
-	}
-	
-	protected String data_minutesAwake(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(sleep, "sleep_minutesAwake");
-		return rootGet.toString();
-	}
-	
-	protected String data_minutesAfterWakeup(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(sleep, "sleep_minutesAfterWakeUp");
-		return rootGet.toString();
-	}
-	
-	protected String data_minutesToFallAsleep(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(sleep, "sleep_minutesToFallAsleep");
-		return rootGet.toString();
-	}
-	
-	protected String data_efficiency(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject sleep = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(sleep, "sleep_efficiency");
-		return rootGet.toString();
-	}
-	
-	protected String data_heart(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject heart = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(heart, "activities_heart");
-		return rootGet.toString();
-	}
-	
-	protected String data_steps(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject steps = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(steps, "activities_steps");
-		return rootGet.toString();
-	}
-	
-	protected String data_floors(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject floors = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(floors, "activities_floors");
-		return rootGet.toString();
-	}
-	
-	protected String data_distance(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject distance = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(distance, "activities_distance");
-		return rootGet.toString();
-	}
-	
-	protected String data_calories(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject calories = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(calories, "activities_calories");
-		return rootGet.toString();
-	}
-	
-	protected String data_frequence(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject frequence = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(frequence, "activities_frequence");
-		return rootGet.toString();
-	}
-	
-	protected String data_activities(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject activities = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(activities, "activities_lifetime");
-		return rootGet.toString();
-	}
-	
-	protected String data_profile(ResponseEntity<String> data) throws IOException, JsonProcessingException {
-		JsonNode rootGet = mapperGet.readTree(data.getBody());
-		DBObject profile = (DBObject) JSON.parse(rootGet.toString());
-		mongoTemplate.insert(profile, "profile");
-		return rootGet.toString();
-	}
-	
+
 	protected HttpEntity<String> getEntity() {
-		HttpHeaders headersGet = new HttpHeaders();
-		headersGet.set("Authorization", "Bearer " + getAccessToken());
-		return new HttpEntity<String>(headersGet);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + getAccessToken());
+		return new HttpEntity<String>(headers);
 	}
 	
 	protected String getAccessToken() {

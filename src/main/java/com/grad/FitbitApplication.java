@@ -17,7 +17,8 @@ import org.springframework.web.client.RestTemplate;
 import com.mongodb.MongoClient;
 
 /**
- * main class. includes the beans. sending the GET request through browser. calls the dataCalls 
+ * main class. includes the beans. sending the GET request for authorization through browser. 
+ * set a delay waiting the user verification. calls the dataCalls 
  * 
  * @author nikos_mas
  *

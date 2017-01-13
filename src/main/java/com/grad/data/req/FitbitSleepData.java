@@ -1,7 +1,8 @@
 package com.grad.data.req;
 
 import java.io.IOException;
-
+import java.util.Arrays;
+import java.util.List;
 import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -26,140 +27,38 @@ public class FitbitSleepData {
 	private static final String URI_AFTER_WAKE_UP = "https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/";
 	private static final String URI_EFFICIENCY = "https://api.fitbit.com/1/user/-/sleep/efficiency/date/";
 	
-	private static final String FIRST = "2015-12-01/2016-02-29.json";
-	private static final String SECOND = "2016-03-01/2016-05-31.json";
-	private static final String THIRD = "2016-06-01/2016-08-31.json";
-	private static final String FOURTH = "2016-09-01/2016-11-30.json";
+	private static final String SLEEP_EFFICIENCY = "sleep_efficiency";
+	private static final String SLEEP_MINUTES_TO_FALL_ASLEEP = "sleep_minutesToFallAsleep";
+	private static final String SLEEP_MINUTES_AFTER_WAKE_UP = "sleep_minutesAfterWakeUp";
+	private static final String SLEEP_MINUTES_AWAKE = "sleep_minutesAwake";
+	private static final String SLEEP_MINUTES_ASLEEP = "sleep_minutesAsleep";
+	private static final String SLEEP_TIME_IN_BED = "sleep_timeInBed";
 	
+	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json"
+															,"2016-03-01/2016-05-31.json"
+															,"2016-06-01/2016-08-31.json"
+															,"2016-09-01/2016-11-30.json");
 	@Autowired
 	private RestTemplate restTemplateGet;
 	
 	@Autowired
 	private FitbitDataSave fdata;
 
-	public String timeInBedDec15_Feb16() throws JsonProcessingException, IOException  {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_timeInBed(data);
+	public void sleep() throws JsonProcessingException, IOException  {
+		
+		for(String temp : months){
+			ResponseEntity<String> dataTimeInBed = restTemplateGet.exchange(URI_TIME_IN_BED + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(dataTimeInBed, SLEEP_TIME_IN_BED);
+			ResponseEntity<String> dataMinutesAsleep = restTemplateGet.exchange(URI_MINUTES_ASLEEP + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(dataMinutesAsleep, SLEEP_MINUTES_ASLEEP);
+			ResponseEntity<String> dataMinutesAwake = restTemplateGet.exchange(URI_MINUTES_AWAKE + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(dataMinutesAwake, SLEEP_MINUTES_AWAKE);
+			ResponseEntity<String> dataAfterWakeup = restTemplateGet.exchange(URI_AFTER_WAKE_UP + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(dataAfterWakeup, SLEEP_MINUTES_AFTER_WAKE_UP);
+			ResponseEntity<String> dataToFallAsleep = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(dataToFallAsleep, SLEEP_MINUTES_TO_FALL_ASLEEP);
+			ResponseEntity<String> dataEfficiency = restTemplateGet.exchange(URI_EFFICIENCY + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(dataEfficiency, SLEEP_EFFICIENCY);
+       }
 	}
-
-	public String timeInBedMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_timeInBed(data);
-	}
-	
-	public String timeInBedJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_timeInBed(data);
-	}
-	
-	public String timeInBedSep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TIME_IN_BED + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_timeInBed(data);
-	}
-	
-/////////////////////////////////////////MINUTES ASLEEP////////////////////////////////////////////////////////////////////	
-	public String minutesAsleepDec15_Feb16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAsleep(data);
-	}
-
-	public String minutesAsleepMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAsleep(data);
-	}
-	
-	public String minutesAsleepJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAsleep(data);
-	}
-	
-	public String minutesAsleepSep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_ASLEEP + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAsleep(data);
-	}
-	
-/////////////////////////////////////////////MINUTES AWAKE////////////////////////////////////////////////////////	
-	public String minutesAwakeDec15_Feb16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAwake(data);
-	}
-
-	public String minutesAwakeMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAwake(data);
-	}
-	
-	public String minutesAwakeJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAwake(data);
-	}
-	
-	public String minutesAwakeSep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_MINUTES_AWAKE + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAwake(data);
-	}
-
-	////////////////////////////////////////////////MINUTES AFTER WAKE UP////////////////////////////////////////////////////////
-	public String minutesAfterWakeupDec15_Feb16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAfterWakeup(data);
-	}
-
-	public String minutesAfterWakeupMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAfterWakeup(data);
-	}
-	
-	public String minutesAfterWakeupJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAfterWakeup(data);
-	}
-	
-	public String minutesAfterWakeupSep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_AFTER_WAKE_UP + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesAfterWakeup(data);
-	}
-	
-//////////////////////////////////////////////////MINUTES TO FALL ASLEEP//////////////////////////////////////////////////	
-	public String minutesToFallAsleepDec15_Feb16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesToFallAsleep(data);
-	}
-
-	public String minutesToFallAsleepMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesToFallAsleep(data);
-	}
-	
-	public String minutesToFallAsleepJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesToFallAsleep(data);
-	}
-	
-	public String minutesToFallAsleepSep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_minutesToFallAsleep(data);
-	}
-	
-////////////////////////////////////////////////////SLEEP EFFICIENCY////////////////////////////////////////////////	
-	public String efficiencyDec15_Feb16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + FIRST, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_efficiency(data);
-	}
-
-	public String efficiencyMar16_May16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + SECOND, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_efficiency(data);
-	}
-	
-	public String efficiencyJun16_Aug16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + THIRD, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_efficiency(data);
-	}
-	
-	public String efficiencySep16_Nov16() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_EFFICIENCY + FOURTH, HttpMethod.GET, fdata.getEntity(), String.class);
-		return fdata.data_efficiency(data);
-	}
-	
 }
