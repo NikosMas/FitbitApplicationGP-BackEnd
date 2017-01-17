@@ -13,11 +13,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import com.grad.code.req.FitbitCodeRequest;
 import com.grad.heart.FitbitHeartTestPeak;
@@ -32,9 +29,6 @@ import com.mongodb.MongoClient;
  */
 
 @SpringBootApplication
-@Configuration
-@EnableAsync
-@EnableScheduling
 public class FitbitApplication {
 	
 	static Logger log = LoggerFactory.getLogger("Fitbit application");

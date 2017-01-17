@@ -40,11 +40,12 @@ public class FitbitDataSave {
 	private static final String SLEEP_MINUTES_AWAKE = "sleep_minutesAwake";
 	private static final String SLEEP_MINUTES_ASLEEP = "sleep_minutesAsleep";
 	private static final String SLEEP_TIME_IN_BED = "sleep_timeInBed";
-	private static final String HEART_PEAK = "heart_peak";
+	private static final String HEART_RATE = "heart_rate";
+	private static final String WEEK_HEART = "week_heart";
 
 	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE, ACTIVITIES_CALORIES
 			,ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART, SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP
-			,SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE, SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_PEAK);
+			,SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE, SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE, WEEK_HEART);
 
 	@Autowired
 	private ObjectMapper mapperGet;
@@ -70,13 +71,13 @@ public class FitbitDataSave {
 		mongoTemplate.insert(dataToInsert, collectionName);
 	}
 
-	protected HttpEntity<String> getEntity() {
+	public HttpEntity<String> getEntity() throws JsonProcessingException, IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + getAccessToken());
 		return new HttpEntity<String>(headers);
 	}
 	
-	protected String getAccessToken() {
+	protected String getAccessToken() throws JsonProcessingException, IOException {
 		if (access_token == null) {
 			access_token = fitbitToken.token();
 		}

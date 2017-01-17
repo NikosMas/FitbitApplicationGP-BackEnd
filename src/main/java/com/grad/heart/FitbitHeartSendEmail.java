@@ -37,18 +37,18 @@ public class FitbitHeartSendEmail {
 	public void email(List<String> peakDates) throws MessagingException {
 		
 		final Date date = new Date();
-		final String username = "*******";
-		final String password = "*******";
-		final String sendto = "********";
-		final String sendfrom = "********";
+		final String username = "***";
+		final String password = "***";
+		final String sendto = "***";
+		final String sendfrom = "***";
 		final String subject = "Fitbit app Info mails";
 		final String file = "heartRatePeaks.txt";
-		final String text = "Goodmorning, " +'\n'
-				+ "these dates declared in this file describe "
-				+ "the Heart-Rate of the user which was at its Peak which means between 160 and 220 "
-				+ "for more than 35 minutes during these days per day." +'\n'
-				+ "Check it out please as soon as possible and take care." +'\n'
-				+ "Hope we've helped. Keep on";
+		final String text = "Goodmorning, " +'\n'+'\n'
+							+ "these dates declared in this file describe "
+							+ "the Heart-Rate of the user which was at its Peak which means between 160 and 220 "
+							+ "for more than 35 minutes during these days per day." +'\n'
+							+ "Check it out please as soon as possible and take care." +'\n'+'\n'
+							+ "Hope we've helped. Keep on";
 		
 		Properties props = new Properties();
 		props.put("mail.smtp.starttls.enable", "true");

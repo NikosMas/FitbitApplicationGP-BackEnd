@@ -3,6 +3,7 @@ package com.grad;
 import java.io.IOException;
 import java.util.Arrays;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class FitbitToken {
 	
 	private static final String uriToken = "https://api.fitbit.com/oauth2/token";
 
-	public String token(){
+	public String token() throws JsonProcessingException, IOException{
 	
 	    log.info("-- THE FOLLOWING LOGS DESCRIBE THE ACCESS_TOKEN RETRIEVING PROCESS --");
 		
@@ -67,18 +68,16 @@ public class FitbitToken {
 	    
 	    log.info("-> SENDING THE POST REQUEST(ALONG WITH THE PARAMS AND HEADERS) TO GET THE ACCESS_TOKEN FROM THE FITBIT API <-");
 	    
-		try {
 			JsonNode jsonResponseToken = mapperToken.readTree(token.getBody()).path("access_token");
 		    String accessToken = jsonResponseToken.toString().substring(1, jsonResponseToken.toString().length()-1);
+		   
+		    JsonNode jsonResponseRefreshToken = mapperToken.readTree(token.getBody()).path("refresh_token");
+		    String refreshToken = jsonResponseRefreshToken.toString().substring(1, jsonResponseRefreshToken.toString().length()-1);
+		    redisTemplate.opsForValue().set("RefreshToken", refreshToken);
 		    
 		    log.info("-> THE ACCESS_TOKEN IS RETRIEVED AND READY FOR USE <-");
 		    log.info("-> THE DATA RETRIEVING AND SAVING START FROM NOW <-");
 		    
 		    return accessToken;
-		    
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 }

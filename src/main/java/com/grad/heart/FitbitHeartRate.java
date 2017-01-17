@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  */
 
-@Document(collection = "heart_peak")
+@Document(collection = "heart_rate")
 public class FitbitHeartRate {
 
 	private String date;

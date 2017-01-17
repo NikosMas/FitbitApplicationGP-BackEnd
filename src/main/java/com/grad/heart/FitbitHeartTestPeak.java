@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,7 +29,6 @@ public class FitbitHeartTestPeak {
 	@Autowired
 	private FitbitHeartSendEmail sendmail;
 	
-	//@Scheduled(cron = "*/20 * * * * *")
 	public void heartRateSelect() throws IOException, MessagingException {
 
 		File peaksfile = new File("heartRatePeaks.txt");

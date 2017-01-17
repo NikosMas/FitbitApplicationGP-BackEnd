@@ -32,7 +32,7 @@ public class FitbitHeartData {
 	
 	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
 	private static final String ACTIVITIES_HEART = "activities_heart";
-	private static final String HEART_PEAK = "heart_peak";
+	private static final String HEART_RATE = "heart_rate";
 
 	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json"
 															,"2016-03-01/2016-05-31.json"
@@ -68,7 +68,7 @@ public class FitbitHeartData {
 				for (int j = 0; j < arr1.length(); j++){
 					DBObject peak1 =  (DBObject) JSON.parse(arr1.getJSONObject(j).toString());
 					peak1.put("date", arr.getJSONObject(i).getString("dateTime"));
-					mongoTemplate.insert(peak1, HEART_PEAK);
+					mongoTemplate.insert(peak1, HEART_RATE);
 				}
 			}
 		}
