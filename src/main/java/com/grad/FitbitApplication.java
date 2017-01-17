@@ -2,29 +2,39 @@ package com.grad;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
+import javax.mail.MessagingException;
 import javax.script.ScriptException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
+import com.grad.code.req.FitbitCodeRequest;
+import com.grad.heart.FitbitHeartTestPeak;
 import com.mongodb.MongoClient;
 
 /**
- * main class. includes the beans. sending the GET request for authorization through browser. 
- * set a delay waiting the user verification. calls the dataCalls 
+ * main class. includes the beans and callers for authorization-code class, data-calls class, heart-data  
+ * 
  * 
  * @author nikos_mas
  *
  */
 
 @SpringBootApplication
+@Configuration
+@EnableAsync
+@EnableScheduling
 public class FitbitApplication {
 	
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
@@ -53,35 +63,21 @@ public class FitbitApplication {
 	JedisConnectionFactory jedisConnectionFactory() {
 		return new JedisConnectionFactory();
 	 }
-
-	public static void main(String[] args) throws IOException, URISyntaxException, ScriptException{
+	
+		
+	public static void main(String[] args) throws IOException, URISyntaxException, ScriptException, BeansException, JSONException, MessagingException, InterruptedException{
 		ConfigurableApplicationContext appContext = SpringApplication.run(FitbitApplication.class, args);
 		
-		log.info("-- THE FOLLOWING LOGS DESCRIBE THE APPROACH TO FITBIT API FOR AUTHORIZATION CODE --");
-		
-		final String URI = "https://www.fitbit.com/oauth2/authorize?"
-				+ "redirect_uri=http://localhost:8080"
-				+ "&response_type=code"
-				+ "&client_id=227MLG"
-				+ "&scope=activity%20nutrition%20heartrate%20profile%20settings%20sleep%20social%20weight"
-				+ "&expires_in=2592000"
-				+ "&prompt=login";
-			
-		log.info("-> WE JUST CREATE THE URI TO BE SENT TO THE FITBIT API WITH THE REQUIRED HEADERS AND SEND IT TO A BROWSER <-");
-		
-		Runtime open_browser = Runtime.getRuntime();
-		open_browser.exec( "rundll32 url.dll,FileProtocolHandler " + URI);
-		   
-		log.info("-> WE PUT A DELAY OF 30 SECONDS WAITING THE USER TO COMPLETE THE VERIFICATION REQUIRED AND THE AUTHORIZATION CODE SUCCESSFULLY BE SAVED TO REDIS <-");
-		
-		try {TimeUnit.SECONDS.sleep(30);
-		}catch (InterruptedException e)
-		{e.printStackTrace();}
+		appContext.getBean(FitbitCodeRequest.class).codeRequest();
 		
 		log.info("-> THE PROCEDURE OF ACCESS_TOKEN RETRIEVER, DATA RETRIEVER AND SAVE COULD START BY NOW <-");    
 		
 		appContext.getBean(FitbitCalls.class).dataCalls();
 
 		log.info("-> DATA ARE NOW SAVED INTO THE MONGO DATABASE <-");
+		
+		log.info("-> CHECKING THE HEART RATE DATA FOR DATES WITH MUCH TIME ON 'PEAK' ZONE AND SENDING MAIL TO THE USER <-");
+
+		appContext.getBean(FitbitHeartTestPeak.class).heartRateSelect();
 	}
 }

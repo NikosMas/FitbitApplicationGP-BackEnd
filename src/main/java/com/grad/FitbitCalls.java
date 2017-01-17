@@ -2,6 +2,7 @@ package com.grad;
 
 import java.io.IOException;
 import org.codehaus.jackson.JsonProcessingException;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class FitbitCalls {
 	@Autowired
 	private FitbitDataSave fdata;
 	
-	public void dataCalls() throws JsonProcessingException, IOException{
+	public void dataCalls() throws JsonProcessingException, IOException, JSONException{
 		
 		fdata.collectionsCreate();
 		
