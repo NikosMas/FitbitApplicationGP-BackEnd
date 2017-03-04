@@ -14,6 +14,10 @@ public class FitbitHeartRate {
 
 	private String date;
 	private String name;
+	private Long minutes;
+	private Long caloriesOut;
+	private Long max;
+	private Long min;
 
 	public String getDate() {
 		return date;
@@ -62,9 +66,4 @@ public class FitbitHeartRate {
 	public void setMin(Long min) {
 		this.min = min;
 	}
-
-	private Long minutes;
-	private Long caloriesOut;
-	private Long max;
-	private Long min;
 }

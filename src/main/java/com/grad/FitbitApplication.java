@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.web.client.RestTemplate;
 import com.grad.code.req.FitbitCodeRequest;
-import com.grad.heart.FitbitHeartTestPeak;
+import com.grad.heart.FitbitHeartCheckPeak;
 import com.mongodb.MongoClient;
 
 /**
@@ -72,6 +72,6 @@ public class FitbitApplication {
 		
 		log.info("-> CHECKING THE HEART RATE DATA FOR DATES WITH MUCH TIME ON 'PEAK' ZONE AND SENDING MAIL TO THE USER <-");
 
-		appContext.getBean(FitbitHeartTestPeak.class).heartRateSelect();
+		//appContext.getBean(FitbitHeartTestPeak.class).heartRateSelect();
 	}
 }

@@ -32,15 +32,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class FitbitHeartSendEmail {
 
+	// fill with your data 
+	private static final String USERNAME = "   ";
+	private static final String PASSWORD = "   ";
+	private static final String SEND_TO = "   ";
+	private static final String SEND_FROM = "   ";
+	
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
 	
 	public void email(List<String> peakDates) throws MessagingException {
 		
 		final Date date = new Date();
-		final String username = "***";
-		final String password = "***";
-		final String sendto = "***";
-		final String sendfrom = "***";
+		final String username = USERNAME;
+		final String password = PASSWORD;
+		final String sendto = SEND_TO;
+		final String sendfrom = SEND_FROM;
 		final String subject = "Fitbit app Info mails";
 		final String file = "heartRatePeaks.txt";
 		final String text = "Goodmorning, " +'\n'+'\n'

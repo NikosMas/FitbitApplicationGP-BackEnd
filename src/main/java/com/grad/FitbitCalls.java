@@ -46,7 +46,9 @@ public class FitbitCalls {
 		data_other.frequence();
 		
 		data_heart.heart();
+		
 		data_sleep.sleep();
+		
 		data_activities.activities();
 	}
 }

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class FitbitHeartTestPeak {
+public class FitbitHeartCheckPeak {
 
 	@Autowired
 	private FitbitHeartZoneRepo repository;

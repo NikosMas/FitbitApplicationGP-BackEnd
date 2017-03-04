@@ -47,32 +47,33 @@ public class FitbitToken {
 		
 		log.info("-> CONNECT TO REDIS DB AND SELECT THE AUTHORIZATION CODE <-");
 		
-	    MultiValueMap<String, String> paramsToken = new LinkedMultiValueMap<String, String>();
-	    paramsToken.add("clientId", "227MLG");
-	    paramsToken.add("grant_type", "authorization_code");
-	    paramsToken.add("redirect_uri", "http://localhost:8080");
-	    paramsToken.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
+	    MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+	    parameters.add("clientId", "227MLG");
+	    parameters.add("grant_type", "authorization_code");
+	    parameters.add("redirect_uri", "http://localhost:8080");
+	    parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
 	    
 	    log.info("-> SET THE REQUIRED PARAMETERS(CREDENTIALS AND THE AUTHORIZATION CODE) FOR THE POST REQUEST TO FITBIT API <-");
 	    
-	    HttpHeaders headersToken = new HttpHeaders();
-	    headersToken.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-	    headersToken.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-	    headersToken.set("Authorization", "Basic MjI3TUxHOjlkNTUwNjIxYzBlZTQ0ODkzNGM4MDQxYzQ1NjA3MTcx");
-	    headersToken.set("Accept", "application/json");
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+	    headers.set("Authorization", "Basic MjI3TUxHOjlkNTUwNjIxYzBlZTQ0ODkzNGM4MDQxYzQ1NjA3MTcx");
+	    headers.set("Accept", "application/json");
 	    
 	    log.info("-> SET THE REQUIRED HEADER(AUTHORIZATION, SENDING AND RETURNING TYPE OF DATA) FOR THE POST REQUEST TO THE FITBIT API <-");
 	    
-	    HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(paramsToken, headersToken);
-	    ResponseEntity<String> token = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
+	    HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters, headers);
+	    ResponseEntity<String> response = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
 	    
 	    log.info("-> SENDING THE POST REQUEST(ALONG WITH THE PARAMS AND HEADERS) TO GET THE ACCESS_TOKEN FROM THE FITBIT API <-");
 	    
-			JsonNode jsonResponseToken = mapperToken.readTree(token.getBody()).path("access_token");
-		    String accessToken = jsonResponseToken.toString().substring(1, jsonResponseToken.toString().length()-1);
+			JsonNode jsonResponse = mapperToken.readTree(response.getBody()).path("access_token");
+		    String accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length()-1);
 		   
-		    JsonNode jsonResponseRefreshToken = mapperToken.readTree(token.getBody()).path("refresh_token");
+		    JsonNode jsonResponseRefreshToken = mapperToken.readTree(response.getBody()).path("refresh_token");
 		    String refreshToken = jsonResponseRefreshToken.toString().substring(1, jsonResponseRefreshToken.toString().length()-1);
+		    
 		    redisTemplate.opsForValue().set("RefreshToken", refreshToken);
 		    
 		    log.info("-> THE ACCESS_TOKEN IS RETRIEVED AND READY FOR USE <-");

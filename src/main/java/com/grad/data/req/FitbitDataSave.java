@@ -2,6 +2,7 @@ package com.grad.data.req;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.grad.FitbitToken;
+import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -26,6 +28,7 @@ import com.mongodb.util.JSON;
 @Service
 public class FitbitDataSave {
 	
+	// MongoDB collections
 	private static final String PROFILE = "profile";
 	private static final String ACTIVITIES_LIFETIME = "activities_lifetime";
 	private static final String ACTIVITIES_FREQUENCE = "activities_frequence";
@@ -42,10 +45,10 @@ public class FitbitDataSave {
 	private static final String SLEEP_TIME_IN_BED = "sleep_timeInBed";
 	private static final String HEART_RATE = "heart_rate";
 	private static final String WEEK_HEART = "week_heart";
-
-	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE, ACTIVITIES_CALORIES
-			,ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART, SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP
-			,SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE, SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE, WEEK_HEART);
+	// List of the collections
+	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE, ACTIVITIES_CALORIES,
+			ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART, SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP,
+			SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE, SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE, WEEK_HEART);
 
 	@Autowired
 	private ObjectMapper mapperGet;
@@ -59,16 +62,16 @@ public class FitbitDataSave {
 	private static String access_token;
 
 	public void collectionsCreate(){
-		
 		for(String temp : collections){ 
 		mongoTemplate.createCollection(temp);
 		}
 	}
 	
-	public void dataTypeInsert(ResponseEntity<String> dataReceived, String collectionName) throws IOException, JsonProcessingException {
-		JsonNode dataBody = mapperGet.readTree(dataReceived.getBody());
-		DBObject dataToInsert = (DBObject) JSON.parse(dataBody.toString());
-		mongoTemplate.insert(dataToInsert, collectionName);
+	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName) throws IOException, JsonProcessingException {
+		JsonNode responseDataBody = mapperGet.readTree(responseData.getBody());
+		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
+		BasicDBList filteredValue = ((BasicDBList) dataToInsert.get(filterCollectionName));
+		mongoTemplate.insert(filteredValue, collection);
 	}
 
 	public HttpEntity<String> getEntity() throws JsonProcessingException, IOException {

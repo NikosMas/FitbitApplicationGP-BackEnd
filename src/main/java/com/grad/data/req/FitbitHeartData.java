@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import com.mysql.fabric.xmlrpc.base.Data;
 
 /**
  * heart-data-request class. 
@@ -30,14 +31,20 @@ import com.mongodb.util.JSON;
 @Service
 public class FitbitHeartData {
 	
+	// URI for heart data. body part
 	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
+	// MongoDB collection name 
 	private static final String ACTIVITIES_HEART = "activities_heart";
+	// MongoDB collection name focus on heart rate values
 	private static final String HEART_RATE = "heart_rate";
-
-	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json"
-															,"2016-03-01/2016-05-31.json"
-															,"2016-06-01/2016-08-31.json"
-															,"2016-09-01/2016-11-30.json");
+	// filtered field from response
+	private static final String HEART = "activities-heart";
+	// URI for heart data. date part
+	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json",
+															 "2016-03-01/2016-05-31.json",
+															 "2016-06-01/2016-08-31.json",
+															 "2016-09-01/2016-11-30.json",
+															 "2016-12-01/2017-02-28.json");
 	@Autowired
 	private RestTemplate restTemplateGet;
 	
@@ -53,22 +60,19 @@ public class FitbitHeartData {
 	public void heart() throws JsonProcessingException, IOException, JSONException {
 		
 		for(String temp : months){
-			ResponseEntity<String> heart = restTemplateGet.exchange(URI_HEART + temp, HttpMethod.GET, fdata.getEntity(), String.class);
-			JsonNode dataBody = mapperGet.readTree(heart.getBody());
-			DBObject dataToInsert = (DBObject) JSON.parse(dataBody.toString());
-			BasicDBList value = ((BasicDBList) dataToInsert.get("activities-heart"));
-			mongoTemplate.insert(value, ACTIVITIES_HEART);
+			ResponseEntity<String> heartResponse = restTemplateGet.exchange(URI_HEART + temp, HttpMethod.GET, fdata.getEntity(), String.class);
+			fdata.dataTypeInsert(heartResponse, ACTIVITIES_HEART, HEART);
 			
-			JSONObject obj = new JSONObject(heart.getBody());
-			JSONArray arr = obj.getJSONArray("activities-heart");
-			for (int i = 0; i < arr.length(); i++){
-				String peak = arr.getJSONObject(i).getString("value");
-				JSONObject obj1 = new JSONObject(peak);
-			    JSONArray arr1 = obj1.getJSONArray("heartRateZones");
-				for (int j = 0; j < arr1.length(); j++){
-					DBObject peak1 =  (DBObject) JSON.parse(arr1.getJSONObject(j).toString());
-					peak1.put("date", arr.getJSONObject(i).getString("dateTime"));
-					mongoTemplate.insert(peak1, HEART_RATE);
+			JSONObject responseBody = new JSONObject(heartResponse.getBody());
+			JSONArray responseDataArray = responseBody.getJSONArray("activities-heart");
+			for (int i = 0; i < responseDataArray.length(); i++){
+				String valueField = responseDataArray.getJSONObject(i).getString("value");
+				JSONObject valueFieldObject = new JSONObject(valueField);
+			    JSONArray heartRateZonesArray = valueFieldObject.getJSONArray("heartRateZones");
+				for (int j = 0; j < heartRateZonesArray.length(); j++){
+					DBObject heartRateZonesValue =  (DBObject) JSON.parse(heartRateZonesArray.getJSONObject(j).toString());
+					heartRateZonesValue.put("date", responseDataArray.getJSONObject(i).getString("dateTime"));
+					mongoTemplate.insert(heartRateZonesValue, HEART_RATE);
 				}
 			}
 		}
