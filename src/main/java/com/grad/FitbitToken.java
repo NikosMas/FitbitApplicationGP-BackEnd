@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 public class FitbitToken {
 
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
+	
 	@Autowired
 	private ObjectMapper mapperToken;
 	
@@ -46,6 +47,8 @@ public class FitbitToken {
 	    log.info("-- THE FOLLOWING LOGS DESCRIBE THE ACCESS_TOKEN RETRIEVING PROCESS --");
 		
 		log.info("-> CONNECT TO REDIS DB AND SELECT THE AUTHORIZATION CODE <-");
+		
+		//while(redisTemplate.opsForValue().get("AuthorizationCode"));
 		
 	    MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
 	    parameters.add("clientId", "227MLG");

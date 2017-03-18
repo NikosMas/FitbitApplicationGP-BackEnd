@@ -13,7 +13,7 @@ import com.grad.data.req.FitbitOtherData;
 import com.grad.data.req.FitbitSleepData;
 
 /**
- * data-request caller class. 
+ * data-request caller class.
  * 
  * @author nikos_mas
  *
@@ -21,34 +21,34 @@ import com.grad.data.req.FitbitSleepData;
 
 @Service
 public class FitbitCalls {
-	
+
 	@Autowired
 	private FitbitActivitiesData data_activities;
-	
+
 	@Autowired
 	private FitbitHeartData data_heart;
-	
+
 	@Autowired
 	private FitbitOtherData data_other;
-	
+
 	@Autowired
 	private FitbitSleepData data_sleep;
-	
+
 	@Autowired
 	private FitbitDataSave fdata;
-	
-	public void dataCalls() throws JsonProcessingException, IOException, JSONException{
-		
+
+	public void dataCalls() throws JsonProcessingException, IOException, JSONException {
+
 		fdata.collectionsCreate();
-		
+
 		data_other.profile();
 		data_other.lifetime();
 		data_other.frequence();
-		
+
 		data_heart.heart();
-		
+
 		data_sleep.sleep();
-		
+
 		data_activities.activities();
 	}
 }

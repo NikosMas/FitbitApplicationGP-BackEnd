@@ -2,7 +2,6 @@ package com.grad.data.req;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -19,7 +18,7 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
- * insert to MongoDB data received from Fitbit API 
+ * insert to MongoDB data received from Fitbit API
  * 
  * @author nikos_mas
  *
@@ -27,7 +26,7 @@ import com.mongodb.util.JSON;
 
 @Service
 public class FitbitDataSave {
-	
+
 	// MongoDB collections
 	private static final String PROFILE = "profile";
 	private static final String ACTIVITIES_LIFETIME = "activities_lifetime";
@@ -46,32 +45,49 @@ public class FitbitDataSave {
 	private static final String HEART_RATE = "heart_rate";
 	private static final String WEEK_HEART = "week_heart";
 	// List of the collections
-	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE, ACTIVITIES_CALORIES,
-			ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART, SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP,
-			SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE, SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE, WEEK_HEART);
+	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE,
+			ACTIVITIES_CALORIES, ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART,
+			SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP, SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE,
+			SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE, WEEK_HEART);
 
 	@Autowired
 	private ObjectMapper mapperGet;
-	
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
+
 	@Autowired
 	private FitbitToken fitbitToken;
-	
+
 	private static String access_token;
 
-	public void collectionsCreate(){
-		for(String temp : collections){ 
-		mongoTemplate.createCollection(temp);
-		}
+	public void collectionsCreate() {
+
+		collections.stream().forEach(temp -> {
+
+			if (mongoTemplate.collectionExists(temp)) {
+				mongoTemplate.dropCollection(temp);
+				mongoTemplate.createCollection(temp);
+			} else {
+				mongoTemplate.createCollection(temp);
+			}
+		});
 	}
-	
-	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName) throws IOException, JsonProcessingException {
+
+	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName)
+			throws IOException, JsonProcessingException {
 		JsonNode responseDataBody = mapperGet.readTree(responseData.getBody());
 		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
-		BasicDBList filteredValue = ((BasicDBList) dataToInsert.get(filterCollectionName));
-		mongoTemplate.insert(filteredValue, collection);
+
+		if (collection.equals(ACTIVITIES_LIFETIME)) {
+			mongoTemplate.insert(dataToInsert, collection);
+		} else if (filterCollectionName.equals("user")) {
+			DBObject filteredValue = (DBObject) dataToInsert.get(filterCollectionName);
+			mongoTemplate.insert(filteredValue, collection);
+		} else {
+			BasicDBList filteredValue = (BasicDBList) dataToInsert.get(filterCollectionName);
+			mongoTemplate.insert(filteredValue, collection);
+		}
 	}
 
 	public HttpEntity<String> getEntity() throws JsonProcessingException, IOException {
@@ -79,7 +95,7 @@ public class FitbitDataSave {
 		headers.set("Authorization", "Bearer " + getAccessToken());
 		return new HttpEntity<String>(headers);
 	}
-	
+
 	protected String getAccessToken() throws JsonProcessingException, IOException {
 		if (access_token == null) {
 			access_token = fitbitToken.token();
