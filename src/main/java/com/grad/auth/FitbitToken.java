@@ -33,6 +33,8 @@ import com.grad.config.AuthorizationProperties;
 public class FitbitToken {
 
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
+
+	@Autowired
 	private AuthorizationProperties properties;
 
 	@Autowired
@@ -48,20 +50,11 @@ public class FitbitToken {
 
 	public String token() throws JsonProcessingException, IOException {
 
-		log.info("-- THE FOLLOWING LOGS DESCRIBE THE ACCESS_TOKEN RETRIEVING PROCESS --");
-
-		log.info("-> CONNECT TO REDIS DB AND SELECT THE AUTHORIZATION CODE <-");
-
-		// while(redisTemplate.opsForValue().get("AuthorizationCode"));
-
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
 		parameters.add("clientId", properties.getClientid());
 		parameters.add("grant_type", properties.getGrantType());
 		parameters.add("redirect_uri", properties.getRedirectUri());
 		parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
-
-		log.info(
-				"-> SET THE REQUIRED PARAMETERS(CREDENTIALS AND THE AUTHORIZATION CODE) FOR THE POST REQUEST TO FITBIT API <-");
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -69,15 +62,9 @@ public class FitbitToken {
 		headers.set("Authorization", properties.getHeaderAuth());
 		headers.set("Accept", properties.getHeaderAccept());
 
-		log.info(
-				"-> SET THE REQUIRED HEADER(AUTHORIZATION, SENDING AND RETURNING TYPE OF DATA) FOR THE POST REQUEST TO THE FITBIT API <-");
-
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,
 				headers);
 		ResponseEntity<String> response = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
-
-		log.info(
-				"-> SENDING THE POST REQUEST(ALONG WITH THE PARAMS AND HEADERS) TO GET THE ACCESS_TOKEN FROM THE FITBIT API <-");
 
 		JsonNode jsonResponse = mapperToken.readTree(response.getBody()).path("access_token");
 		String accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
@@ -87,9 +74,6 @@ public class FitbitToken {
 				jsonResponseRefreshToken.toString().length() - 1);
 
 		redisTemplate.opsForValue().set("RefreshToken", refreshToken);
-
-		log.info("-> THE ACCESS_TOKEN IS RETRIEVED AND READY FOR USE <-");
-		log.info("-> THE DATA RETRIEVING AND SAVING START FROM NOW <-");
 
 		return accessToken;
 	}

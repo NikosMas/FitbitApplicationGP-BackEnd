@@ -23,32 +23,32 @@ import com.grad.data.req.FitbitSleepData;
 public class FitbitCalls {
 
 	@Autowired
-	private FitbitActivitiesData data_activities;
+	private FitbitActivitiesData activitiesDataStore;
 
 	@Autowired
-	private FitbitHeartData data_heart;
+	private FitbitHeartData heartDataStore;
 
 	@Autowired
-	private FitbitOtherData data_other;
+	private FitbitOtherData otherDataStore;
 
 	@Autowired
-	private FitbitSleepData data_sleep;
+	private FitbitSleepData sleepDataStore;
 
 	@Autowired
-	private FitbitDataSave fdata;
+	private FitbitDataSave dataStore;
 
 	public void dataCalls() throws JsonProcessingException, IOException, JSONException {
 
-		fdata.collectionsCreate();
+		dataStore.collectionsCreate();
 
-		data_other.profile();
-		data_other.lifetime();
-		data_other.frequence();
+		otherDataStore.profile();
+		otherDataStore.lifetime();
+		otherDataStore.frequence();
 
-		data_heart.heart();
+		heartDataStore.heart();
 
-		data_sleep.sleep();
+		sleepDataStore.sleep();
 
-		data_activities.activities();
+		activitiesDataStore.activities();
 	}
 }

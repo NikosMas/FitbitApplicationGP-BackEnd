@@ -1,9 +1,7 @@
 package com.grad.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @ConfigurationProperties("accesstoken")
 public class AuthorizationProperties {
 	

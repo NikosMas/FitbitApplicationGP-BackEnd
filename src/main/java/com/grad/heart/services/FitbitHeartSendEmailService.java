@@ -19,6 +19,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grad.config.MailInfoProperties;
@@ -35,6 +36,8 @@ import com.grad.config.MailInfoProperties;
 public class FitbitHeartSendEmailService {
 
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
+	
+	@Autowired
 	private MailInfoProperties properties;
 
 	public void email(List<String> peakDates) throws MessagingException {

@@ -27,6 +27,7 @@ import com.grad.heart.repository.FitbitHeartZoneRepo;
 @Service
 public class FitbitHeartCheckPeakService {
 
+	@Autowired
 	private MailInfoProperties properties;
 
 	@Autowired

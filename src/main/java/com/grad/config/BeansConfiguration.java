@@ -1,6 +1,7 @@
 package com.grad.config;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,6 +13,7 @@ import com.mongodb.MongoClient;
 @Configuration
 public class BeansConfiguration {
 
+	@Autowired
 	private MongoProperties properties;
 
 	@Bean

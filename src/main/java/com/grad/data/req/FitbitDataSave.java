@@ -44,12 +44,12 @@ public class FitbitDataSave {
 	private static final String SLEEP_MINUTES_ASLEEP = "sleep_minutesAsleep";
 	private static final String SLEEP_TIME_IN_BED = "sleep_timeInBed";
 	private static final String HEART_RATE = "heart_rate";
-	private static final String WEEK_HEART = "week_heart";
+
 	// List of the collections
 	private static final List<String> collections = Arrays.asList(PROFILE, ACTIVITIES_LIFETIME, ACTIVITIES_FREQUENCE,
 			ACTIVITIES_CALORIES, ACTIVITIES_DISTANCE, ACTIVITIES_FLOORS, ACTIVITIES_STEPS, ACTIVITIES_HEART,
 			SLEEP_EFFICIENCY, SLEEP_MINUTES_TO_FALL_ASLEEP, SLEEP_MINUTES_AFTER_WAKE_UP, SLEEP_MINUTES_AWAKE,
-			SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE, WEEK_HEART);
+			SLEEP_MINUTES_ASLEEP, SLEEP_TIME_IN_BED, HEART_RATE);
 
 	@Autowired
 	private ObjectMapper mapperGet;
