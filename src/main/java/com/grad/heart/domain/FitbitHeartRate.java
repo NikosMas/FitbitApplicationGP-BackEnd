@@ -1,9 +1,9 @@
-package com.grad.heart;
+package com.grad.heart.domain;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Heart-Rate document create 
+ * Heart-Rate document create
  * 
  * @author nikos_mas
  *

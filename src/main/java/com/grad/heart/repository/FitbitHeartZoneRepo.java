@@ -1,10 +1,12 @@
-package com.grad.heart;
+package com.grad.heart.repository;
 
 import java.util.stream.Stream;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import com.grad.heart.domain.FitbitHeartRate;
+
 /**
- * Heart-Rate repository 
+ * Heart-Rate repository
  * 
  * @author nikos_mas
  *
@@ -13,5 +15,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface FitbitHeartZoneRepo extends MongoRepository<FitbitHeartRate, String> {
 
 	public Stream<FitbitHeartRate> findByMinutesGreaterThanAndNameIs(long minutes, String name);
-	
+
 }

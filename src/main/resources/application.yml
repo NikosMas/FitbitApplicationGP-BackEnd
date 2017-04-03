@@ -1,0 +1,18 @@
+mongoDB:
+  dbname: fitbit
+  host : localhost
+  port: 27017
+  
+accesstoken:
+  clientid: 227MLG
+  grantType: authorization_code
+  redirectUri: http://localhost:8080
+  headerAuth: Basic MjI3TUxHOjlkNTUwNjIxYzBlZTQ0ODkzNGM4MDQxYzQ1NjA3MTcx
+  headerAccept: application/json 
+  
+mailInfo:
+  username: username
+  password: pass
+  fileName: heartRatePeaks.txt
+  sendTo: mail
+  sendFrom: mail

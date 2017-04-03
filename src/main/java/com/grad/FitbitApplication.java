@@ -4,60 +4,30 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import javax.mail.MessagingException;
 import javax.script.ScriptException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.web.client.RestTemplate;
-import com.grad.code.req.FitbitCodeRequest;
-import com.grad.heart.FitbitHeartCheckPeak;
-import com.mongodb.MongoClient;
+
+import com.grad.auth.FitbitCodeRequest;
+import com.grad.config.AuthorizationProperties;
+import com.grad.config.MailInfoProperties;
+import com.grad.config.MongoProperties;
+import com.grad.heart.services.FitbitHeartCheckPeakService;
 
 /**
- * main class. includes the beans and callers for authorization-code class,
- * data-calls class, heart-data
- * 
- * 
  * @author nikos_mas
- *
  */
 
 @SpringBootApplication
+@EnableConfigurationProperties({ MongoProperties.class, AuthorizationProperties.class, MailInfoProperties.class })
 public class FitbitApplication {
 
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
-
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-
-	@Bean
-	public MongoTemplate mongoTemplate() {
-		final String DB_NAME = "fitbit";
-		final String MONGO_HOST = "localhost";
-		final int MONGO_PORT = 27017;
-
-		MongoClient mongo = new MongoClient(MONGO_HOST, MONGO_PORT);
-		return new MongoTemplate(mongo, DB_NAME);
-	}
-
-	@Bean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
-	}
-
-	@Bean
-	JedisConnectionFactory jedisConnectionFactory() {
-		return new JedisConnectionFactory();
-	}
 
 	public static void main(String[] args) throws IOException, URISyntaxException, ScriptException, BeansException,
 			JSONException, MessagingException, InterruptedException {
@@ -74,6 +44,6 @@ public class FitbitApplication {
 		log.info(
 				"-> CHECKING THE HEART RATE DATA FOR DATES WITH MUCH TIME ON 'PEAK' ZONE AND SENDING MAIL TO THE USER <-");
 
-		// appContext.getBean(FitbitHeartTestPeak.class).heartRateSelect();
+		appContext.getBean(FitbitHeartCheckPeakService.class).heartRateSelect();
 	}
 }

@@ -1,4 +1,4 @@
-package com.grad.code.req;
+package com.grad.auth;
 
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class FitbitCodeRequest {
 		log.info(
 				"-> WE PUT A SLEEP OF 30 SECONDS WAITING THE USER TO COMPLETE THE VERIFICATION REQUIRED AND THE AUTHORIZATION CODE SUCCESSFULLY BE SAVED TO REDIS <-");
 
-// TODO: change this with something better 		
+		// TODO: change this with something better
 
 		Thread.sleep(30000);
 	}

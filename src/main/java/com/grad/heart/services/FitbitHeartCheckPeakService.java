@@ -1,4 +1,4 @@
-package com.grad.heart;
+package com.grad.heart.services;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,6 +13,10 @@ import javax.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.grad.config.MailInfoProperties;
+import com.grad.heart.domain.FitbitHeartRate;
+import com.grad.heart.repository.FitbitHeartZoneRepo;
+
 /**
  * find the dates with over than 35 minutes per day above the peak heart-zone
  * 
@@ -21,17 +25,19 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class FitbitHeartCheckPeak {
+public class FitbitHeartCheckPeakService {
+
+	private MailInfoProperties properties;
 
 	@Autowired
 	private FitbitHeartZoneRepo repository;
 
 	@Autowired
-	private FitbitHeartSendEmail sendmail;
+	private FitbitHeartSendEmailService sendmail;
 
 	public void heartRateSelect() throws IOException, MessagingException {
 
-		File peaksfile = new File("heartRatePeaks.txt");
+		File peaksfile = new File(properties.getFileName());
 		FileOutputStream stream = new FileOutputStream(peaksfile);
 		OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
 		Writer w = new BufferedWriter(peakswrite);

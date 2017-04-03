@@ -12,7 +12,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.grad.FitbitToken;
+
+import com.grad.auth.FitbitToken;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -63,13 +64,13 @@ public class FitbitDataSave {
 
 	public void collectionsCreate() {
 
-		collections.stream().forEach(temp -> {
+		collections.stream().forEach(collectionName -> {
 
-			if (mongoTemplate.collectionExists(temp)) {
-				mongoTemplate.dropCollection(temp);
-				mongoTemplate.createCollection(temp);
+			if (mongoTemplate.collectionExists(collectionName)) {
+				mongoTemplate.dropCollection(collectionName);
+				mongoTemplate.createCollection(collectionName);
 			} else {
-				mongoTemplate.createCollection(temp);
+				mongoTemplate.createCollection(collectionName);
 			}
 		});
 	}
