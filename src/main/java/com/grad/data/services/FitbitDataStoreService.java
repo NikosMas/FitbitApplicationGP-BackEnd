@@ -1,15 +1,10 @@
-package com.grad;
+package com.grad.data.services;
 
 import java.io.IOException;
 import org.codehaus.jackson.JsonProcessingException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.grad.data.services.ActivitiesDataService;
-import com.grad.data.services.HeartDataService;
-import com.grad.data.services.OtherDataService;
-import com.grad.data.services.SleepDataService;
 
 /**
  * data-request caller class.
@@ -19,19 +14,22 @@ import com.grad.data.services.SleepDataService;
  */
 
 @Service
-public class FitbitCalls {
+public class FitbitDataStoreService {
 
-	@Autowired
 	private ActivitiesDataService activitiesDataStore;
-
-	@Autowired
 	private HeartDataService heartDataStore;
-
-	@Autowired
 	private OtherDataService otherDataStore;
+	private SleepDataService sleepDataStore;
 
 	@Autowired
-	private SleepDataService sleepDataStore;
+	public FitbitDataStoreService(ActivitiesDataService activitiesDataStore, HeartDataService heartDataStore,
+			OtherDataService otherDataStore, SleepDataService sleepDataStore) {
+
+		this.activitiesDataStore = activitiesDataStore;
+		this.heartDataStore = heartDataStore;
+		this.otherDataStore = otherDataStore;
+		this.sleepDataStore = sleepDataStore;
+	}
 
 	public void dataCalls() throws JsonProcessingException, IOException, JSONException {
 

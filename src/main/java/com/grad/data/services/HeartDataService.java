@@ -35,6 +35,9 @@ public class HeartDataService {
 	// URI for heart data. date part
 	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json", "2016-03-01/2016-05-31.json",
 			"2016-06-01/2016-08-31.json", "2016-09-01/2016-11-30.json", "2016-12-01/2017-02-28.json");
+	
+	private DataSaveService dataService;
+	
 	@Autowired
 	private RestTemplate restTemplateGet;
 
@@ -42,7 +45,9 @@ public class HeartDataService {
 	private MongoTemplate mongoTemplate;
 
 	@Autowired
-	private DataSaveService fdata;
+	public HeartDataService(DataSaveService dataService) {
+		this.dataService = dataService;
+	}
 
 	public void heart() throws JsonProcessingException, IOException, JSONException {
 
@@ -77,8 +82,8 @@ public class HeartDataService {
 
 	private JSONArray response(String month) throws JsonProcessingException, IOException, JSONException {
 		ResponseEntity<String> heartResponse = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,
-				fdata.getEntity(), String.class);
-		fdata.dataTypeInsert(heartResponse, CollectionEnum.ACTIVITIES_HEART.getDescription(), HEART);
+				dataService.getEntity(), String.class);
+		dataService.dataTypeInsert(heartResponse, CollectionEnum.ACTIVITIES_HEART.getDescription(), HEART);
 
 		JSONObject responseBody = new JSONObject(heartResponse.getBody());
 		JSONArray responseDataArray = responseBody.getJSONArray(HEART);

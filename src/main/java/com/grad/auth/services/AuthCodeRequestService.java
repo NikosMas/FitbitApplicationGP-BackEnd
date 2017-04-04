@@ -1,8 +1,6 @@
 package com.grad.auth.services;
 
-import java.awt.Desktop;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
@@ -43,6 +41,6 @@ public class AuthCodeRequestService {
 
 		// TODO: change this with something better
 
-		Thread.sleep(30000);
+		//Thread.sleep(30000);
 	}
 }

@@ -42,8 +42,12 @@ public class SleepDataService {
 	@Autowired
 	private RestTemplate restTemplateGet;
 
+	private DataSaveService dataService;
+	
 	@Autowired
-	private DataSaveService fdata;
+	public SleepDataService(DataSaveService dataService) {
+		this.dataService = dataService;
+	}
 
 	public void sleep() throws JsonProcessingException, IOException {
 
@@ -52,23 +56,23 @@ public class SleepDataService {
 
 	private void dataRetriever(String temp) {
 		try {
-			ResponseEntity<String> dataTimeInBed = restTemplateGet.exchange(URI_TIME_IN_BED + temp, HttpMethod.GET, fdata.getEntity(), String.class);
-			fdata.dataTypeInsert(dataTimeInBed, CollectionEnum.SLEEP_TIME_IN_BED.getDescription(), TIME_IN_BED);
+			ResponseEntity<String> dataTimeInBed = restTemplateGet.exchange(URI_TIME_IN_BED + temp, HttpMethod.GET, dataService.getEntity(), String.class);
+			dataService.dataTypeInsert(dataTimeInBed, CollectionEnum.SLEEP_TIME_IN_BED.getDescription(), TIME_IN_BED);
 			
-			ResponseEntity<String> dataMinutesAsleep = restTemplateGet.exchange(URI_MINUTES_ASLEEP + temp,HttpMethod.GET, fdata.getEntity(), String.class);
-			fdata.dataTypeInsert(dataMinutesAsleep, CollectionEnum.SLEEP_MINUTES_ASLEEP.getDescription(), MINUTES_ASLEEP);
+			ResponseEntity<String> dataMinutesAsleep = restTemplateGet.exchange(URI_MINUTES_ASLEEP + temp,HttpMethod.GET, dataService.getEntity(), String.class);
+			dataService.dataTypeInsert(dataMinutesAsleep, CollectionEnum.SLEEP_MINUTES_ASLEEP.getDescription(), MINUTES_ASLEEP);
 			
-			ResponseEntity<String> dataMinutesAwake = restTemplateGet.exchange(URI_MINUTES_AWAKE + temp, HttpMethod.GET,fdata.getEntity(), String.class);
-			fdata.dataTypeInsert(dataMinutesAwake, CollectionEnum.SLEEP_MINUTES_AWAKE.getDescription(), MINUTES_AWAKE);
+			ResponseEntity<String> dataMinutesAwake = restTemplateGet.exchange(URI_MINUTES_AWAKE + temp, HttpMethod.GET,dataService.getEntity(), String.class);
+			dataService.dataTypeInsert(dataMinutesAwake, CollectionEnum.SLEEP_MINUTES_AWAKE.getDescription(), MINUTES_AWAKE);
 
-			ResponseEntity<String> dataAfterWakeup = restTemplateGet.exchange(URI_AFTER_WAKE_UP + temp, HttpMethod.GET,fdata.getEntity(), String.class);
-			fdata.dataTypeInsert(dataAfterWakeup, CollectionEnum.SLEEP_MINUTES_AFTER_WAKE_UP.getDescription(),	MINUTES_AFTER_WAKE_UP);
+			ResponseEntity<String> dataAfterWakeup = restTemplateGet.exchange(URI_AFTER_WAKE_UP + temp, HttpMethod.GET,dataService.getEntity(), String.class);
+			dataService.dataTypeInsert(dataAfterWakeup, CollectionEnum.SLEEP_MINUTES_AFTER_WAKE_UP.getDescription(),	MINUTES_AFTER_WAKE_UP);
 
-			ResponseEntity<String> dataToFallAsleep = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + temp,HttpMethod.GET, fdata.getEntity(), String.class);
-			fdata.dataTypeInsert(dataToFallAsleep, CollectionEnum.SLEEP_MINUTES_TO_FALL_ASLEEP.getDescription(),MINUTES_TO_FALL_ASLEEP);
+			ResponseEntity<String> dataToFallAsleep = restTemplateGet.exchange(URI_TO_FALL_ASLEEP + temp,HttpMethod.GET, dataService.getEntity(), String.class);
+			dataService.dataTypeInsert(dataToFallAsleep, CollectionEnum.SLEEP_MINUTES_TO_FALL_ASLEEP.getDescription(),MINUTES_TO_FALL_ASLEEP);
 
-			ResponseEntity<String> dataEfficiency = restTemplateGet.exchange(URI_EFFICIENCY + temp, HttpMethod.GET,fdata.getEntity(), String.class);
-			fdata.dataTypeInsert(dataEfficiency, CollectionEnum.SLEEP_EFFICIENCY.getDescription(), EFFICIENCY);
+			ResponseEntity<String> dataEfficiency = restTemplateGet.exchange(URI_EFFICIENCY + temp, HttpMethod.GET,dataService.getEntity(), String.class);
+			dataService.dataTypeInsert(dataEfficiency, CollectionEnum.SLEEP_EFFICIENCY.getDescription(), EFFICIENCY);
 		
 		} catch (IOException e) {
 			System.err.println(e);

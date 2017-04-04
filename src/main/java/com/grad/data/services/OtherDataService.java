@@ -29,24 +29,29 @@ public class OtherDataService {
 	private static final String PROFILE_USER = "user";
 	private static final String FREQUENCE_CATEGORIES = "categories";
 
+	private DataSaveService dataService;
+	
 	@Autowired
 	private RestTemplate restTemplateGet;
 
 	@Autowired
-	private DataSaveService fdata;
+	public OtherDataService(DataSaveService dataService) {
+		
+		this.dataService = dataService;
+	}
 
 	public void profile() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, fdata.getEntity(),String.class);
-		fdata.dataTypeInsert(data, CollectionEnum.PROFILE.getDescription(), PROFILE_USER);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, dataService.getEntity(),String.class);
+		dataService.dataTypeInsert(data, CollectionEnum.PROFILE.getDescription(), PROFILE_USER);
 	}
 
 	public void lifetime() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, fdata.getEntity(),	String.class);
-		fdata.dataTypeInsert(data, CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, dataService.getEntity(),	String.class);
+		dataService.dataTypeInsert(data, CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
 	}
 
 	public void frequence() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, fdata.getEntity(),String.class);
-		fdata.dataTypeInsert(data, CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(), FREQUENCE_CATEGORIES);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, dataService.getEntity(),String.class);
+		dataService.dataTypeInsert(data, CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(), FREQUENCE_CATEGORIES);
 	}
 }
