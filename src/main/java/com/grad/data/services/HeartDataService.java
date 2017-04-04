@@ -56,7 +56,7 @@ public class HeartDataService {
 					}
 				}
 			} catch (JSONException | IOException e) {
-				System.err.println("something is wrong with the response. Please try again");
+				System.err.println(e);
 			}
 		});
 	}
@@ -69,14 +69,14 @@ public class HeartDataService {
 	}
 
 	private JSONArray getValues(JSONArray responseDataArray, int i) throws JSONException {
-		String valueField = responseDataArray.getJSONObject(i).getString("value");
-		JSONObject valueFieldObject = new JSONObject(valueField);
-		JSONArray heartRateZonesArray = valueFieldObject.getJSONArray("heartRateZones");
+		JSONObject valueField = responseDataArray.getJSONObject(i).getJSONObject("value");
+		//JSONObject valueFieldObject = new JSONObject(valueField);
+		JSONArray heartRateZonesArray = valueField.getJSONArray("heartRateZones");
 		return heartRateZonesArray;
 	}
 
-	private JSONArray response(String temp) throws JsonProcessingException, IOException, JSONException {
-		ResponseEntity<String> heartResponse = restTemplateGet.exchange(URI_HEART + temp, HttpMethod.GET,
+	private JSONArray response(String month) throws JsonProcessingException, IOException, JSONException {
+		ResponseEntity<String> heartResponse = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,
 				fdata.getEntity(), String.class);
 		fdata.dataTypeInsert(heartResponse, CollectionEnum.ACTIVITIES_HEART.getDescription(), HEART);
 

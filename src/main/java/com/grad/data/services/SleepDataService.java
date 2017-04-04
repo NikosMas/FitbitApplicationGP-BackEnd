@@ -71,8 +71,7 @@ public class SleepDataService {
 			fdata.dataTypeInsert(dataEfficiency, CollectionEnum.SLEEP_EFFICIENCY.getDescription(), EFFICIENCY);
 		
 		} catch (IOException e) {
-			System.err.println("something is wrong with the calls or the data insert. Please check it out");
-			e.printStackTrace();
+			System.err.println(e);
 		}
 	}
 }

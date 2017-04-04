@@ -8,13 +8,11 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 import javax.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grad.config.MailInfoProperties;
-import com.grad.heart.domain.FitbitHeartRate;
 import com.grad.heart.repository.FitbitHeartZoneRepo;
 
 /**
@@ -47,13 +45,15 @@ public class FitbitHeartCheckPeakService {
 		w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
 				+ '\n' + '\n');
 
-		Stream<FitbitHeartRate> peaks = repository.findByMinutesGreaterThanAndNameIs(40l, "Peak");
-		Object[] dates = peaks.map(FitbitHeartRate::getDate).toArray();
+		repository.findByMinutesGreaterThanAndNameIs(40l, "Peak").forEach(peak -> {
 
-		for (int temp = 0; temp < dates.length; temp++) {
-			peakDates.add((String) dates[temp]);
-			w.write(peakDates.get(temp) + '\n');
-		}
+			try {
+
+				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes() + " " + '\n');
+
+			} catch (IOException e) {}
+		});
+
 		w.close();
 		sendmail.email(peakDates);
 	}

@@ -1,6 +1,10 @@
-package com.grad.auth;
+package com.grad.auth.services;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +27,19 @@ public class AuthCodeRequestService {
 	
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
 
-	public void codeRequest() throws IOException, InterruptedException {
+	public void codeRequest() throws IOException, InterruptedException, URISyntaxException {
 
-		Runtime openBrowser = Runtime.getRuntime();
-		openBrowser.exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri());
+		Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec("xdg-open " + properties.getAuthCodeUri());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    
+		
+//		Runtime openBrowser = Runtime.getRuntime();
+//		openBrowser.exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri());
 
 		// TODO: change this with something better
 

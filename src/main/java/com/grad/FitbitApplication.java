@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.grad.auth.AuthCodeRequestService;
+import com.grad.auth.services.AuthCodeRequestService;
 import com.grad.collections.CreateCollectionsService;
 import com.grad.config.AuthorizationProperties;
 import com.grad.config.MailInfoProperties;

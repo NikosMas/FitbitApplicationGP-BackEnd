@@ -65,7 +65,7 @@ public class ActivitiesDataService {
 			fdata.dataTypeInsert(dataCalories, CollectionEnum.ACTIVITIES_CALORIES.getDescription(), CALORIES);
 			
 		} catch (IOException e) {
-			System.err.println("something is wrong with the calls or the data insert. Please check it out");
+			System.err.println(e);
 		}
 	}
 }

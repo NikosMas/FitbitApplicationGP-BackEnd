@@ -11,7 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.grad.auth.AccessTokenRequestService;
+import com.grad.auth.services.AccessTokenRequestService;
 import com.grad.collections.CollectionEnum;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
