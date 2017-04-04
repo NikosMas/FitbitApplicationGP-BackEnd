@@ -6,11 +6,10 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.grad.data.req.FitbitActivitiesData;
-import com.grad.data.req.FitbitDataSave;
-import com.grad.data.req.FitbitHeartData;
-import com.grad.data.req.FitbitOtherData;
-import com.grad.data.req.FitbitSleepData;
+import com.grad.data.services.ActivitiesDataService;
+import com.grad.data.services.HeartDataService;
+import com.grad.data.services.OtherDataService;
+import com.grad.data.services.SleepDataService;
 
 /**
  * data-request caller class.
@@ -23,23 +22,18 @@ import com.grad.data.req.FitbitSleepData;
 public class FitbitCalls {
 
 	@Autowired
-	private FitbitActivitiesData activitiesDataStore;
+	private ActivitiesDataService activitiesDataStore;
 
 	@Autowired
-	private FitbitHeartData heartDataStore;
+	private HeartDataService heartDataStore;
 
 	@Autowired
-	private FitbitOtherData otherDataStore;
+	private OtherDataService otherDataStore;
 
 	@Autowired
-	private FitbitSleepData sleepDataStore;
-
-	@Autowired
-	private FitbitDataSave dataStore;
+	private SleepDataService sleepDataStore;
 
 	public void dataCalls() throws JsonProcessingException, IOException, JSONException {
-
-		dataStore.collectionsCreate();
 
 		otherDataStore.profile();
 		otherDataStore.lifetime();

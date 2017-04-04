@@ -1,4 +1,4 @@
-package com.grad.data.req;
+package com.grad.data.services;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.grad.collections.CollectionEnum;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -25,14 +26,10 @@ import com.mongodb.util.JSON;
  */
 
 @Service
-public class FitbitHeartData {
+public class HeartDataService {
 
 	// URI for heart data. body part
 	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
-	// MongoDB collection name
-	private static final String ACTIVITIES_HEART = "activities_heart";
-	// MongoDB collection name focus on heart rate values
-	private static final String HEART_RATE = "heart_rate";
 	// filtered field from response
 	private static final String HEART = "activities-heart";
 	// URI for heart data. date part
@@ -45,13 +42,13 @@ public class FitbitHeartData {
 	private MongoTemplate mongoTemplate;
 
 	@Autowired
-	private FitbitDataSave fdata;
+	private DataSaveService fdata;
 
 	public void heart() throws JsonProcessingException, IOException, JSONException {
 
-		months.stream().forEach(temp -> {
+		months.stream().forEach(month -> {
 			try {
-				JSONArray responseDataArray = response(temp);
+				JSONArray responseDataArray = response(month);
 				for (int i = 0; i < responseDataArray.length(); i++) {
 					JSONArray heartRateZonesArray = getValues(responseDataArray, i);
 					for (int j = 0; j < heartRateZonesArray.length(); j++) {
@@ -68,7 +65,7 @@ public class FitbitHeartData {
 			throws JSONException {
 		DBObject heartRateZonesValue = (DBObject) JSON.parse(heartRateZonesArray.getJSONObject(j).toString());
 		heartRateZonesValue.put("date", responseDataArray.getJSONObject(i).getString("dateTime"));
-		mongoTemplate.insert(heartRateZonesValue, HEART_RATE);
+		mongoTemplate.insert(heartRateZonesValue, CollectionEnum.HEART_RATE.getDescription());
 	}
 
 	private JSONArray getValues(JSONArray responseDataArray, int i) throws JSONException {
@@ -81,10 +78,10 @@ public class FitbitHeartData {
 	private JSONArray response(String temp) throws JsonProcessingException, IOException, JSONException {
 		ResponseEntity<String> heartResponse = restTemplateGet.exchange(URI_HEART + temp, HttpMethod.GET,
 				fdata.getEntity(), String.class);
-		fdata.dataTypeInsert(heartResponse, ACTIVITIES_HEART, HEART);
+		fdata.dataTypeInsert(heartResponse, CollectionEnum.ACTIVITIES_HEART.getDescription(), HEART);
 
 		JSONObject responseBody = new JSONObject(heartResponse.getBody());
-		JSONArray responseDataArray = responseBody.getJSONArray("activities-heart");
+		JSONArray responseDataArray = responseBody.getJSONArray(HEART);
 		return responseDataArray;
 	}
 }

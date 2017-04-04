@@ -13,7 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.grad.auth.FitbitCodeRequest;
+import com.grad.auth.AuthCodeRequestService;
+import com.grad.collections.CreateCollectionsService;
 import com.grad.config.AuthorizationProperties;
 import com.grad.config.MailInfoProperties;
 import com.grad.config.MongoProperties;
@@ -33,7 +34,8 @@ public class FitbitApplication {
 			JSONException, MessagingException, InterruptedException {
 		ConfigurableApplicationContext appContext = SpringApplication.run(FitbitApplication.class, args);
 
-		appContext.getBean(FitbitCodeRequest.class).codeRequest();
+		appContext.getBean(CreateCollectionsService.class).collectionsCreate();
+		appContext.getBean(AuthCodeRequestService.class).codeRequest();
 		appContext.getBean(FitbitCalls.class).dataCalls();
 		appContext.getBean(FitbitHeartCheckPeakService.class).heartRateSelect();
 	}

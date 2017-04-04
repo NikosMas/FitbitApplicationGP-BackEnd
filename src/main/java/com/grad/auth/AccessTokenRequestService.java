@@ -30,7 +30,7 @@ import com.grad.config.AuthorizationProperties;
  */
 
 @Service
-public class FitbitToken {
+public class AccessTokenRequestService {
 
 	static Logger log = LoggerFactory.getLogger("Fitbit application");
 

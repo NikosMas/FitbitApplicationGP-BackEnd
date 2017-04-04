@@ -10,6 +10,7 @@ public class AuthorizationProperties {
 	private String redirectUri;
 	private String headerAuth;
 	private String headerAccept;
+	private String authCodeUri;
 	
 	public String getClientid() {
 		return clientid;
@@ -40,6 +41,12 @@ public class AuthorizationProperties {
 	}
 	public void setHeaderAccept(String headerAccept) {
 		this.headerAccept = headerAccept;
+	}
+	public String getAuthCodeUri() {
+		return authCodeUri;
+	}
+	public void setAuthCodeUri(String authCodeUri) {
+		this.authCodeUri = authCodeUri;
 	}
 	
 }

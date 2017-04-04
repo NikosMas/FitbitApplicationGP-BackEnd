@@ -1,4 +1,4 @@
-package com.grad.data.req;
+package com.grad.data.services;
 
 import java.io.IOException;
 
@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.grad.collections.CollectionEnum;
+
 /**
  * profile-lifetime-frequence-data-request class.
  * 
@@ -17,17 +19,13 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @Service
-public class FitbitOtherData {
+public class OtherDataService {
 
 	// URI for each data. body part
 	private static final String URI_PROFILE = "https://api.fitbit.com/1/user/-/profile.json";
 	private static final String URI_FREQUENCE = "https://api.fitbit.com/1/user/-/activities/frequence.json";
 	private static final String URI_LIFETIME = "https://api.fitbit.com/1/user/-/activities.json";
-	// MongoDB collection name
-	private static final String PROFILE = "profile";
-	private static final String ACTIVITIES_LIFETIME = "activities_lifetime";
-	private static final String ACTIVITIES_FREQUENCE = "activities_frequence";
-	//
+
 	private static final String PROFILE_USER = "user";
 	private static final String FREQUENCE_CATEGORIES = "categories";
 
@@ -35,23 +33,20 @@ public class FitbitOtherData {
 	private RestTemplate restTemplateGet;
 
 	@Autowired
-	private FitbitDataSave fdata;
+	private DataSaveService fdata;
 
 	public void profile() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, fdata.getEntity(),
-				String.class);
-		fdata.dataTypeInsert(data, PROFILE, PROFILE_USER);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, fdata.getEntity(),String.class);
+		fdata.dataTypeInsert(data, CollectionEnum.PROFILE.getDescription(), PROFILE_USER);
 	}
 
 	public void lifetime() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, fdata.getEntity(),
-				String.class);
-		fdata.dataTypeInsert(data, ACTIVITIES_LIFETIME, null);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, fdata.getEntity(),	String.class);
+		fdata.dataTypeInsert(data, CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
 	}
 
 	public void frequence() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, fdata.getEntity(),
-				String.class);
-		fdata.dataTypeInsert(data, ACTIVITIES_FREQUENCE, FREQUENCE_CATEGORIES);
+		ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, fdata.getEntity(),String.class);
+		fdata.dataTypeInsert(data, CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(), FREQUENCE_CATEGORIES);
 	}
 }

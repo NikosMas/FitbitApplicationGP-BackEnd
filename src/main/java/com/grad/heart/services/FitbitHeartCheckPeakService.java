@@ -44,7 +44,7 @@ public class FitbitHeartCheckPeakService {
 		Writer w = new BufferedWriter(peakswrite);
 		List<String> peakDates = new ArrayList<String>();
 
-		w.write("These are Heart-Rate data during December 2015 and December 2016 when the user's heart-rate was at its Peak!"
+		w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
 				+ '\n' + '\n');
 
 		Stream<FitbitHeartRate> peaks = repository.findByMinutesGreaterThanAndNameIs(40l, "Peak");
