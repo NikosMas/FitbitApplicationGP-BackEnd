@@ -29,7 +29,7 @@ import com.grad.heart.services.FitbitHeartCheckPeakService;
  */
 
 @RestController
-public class AuthorizationCodeController {
+public class FitbitAppController {
 
 	private FitbitHeartCheckPeakService heartService;
 	private FitbitDataStoreService callsService;
@@ -42,7 +42,7 @@ public class AuthorizationCodeController {
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 	@Autowired
-	public AuthorizationCodeController(FitbitHeartCheckPeakService heartService, FitbitDataStoreService callsService,
+	public FitbitAppController(FitbitHeartCheckPeakService heartService, FitbitDataStoreService callsService,
 			CreateCollectionsService collectionsService, AuthCodeRequestService codeService) {
 
 		this.callsService = callsService;
@@ -56,6 +56,7 @@ public class AuthorizationCodeController {
 
 		collectionsService.collectionsCreate();
 		codeService.codeRequest();
+		LOG.info("Collections created and login required done successfully");
 	}
 
 	@RequestMapping("/")
@@ -64,6 +65,7 @@ public class AuthorizationCodeController {
 
 		redisTemplate.opsForValue().set("AuthorizationCode", code);
 		callsService.dataCalls();
+		LOG.info("Data from Fitbit API successfully stored to database");
 		heartService.heartRateSelect();
 	}
 

@@ -38,19 +38,13 @@ public class FitbitHeartSendEmailService {
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 	
 	@Autowired
-	private MailInfoProperties properties;
+	private MailInfoProperties appProperties;
 
 	public void email(List<String> peakDates) throws MessagingException {
 		
-		final Date date = new Date();
-		final String username = properties.getUsername();
-		final String password = properties.getPassword();
-		final String sendto = properties.getSendTo();
-		final String sendfrom = properties.getSendFrom();
 		final String subject = "Fitbit app Info mails";
-		final String file = properties.getFileName();
 		final String text = "Goodmorning, " +'\n'+'\n'
-							+ "these dates declared in this file describe "
+							+ "These dates declared in this file describe "
 							+ "the Heart-Rate of the user which was at its Peak which means between 160 and 220 "
 							+ "for more than 35 minutes during these days per day." +'\n'
 							+ "Check it out please as soon as possible and take care." +'\n'+'\n'
@@ -64,26 +58,29 @@ public class FitbitHeartSendEmailService {
 
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
+				return new PasswordAuthentication(appProperties.getUsername(), appProperties.getPassword());
 			}
 		});
+		
 		Multipart multipart = new MimeMultipart();
 		BodyPart messageBodyPart = new MimeBodyPart();
 		Message message = new MimeMessage(session);
-		DataSource source = new FileDataSource(file);
+		DataSource source = new FileDataSource(appProperties.getFileName());
 
-		message.setFrom(new InternetAddress(sendfrom));
-		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(sendto));
+		message.setFrom(new InternetAddress(appProperties.getSendFrom()));
+		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(appProperties.getSendTo()));
 		message.setSubject(subject);
-		message.setSentDate(date);
+		message.setSentDate(new Date());
 		messageBodyPart.setText(text);
 		multipart.addBodyPart(messageBodyPart);
 
 		messageBodyPart = new MimeBodyPart();
 		messageBodyPart.setDataHandler(new DataHandler(source));
-		messageBodyPart.setFileName(file);
+		messageBodyPart.setFileName(appProperties.getFileName());
 		multipart.addBodyPart(messageBodyPart);
 		message.setContent(multipart);
+		
 		Transport.send(message);
+		LOG.info("Mail successfully sent to the user");
 	}
 }
