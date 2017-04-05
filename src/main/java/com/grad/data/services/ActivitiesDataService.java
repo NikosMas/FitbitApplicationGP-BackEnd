@@ -34,13 +34,12 @@ public class ActivitiesDataService {
 	private static final String FLOORS = "activities-floors";
 	private static final String STEPS = "activities-steps";
 	
+	private DataSaveService dataService;
 	// URI for heart data. date part
 	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json", "2016-03-01/2016-05-31.json", "2016-06-01/2016-08-31.json",
 			"2016-09-01/2016-11-30.json", "2016-12-01/2017-02-28.json");
 	@Autowired
 	private RestTemplate restTemplateGet;
-
-	private DataSaveService dataService;
 
 	@Autowired
 	public ActivitiesDataService(DataSaveService dataService) {
@@ -49,15 +48,15 @@ public class ActivitiesDataService {
 
 	public void activities() throws JsonProcessingException, IOException {
 
-		months.stream().forEach(temp -> dataRetriever(temp));
+		months.stream().forEach(month -> dataRetriever(month));
 	}
 
-	private void dataRetriever(String temp) {
+	private void dataRetriever(String month) {
 		try {
-			ResponseEntity<String> dataSteps = restTemplateGet.exchange(URI_STEPS + temp, HttpMethod.GET,dataService.getEntity(), String.class);
+			ResponseEntity<String> dataSteps = restTemplateGet.exchange(URI_STEPS + month, HttpMethod.GET,dataService.getEntity(), String.class);
 			dataService.dataTypeInsert(dataSteps, CollectionEnum.ACTIVITIES_STEPS.getDescription(), STEPS);
 			
-			ResponseEntity<String> dataFloors = restTemplateGet.exchange(URI_FLOORS + temp, HttpMethod.GET,dataService.getEntity(), String.class);
+			ResponseEntity<String> dataFloors = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET,dataService.getEntity(), String.class);
 			dataService.dataTypeInsert(dataFloors, CollectionEnum.ACTIVITIES_FLOORS.getDescription(), FLOORS);
 			
 			// ResponseEntity<String> dataDistance =
@@ -65,7 +64,7 @@ public class ActivitiesDataService {
 			// fdata.getEntity(), String.class);
 			// fdata.dataTypeInsert(dataDistance, Collections.ACTIVITIES_DISTANCE.getDescription(),
 			// DISTANCE);
-			ResponseEntity<String> dataCalories = restTemplateGet.exchange(URI_CALORIES + temp, HttpMethod.GET,dataService.getEntity(), String.class);
+			ResponseEntity<String> dataCalories = restTemplateGet.exchange(URI_CALORIES + month, HttpMethod.GET,dataService.getEntity(), String.class);
 			dataService.dataTypeInsert(dataCalories, CollectionEnum.ACTIVITIES_CALORIES.getDescription(), CALORIES);
 			
 		} catch (IOException e) {
