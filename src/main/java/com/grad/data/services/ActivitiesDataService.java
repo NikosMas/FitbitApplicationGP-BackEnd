@@ -27,18 +27,18 @@ public class ActivitiesDataService {
 	private static final String URI_FLOORS = "https://api.fitbit.com/1/user/-/activities/floors/date/";
 	private static final String URI_DISTANCE = "https://api.fitbit.com/1/user/-/activities/distance/date";
 	private static final String URI_CALORIES = "https://api.fitbit.com/1/user/-/activities/calories/date/";
+	
 	// response data filter name
 	private static final String CALORIES = "activities-calories";
 	private static final String DISTANCE = "activities-distance";
 	private static final String FLOORS = "activities-floors";
 	private static final String STEPS = "activities-steps";
+	
 	// URI for heart data. date part
-	private static final List<String> months = Arrays.asList("2016-03-01/2016-05-31.json", "2016-06-01/2016-08-31.json",
+	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json", "2016-03-01/2016-05-31.json", "2016-06-01/2016-08-31.json",
 			"2016-09-01/2016-11-30.json", "2016-12-01/2017-02-28.json");
 	@Autowired
 	private RestTemplate restTemplateGet;
-
-	// "2015-12-01/2016-02-29.json",
 
 	private DataSaveService dataService;
 

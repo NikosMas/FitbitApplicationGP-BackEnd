@@ -9,11 +9,15 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grad.config.MailInfoProperties;
 import com.grad.heart.repository.FitbitHeartZoneRepo;
+import com.grad.heart.services.mail.FitbitHeartSendEmailService;
 
 /**
  * find the dates with over than 35 minutes per day above the peak heart-zone
@@ -28,11 +32,16 @@ public class FitbitHeartCheckPeakService {
 	@Autowired
 	private MailInfoProperties properties;
 
-	@Autowired
-	private FitbitHeartZoneRepo repository;
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+	
+	private FitbitHeartZoneRepo heartRepository;
+	private FitbitHeartSendEmailService sendMailService;
 
-	@Autowired
-	private FitbitHeartSendEmailService sendmail;
+	public FitbitHeartCheckPeakService(FitbitHeartSendEmailService sendMailService, FitbitHeartZoneRepo heartRepository) {
+
+		this.heartRepository = heartRepository;
+		this.sendMailService = sendMailService;
+	}
 
 	public void heartRateSelect() throws IOException, MessagingException {
 
@@ -45,16 +54,19 @@ public class FitbitHeartCheckPeakService {
 		w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
 				+ '\n' + '\n');
 
-		repository.findByMinutesGreaterThanAndNameIs(40l, "Peak").forEach(peak -> {
+		heartRepository.findByMinutesGreaterThanAndNameIs(40l, "Peak").forEach(peak -> {
 
 			try {
 
-				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes() + " " + '\n');
+				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes() + " minutes"
+						+ '\n');
 
-			} catch (IOException e) {}
+			} catch (IOException e) {
+				System.err.println(e);
+			}
 		});
 
 		w.close();
-		sendmail.email(peakDates);
+		sendMailService.email(peakDates);
 	}
 }

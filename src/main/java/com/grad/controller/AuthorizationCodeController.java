@@ -66,4 +66,5 @@ public class AuthorizationCodeController {
 		callsService.dataCalls();
 		heartService.heartRateSelect();
 	}
+
 }

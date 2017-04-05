@@ -1,4 +1,4 @@
-package com.grad.heart.services;
+package com.grad.heart.services.mail;
 
 import java.util.Date;
 import java.util.List;
@@ -35,7 +35,7 @@ import com.grad.config.MailInfoProperties;
 @Service
 public class FitbitHeartSendEmailService {
 
-	static Logger log = LoggerFactory.getLogger("Fitbit application");
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 	
 	@Autowired
 	private MailInfoProperties properties;
@@ -85,7 +85,5 @@ public class FitbitHeartSendEmailService {
 		multipart.addBodyPart(messageBodyPart);
 		message.setContent(multipart);
 		Transport.send(message);
-
-		log.info("-> MAIL SUCCESSFULLY SENT <-");
 	}
 }
