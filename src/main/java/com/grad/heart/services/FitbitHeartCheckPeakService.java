@@ -30,11 +30,12 @@ public class FitbitHeartCheckPeakService {
 	private MailInfoProperties properties;
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-	
+
 	private FitbitHeartZoneRepo heartRepository;
 	private FitbitHeartSendEmailService sendMailService;
 
-	public FitbitHeartCheckPeakService(FitbitHeartSendEmailService sendMailService, FitbitHeartZoneRepo heartRepository) {
+	public FitbitHeartCheckPeakService(FitbitHeartSendEmailService sendMailService,
+			FitbitHeartZoneRepo heartRepository) {
 
 		this.heartRepository = heartRepository;
 		this.sendMailService = sendMailService;
@@ -55,8 +56,8 @@ public class FitbitHeartCheckPeakService {
 
 			try {
 
-				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes() + " minutes"
-						+ '\n');
+				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()
+						+ " minutes" + '\n');
 
 			} catch (IOException e) {
 				System.err.println(e);
