@@ -5,10 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.grad.heart.domain.FitbitHeartRate;
 
 /**
- * Heart-Rate repository
- * 
  * @author nikos_mas
- *
  */
 
 public interface FitbitHeartZoneRepo extends MongoRepository<FitbitHeartRate, String> {

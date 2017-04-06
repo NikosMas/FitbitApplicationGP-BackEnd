@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import com.grad.config.AuthorizationProperties;
 
 /**
- * set up the URI for authorization code and open it to the browser
- * 
  * @author nikos_mas
- *
  */
 
 @Service

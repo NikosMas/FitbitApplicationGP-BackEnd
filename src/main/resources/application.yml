@@ -1,8 +1,10 @@
+# mongo database required credentials
 mongoDB:
   dbname: fitbit
   host: localhost
   port: 27017
 
+# access token credentials and authorization code uri
 accesstoken:
   clientid: 227MLG
   grantType: authorization_code
@@ -11,6 +13,13 @@ accesstoken:
   headerAccept: application/json
   authCodeUri: https://www.fitbit.com/oauth2/authorize?redirect_uri=http://localhost:8080&response_type=code&client_id=227MLG&scope=activity%20nutrition%20heartrate%20profile%20settings%20sleep%20social%20weight&expires_in=2592000&prompt=login
 
+# refresh token credentials
+refreshtoken:
+  headerAuth: Basic MjI3TUxHOjlkNTUwNjIxYzBlZTQ0ODkzNGM4MDQxYzQ1NjA3MTcx
+  grantType: refresh_token
+  headerAccept: application/json
+
+# e-mail credentials 
 mailInfo:
   username: 
   password: 

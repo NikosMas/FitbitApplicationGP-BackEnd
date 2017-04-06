@@ -10,6 +10,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mongodb.MongoClient;
 
+/**
+ * @author nikos_mas
+ */
+
 @Configuration
 public class BeansConfiguration {
 

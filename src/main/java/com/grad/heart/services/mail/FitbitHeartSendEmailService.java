@@ -25,11 +25,7 @@ import org.springframework.stereotype.Service;
 import com.grad.config.MailInfoProperties;
 
 /**
- * set up mail texts subject and other properties and send it.
- * this mail includes heart data of heart-zone at peak
- * 
  * @author nikos_mas
- *
  */
 
 @Service

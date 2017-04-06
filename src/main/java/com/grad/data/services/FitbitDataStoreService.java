@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * data-request caller class.
- * 
  * @author nikos_mas
- *
  */
 
 @Service

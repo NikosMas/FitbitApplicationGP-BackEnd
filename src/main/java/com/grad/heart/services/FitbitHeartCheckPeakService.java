@@ -20,10 +20,7 @@ import com.grad.heart.repository.FitbitHeartZoneRepo;
 import com.grad.heart.services.mail.FitbitHeartSendEmailService;
 
 /**
- * find the dates with over than 35 minutes per day above the peak heart-zone
- * 
  * @author nikos_mas
- *
  */
 
 @Service

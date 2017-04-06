@@ -21,11 +21,7 @@ import com.grad.data.services.FitbitDataStoreService;
 import com.grad.heart.services.FitbitHeartCheckPeakService;
 
 /**
- * rest-controller waits the Fitbit to send the authorisation code required for
- * Token receiver
- * 
  * @author nikos_mas
- *
  */
 
 @RestController

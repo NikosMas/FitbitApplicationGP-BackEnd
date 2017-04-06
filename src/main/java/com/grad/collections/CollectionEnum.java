@@ -1,5 +1,9 @@
 package com.grad.collections;
 
+/**
+ * @author nikos_mas
+ */
+
 public enum CollectionEnum {
 
 	PROFILE("profile"),

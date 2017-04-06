@@ -19,10 +19,7 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
- * heart-data-request class.
- * 
  * @author nikos_mas
- *
  */
 
 @Service
@@ -75,7 +72,6 @@ public class HeartDataService {
 
 	private JSONArray getValues(JSONArray responseDataArray, int i) throws JSONException {
 		JSONObject valueField = responseDataArray.getJSONObject(i).getJSONObject("value");
-		//JSONObject valueFieldObject = new JSONObject(valueField);
 		JSONArray heartRateZonesArray = valueField.getJSONArray("heartRateZones");
 		return heartRateZonesArray;
 	}

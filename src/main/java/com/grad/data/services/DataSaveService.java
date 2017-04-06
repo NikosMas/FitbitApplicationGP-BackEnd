@@ -6,22 +6,21 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.grad.auth.services.AccessTokenRequestService;
+import com.grad.auth.services.RefreshTokenRequestService;
 import com.grad.collections.CollectionEnum;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
- * insert to MongoDB data received from Fitbit API
- * 
  * @author nikos_mas
- *
  */
 
 @Service
@@ -32,11 +31,19 @@ public class DataSaveService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
-	@Autowired
-	private AccessTokenRequestService fitbitToken;
 	
-	private static String access_token;
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+	
+	private AccessTokenRequestService fitbitTokenService;
+	private RefreshTokenRequestService refreshTokenService;
+	private static String accessToken;
+	
+	@Autowired
+	public DataSaveService(AccessTokenRequestService fitbitTokenService, RefreshTokenRequestService refreshTokenService) {
+		this.fitbitTokenService = fitbitTokenService;
+		this.refreshTokenService = refreshTokenService;
+	}
 
 	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName)
 			throws IOException, JsonProcessingException {
@@ -61,9 +68,14 @@ public class DataSaveService {
 	}
 
 	protected String getAccessToken() throws JsonProcessingException, IOException {
-		if (access_token == null) {
-			access_token = fitbitToken.token();
+		if (accessToken == null) {
+			
+			accessToken = fitbitTokenService.token();
+			
+		}else if (redisTemplate.opsForValue().get("RefreshToken") != null){
+			
+			accessToken = refreshTokenService.refreshToken();
 		}
-		return access_token;
+		return accessToken;
 	}
 }

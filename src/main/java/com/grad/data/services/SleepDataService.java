@@ -13,10 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.grad.collections.CollectionEnum;
 
 /**
- * sleep-data-request class.
- * 
  * @author nikos_mas
- *
  */
 
 @Service

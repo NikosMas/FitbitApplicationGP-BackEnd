@@ -2,6 +2,10 @@ package com.grad.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * @author nikos_mas
+ */
+
 @ConfigurationProperties("accesstoken")
 public class AuthorizationProperties {
 	

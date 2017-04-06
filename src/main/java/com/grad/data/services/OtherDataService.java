@@ -12,10 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import com.grad.collections.CollectionEnum;
 
 /**
- * profile-lifetime-frequence-data-request class.
- * 
  * @author nikos_mas
- *
  */
 
 @Service
