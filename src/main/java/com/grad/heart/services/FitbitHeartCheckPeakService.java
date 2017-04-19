@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import javax.mail.MessagingException;
 
 import org.slf4j.Logger;
@@ -47,7 +45,6 @@ public class FitbitHeartCheckPeakService {
 		FileOutputStream stream = new FileOutputStream(peaksfile);
 		OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
 		Writer w = new BufferedWriter(peakswrite);
-		List<String> peakDates = new ArrayList<String>();
 
 		w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
 				+ '\n' + '\n');
@@ -55,16 +52,14 @@ public class FitbitHeartCheckPeakService {
 		heartRepository.findByMinutesGreaterThanAndNameIs(40l, "Peak").forEach(peak -> {
 
 			try {
-
 				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()
 						+ " minutes" + '\n');
-
 			} catch (IOException e) {
-				System.err.println(e);
+				LOG.error(e.getMessage());
 			}
 		});
 
 		w.close();
-		sendMailService.email(peakDates);
+		sendMailService.email();
 	}
 }

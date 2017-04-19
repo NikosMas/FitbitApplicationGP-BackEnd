@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.codehaus.jackson.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,8 @@ public class SleepDataService {
 	// URI for heart data. date part
 	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json", "2016-03-01/2016-05-31.json",
 			"2016-06-01/2016-08-31.json", "2016-09-01/2016-11-30.json", "2016-12-01/2017-02-28.json");
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+	
 	@Autowired
 	private RestTemplate restTemplateGet;
 
@@ -72,7 +76,7 @@ public class SleepDataService {
 			dataService.dataTypeInsert(dataEfficiency, CollectionEnum.SLEEP_EFFICIENCY.getDescription(), EFFICIENCY);
 		
 		} catch (IOException e) {
-			System.err.println(e);
+			LOG.error(e.getMessage());
 		}
 	}
 }

@@ -16,28 +16,29 @@ import com.grad.config.AuthorizationProperties;
 
 @Service
 public class AuthCodeRequestService {
-	
+
 	@Autowired
 	private AuthorizationProperties properties;
-	
-	static Logger log = LoggerFactory.getLogger("Fitbit application");
+
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+	private static String OS = System.getProperty("os.name");
 
 	public void codeRequest() throws IOException, InterruptedException, URISyntaxException {
 
-		Runtime runtime = Runtime.getRuntime();
-        try {
-            runtime.exec("xdg-open " + properties.getAuthCodeUri());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    
+		if (OS.equalsIgnoreCase("windows")) {
+			
+			Runtime openBrowser = Runtime.getRuntime();
+			openBrowser.exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri());
 		
-//		Runtime openBrowser = Runtime.getRuntime();
-//		openBrowser.exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri());
-
-		// TODO: change this with something better
-
-		//Thread.sleep(30000);
+		} else if (OS.equalsIgnoreCase("linux")) {
+			
+			Runtime runtime = Runtime.getRuntime();
+			try {
+				runtime.exec("xdg-open " + properties.getAuthCodeUri());
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
+			
+		}
 	}
 }

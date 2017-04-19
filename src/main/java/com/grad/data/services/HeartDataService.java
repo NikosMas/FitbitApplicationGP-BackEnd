@@ -7,6 +7,8 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpMethod;
@@ -32,6 +34,7 @@ public class HeartDataService {
 	// URI for heart data. date part
 	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json", "2016-03-01/2016-05-31.json",
 			"2016-06-01/2016-08-31.json", "2016-09-01/2016-11-30.json", "2016-12-01/2017-02-28.json");
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 	
 	private DataSaveService dataService;
 	
@@ -58,7 +61,7 @@ public class HeartDataService {
 					}
 				}
 			} catch (JSONException | IOException e) {
-				System.err.println(e);
+				LOG.error(e.getMessage());
 			}
 		});
 	}

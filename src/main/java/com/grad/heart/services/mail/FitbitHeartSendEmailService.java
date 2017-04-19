@@ -1,7 +1,6 @@
 package com.grad.heart.services.mail;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -36,7 +35,7 @@ public class FitbitHeartSendEmailService {
 	@Autowired
 	private MailInfoProperties appProperties;
 
-	public void email(List<String> peakDates) throws MessagingException {
+	public void email() throws MessagingException {
 		
 		final String subject = "Fitbit app Info mails";
 		final String text = "Goodmorning, " +'\n'+'\n'
