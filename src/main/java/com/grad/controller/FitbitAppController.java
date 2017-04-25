@@ -47,13 +47,13 @@ public class FitbitAppController {
 		this.heartService = heartService;
 	}
 
-	@RequestMapping("/fitbitApplication")
-	public void authorization() throws IOException, InterruptedException, URISyntaxException {
-
-		collectionsService.collectionsCreate();
-		codeService.codeRequest();
-		LOG.info("Collections created and login required done successfully");
-	}
+//	@RequestMapping("/fitbitApplication")
+//	public void authorization() throws IOException, InterruptedException, URISyntaxException {
+//
+//		collectionsService.collectionsCreate();
+//		codeService.codeRequest();
+//		LOG.info("Collections created and login required done successfully");
+//	}
 
 	@RequestMapping("/")
 	public void authorization(@RequestParam(value = "code") String code)
