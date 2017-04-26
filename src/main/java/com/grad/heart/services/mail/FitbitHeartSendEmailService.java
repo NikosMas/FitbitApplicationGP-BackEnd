@@ -35,7 +35,7 @@ public class FitbitHeartSendEmailService {
 	@Autowired
 	private MailInfoProperties appProperties;
 
-	public void email() throws MessagingException {
+	public void email(String mail) throws MessagingException {
 		
 		final String subject = "Fitbit app Info mails";
 		final String text = "Goodmorning, " +'\n'+'\n'
@@ -63,7 +63,7 @@ public class FitbitHeartSendEmailService {
 		DataSource source = new FileDataSource(appProperties.getFileName());
 
 		message.setFrom(new InternetAddress(appProperties.getSendFrom()));
-		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(appProperties.getSendTo()));
+		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
 		message.setSubject(subject);
 		message.setSentDate(new Date());
 		messageBodyPart.setText(text);

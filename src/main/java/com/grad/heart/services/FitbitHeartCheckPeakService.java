@@ -39,17 +39,17 @@ public class FitbitHeartCheckPeakService {
 		this.sendMailService = sendMailService;
 	}
 
-	public void heartRateSelect() throws IOException, MessagingException {
+	public void heartRateSelect(String mail, String minutes) throws IOException, MessagingException {
 
 		File peaksfile = new File(properties.getFileName());
 		FileOutputStream stream = new FileOutputStream(peaksfile);
 		OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
 		Writer w = new BufferedWriter(peakswrite);
-
+		
 		w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
 				+ '\n' + '\n');
 
-		heartRepository.findByMinutesGreaterThanAndNameIs(40l, "Peak").forEach(peak -> {
+		heartRepository.findByMinutesGreaterThanAndNameIs(Long.valueOf(minutes), "Peak").forEach(peak -> {
 
 			try {
 				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()
@@ -60,6 +60,6 @@ public class FitbitHeartCheckPeakService {
 		});
 
 		w.close();
-		sendMailService.email();
+		sendMailService.email(mail);
 	}
 }

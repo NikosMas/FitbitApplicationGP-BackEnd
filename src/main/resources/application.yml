@@ -24,5 +24,4 @@ mailInfo:
   username: 
   password: 
   fileName: heartRatePeaks.txt
-  sendTo: 
-  sendFrom:  
+  sendFrom: 
