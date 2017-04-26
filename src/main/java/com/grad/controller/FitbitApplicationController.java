@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.grad.auth.services.AuthCodeRequestService;
 import com.grad.collections.CreateCollectionsService;
 import com.grad.data.services.ActivitiesDataService;
-import com.grad.data.services.FitbitDataStoreService;
 import com.grad.data.services.HeartDataService;
 import com.grad.data.services.OtherDataService;
 import com.grad.data.services.SleepDataService;
@@ -53,10 +52,9 @@ public class FitbitApplicationController {
 		private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 		@Autowired
-		public VaadinUI(FitbitHeartCheckPeakService heartService, FitbitDataStoreService callsService,
-				CreateCollectionsService collectionsService, AuthCodeRequestService codeService,
-				ActivitiesDataService activitiesDataStore, HeartDataService heartDataStore,
-				OtherDataService otherDataStore, SleepDataService sleepDataStore) {
+		public VaadinUI(FitbitHeartCheckPeakService heartService, CreateCollectionsService collectionsService,
+				AuthCodeRequestService codeService, ActivitiesDataService activitiesDataStore,
+				HeartDataService heartDataStore, OtherDataService otherDataStore, SleepDataService sleepDataStore) {
 
 			this.codeService = codeService;
 			this.collectionsService = collectionsService;
@@ -72,15 +70,16 @@ public class FitbitApplicationController {
 
 			VerticalLayout content = new VerticalLayout();
 			setContent(content);
-			
+
 			TextField heartRate = new TextField();
 			heartRate.setCaption("Put the minimum number of minutes that user's heart rate was at its peak");
 			heartRate.setWidth("250");
 			heartRate.setPlaceholder("minutes");
 			heartRate.setIcon(VaadinIcons.CLOCK);
-			
+
 			TextField mail = new TextField();
-			mail.setCaption("Put the mail address that you want the application send information about high heart rate values");
+			mail.setCaption(
+					"Put the mail address that you want the application send information about high heart rate values");
 			mail.setWidth("250");
 			mail.setPlaceholder("e-mail");
 			mail.setIcon(VaadinIcons.ENVELOPE_O);
