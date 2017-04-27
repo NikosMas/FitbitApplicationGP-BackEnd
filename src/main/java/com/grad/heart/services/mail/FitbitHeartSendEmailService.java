@@ -35,13 +35,13 @@ public class FitbitHeartSendEmailService {
 	@Autowired
 	private MailInfoProperties appProperties;
 
-	public void email(String mail) throws MessagingException {
+	public void email(String mail, String minutes) throws MessagingException {
 		
 		final String subject = "Fitbit app Info mails";
 		final String text = "Goodmorning, " +'\n'+'\n'
 							+ "These dates declared in this file describe "
 							+ "the Heart-Rate of the user which was at its Peak which means between 160 and 220 "
-							+ "for more than 35 minutes during these days per day." +'\n'
+							+ "for more than "+minutes+" minutes during these days per day." +'\n'
 							+ "Check it out please as soon as possible and take care." +'\n'+'\n'
 							+ "Hope we've helped. Keep on";
 

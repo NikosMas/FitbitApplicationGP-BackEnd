@@ -60,6 +60,6 @@ public class FitbitHeartCheckPeakService {
 		});
 
 		w.close();
-		sendMailService.email(mail);
+		sendMailService.email(mail, minutes);
 	}
 }

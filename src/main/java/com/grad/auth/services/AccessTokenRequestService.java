@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,15 +36,12 @@ public class AccessTokenRequestService {
 	private AuthorizationProperties properties;
 
 	@Autowired
-	private ObjectMapper mapperToken;
-
-	@Autowired
 	private RestTemplate restTemplateToken;
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 
-	public String token() throws JsonProcessingException, IOException {
+	public ResponseEntity<String> token() throws JsonProcessingException, IOException {
 
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
 		parameters.add("clientId", properties.getClientid());
@@ -59,17 +57,7 @@ public class AccessTokenRequestService {
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,
 				headers);
-		ResponseEntity<String> response = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
 
-		JsonNode jsonResponse = mapperToken.readTree(response.getBody()).path("access_token");
-		String accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
-
-		JsonNode jsonResponseRefreshToken = mapperToken.readTree(response.getBody()).path("refresh_token");
-		String refreshToken = jsonResponseRefreshToken.toString().substring(1,
-				jsonResponseRefreshToken.toString().length() - 1);
-
-		redisTemplate.opsForValue().set("RefreshToken", refreshToken);
-
-		return accessToken;
+		return restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
 	}
 }

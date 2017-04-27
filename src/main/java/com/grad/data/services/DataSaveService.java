@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,27 +28,28 @@ import com.mongodb.util.JSON;
 public class DataSaveService {
 
 	@Autowired
-	private ObjectMapper mapperGet;
+	private ObjectMapper mapper;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
+
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
-	
+
 	private AccessTokenRequestService fitbitTokenService;
 	private RefreshTokenRequestService refreshTokenService;
 	private static String accessToken;
-	
+
 	@Autowired
-	public DataSaveService(AccessTokenRequestService fitbitTokenService, RefreshTokenRequestService refreshTokenService) {
+	public DataSaveService(AccessTokenRequestService fitbitTokenService,
+			RefreshTokenRequestService refreshTokenService) {
 		this.fitbitTokenService = fitbitTokenService;
 		this.refreshTokenService = refreshTokenService;
 	}
 
 	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName)
 			throws IOException, JsonProcessingException {
-		JsonNode responseDataBody = mapperGet.readTree(responseData.getBody());
+		JsonNode responseDataBody = mapper.readTree(responseData.getBody());
 		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
 
 		if (collection.equals(CollectionEnum.ACTIVITIES_LIFETIME.getDescription())) {
@@ -68,14 +70,24 @@ public class DataSaveService {
 	}
 
 	protected String getAccessToken() throws JsonProcessingException, IOException {
-		if (accessToken == null) {
-			
-			accessToken = fitbitTokenService.token();
-			
-		}else if (redisTemplate.opsForValue().get("RefreshToken") != null){
-			
-			accessToken = refreshTokenService.refreshToken();
+
+		ResponseEntity<String> response = fitbitTokenService.token();
+		if (response.getStatusCode() == HttpStatus.ACCEPTED) {
+
+			JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
+			accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
+
+			JsonNode jsonResponseRefreshToken = mapper.readTree(response.getBody()).path("refresh_token");
+			String refreshToken = jsonResponseRefreshToken.toString().substring(1,
+					jsonResponseRefreshToken.toString().length() - 1);
+
+			redisTemplate.opsForValue().set("RefreshToken", refreshToken);
+
+			return accessToken;
 		}
+		
+		accessToken = refreshTokenService.refreshToken();
+		
 		return accessToken;
 	}
 }
