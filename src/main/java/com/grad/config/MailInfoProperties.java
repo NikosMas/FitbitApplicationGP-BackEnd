@@ -38,5 +38,10 @@ public class MailInfoProperties {
 	public void setSendFrom(String sendFrom) {
 		this.sendFrom = sendFrom;
 	}
+	@Override
+	public String toString() {
+		return "MailInfoProperties [fileName=" + fileName + ", username=" + username + ", password=" + password
+				+ ", sendFrom=" + sendFrom + "]";
+	}
 	
 }

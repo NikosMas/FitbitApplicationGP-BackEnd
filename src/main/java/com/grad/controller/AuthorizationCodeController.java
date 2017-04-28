@@ -24,7 +24,6 @@ public class AuthorizationCodeController {
 	public void authorization(@RequestParam(value = "code") String code){
 
 		redisTemplate.opsForValue().set("AuthorizationCode", code);
-		LOG.info("Data from Fitbit API successfully stored to database");
 	}
 
 }

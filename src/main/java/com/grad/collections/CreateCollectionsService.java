@@ -21,17 +21,21 @@ public class CreateCollectionsService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public void collectionsCreate() {
+	public boolean collectionsCreate() {
+		
+		if (mongoTemplate.getDb() != null) {
+			collections.stream().forEach(collectionName -> {
 
-		collections.stream().forEach(collectionName -> {
-
-			if (mongoTemplate.collectionExists(collectionName.getDescription())) {
-				mongoTemplate.dropCollection(collectionName.getDescription());
-				mongoTemplate.createCollection(collectionName.getDescription());
-			} else {
-				mongoTemplate.createCollection(collectionName.getDescription());
-			}
-		});
+				if (mongoTemplate.collectionExists(collectionName.getDescription())) {
+					mongoTemplate.dropCollection(collectionName.getDescription());
+					mongoTemplate.createCollection(collectionName.getDescription());
+				} else {
+					mongoTemplate.createCollection(collectionName.getDescription());
+				}
+			});
+			return true;
+		}
+		return false;
 	}
 
 }

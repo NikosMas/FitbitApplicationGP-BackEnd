@@ -6,10 +6,8 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +23,7 @@ import com.mongodb.util.JSON;
  */
 
 @Service
-public class DataSaveService {
+public class SaveOperationsService {
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -34,18 +32,13 @@ public class DataSaveService {
 	private MongoTemplate mongoTemplate;
 
 	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
-
 	private AccessTokenRequestService fitbitTokenService;
+	
+	@Autowired
 	private RefreshTokenRequestService refreshTokenService;
+	
 	private static String accessToken;
 
-	@Autowired
-	public DataSaveService(AccessTokenRequestService fitbitTokenService,
-			RefreshTokenRequestService refreshTokenService) {
-		this.fitbitTokenService = fitbitTokenService;
-		this.refreshTokenService = refreshTokenService;
-	}
 
 	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName)
 			throws IOException, JsonProcessingException {
@@ -63,31 +56,23 @@ public class DataSaveService {
 		}
 	}
 
-	public HttpEntity<String> getEntity() throws JsonProcessingException, IOException {
+	public HttpEntity<String> getEntity(boolean unauthorized) throws JsonProcessingException, IOException {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + getAccessToken());
+		
+		if (unauthorized == false){
+			headers.set("Authorization", "Bearer " + getAccessToken());
+		}else if (unauthorized == true){
+			headers.set("Authorization", "Bearer " + refreshTokenService.refreshToken());
+		}
+		
 		return new HttpEntity<String>(headers);
 	}
 
 	protected String getAccessToken() throws JsonProcessingException, IOException {
 
-		ResponseEntity<String> response = fitbitTokenService.token();
-		if (response.getStatusCode() == HttpStatus.ACCEPTED) {
+		if (accessToken == null)
+			accessToken = fitbitTokenService.token();
 
-			JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
-			accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
-
-			JsonNode jsonResponseRefreshToken = mapper.readTree(response.getBody()).path("refresh_token");
-			String refreshToken = jsonResponseRefreshToken.toString().substring(1,
-					jsonResponseRefreshToken.toString().length() - 1);
-
-			redisTemplate.opsForValue().set("RefreshToken", refreshToken);
-
-			return accessToken;
-		}
-		
-		accessToken = refreshTokenService.refreshToken();
-		
 		return accessToken;
 	}
 }

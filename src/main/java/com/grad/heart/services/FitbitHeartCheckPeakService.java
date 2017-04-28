@@ -24,42 +24,46 @@ import com.grad.heart.services.mail.FitbitHeartSendEmailService;
 @Service
 public class FitbitHeartCheckPeakService {
 
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+
 	@Autowired
 	private MailInfoProperties properties;
 
-	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-
+	@Autowired
 	private FitbitHeartZoneRepo heartRepository;
+
+	@Autowired
 	private FitbitHeartSendEmailService sendMailService;
 
-	public FitbitHeartCheckPeakService(FitbitHeartSendEmailService sendMailService,
-			FitbitHeartZoneRepo heartRepository) {
+	public void heartRateSelect(String mail, String minutes) {
+		try {
+			File peaksfile = new File(properties.getFileName());
+			FileOutputStream stream;
 
-		this.heartRepository = heartRepository;
-		this.sendMailService = sendMailService;
-	}
+			stream = new FileOutputStream(peaksfile);
 
-	public void heartRateSelect(String mail, String minutes) throws IOException, MessagingException {
+			OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
+			Writer w = new BufferedWriter(peakswrite);
 
-		File peaksfile = new File(properties.getFileName());
-		FileOutputStream stream = new FileOutputStream(peaksfile);
-		OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
-		Writer w = new BufferedWriter(peakswrite);
-		
-		w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
-				+ '\n' + '\n');
+			w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
+					+ '\n' + '\n');
 
-		heartRepository.findByMinutesGreaterThanAndNameIs(Long.valueOf(minutes), "Peak").forEach(peak -> {
+			heartRepository.findByMinutesGreaterThanAndNameIs(Long.valueOf(minutes), "Peak").forEach(peak -> {
 
-			try {
-				w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()
-						+ " minutes" + '\n');
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
-			}
-		});
+				try {
+					w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()
+							+ " minutes" + '\n');
+				} catch (IOException e) {
+					LOG.error(e.toString());
+				}
 
-		w.close();
-		sendMailService.email(mail, minutes);
+			});
+
+			w.close();
+			sendMailService.email(mail, minutes);
+
+		} catch (MessagingException | IOException e) {
+			LOG.error(e.toString());
+		}
 	}
 }

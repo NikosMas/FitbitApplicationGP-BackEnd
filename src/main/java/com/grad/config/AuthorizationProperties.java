@@ -52,5 +52,11 @@ public class AuthorizationProperties {
 	public void setAuthCodeUri(String authCodeUri) {
 		this.authCodeUri = authCodeUri;
 	}
+	@Override
+	public String toString() {
+		return "AuthorizationProperties [clientid=" + clientid + ", grantType=" + grantType + ", redirectUri="
+				+ redirectUri + ", headerAuth=" + headerAuth + ", headerAccept=" + headerAccept + ", authCodeUri="
+				+ authCodeUri + "]";
+	}
 	
 }

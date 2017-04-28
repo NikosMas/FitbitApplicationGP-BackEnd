@@ -76,6 +76,5 @@ public class FitbitHeartSendEmailService {
 		message.setContent(multipart);
 		
 		Transport.send(message);
-		LOG.info("Mail successfully sent to the user");
 	}
 }

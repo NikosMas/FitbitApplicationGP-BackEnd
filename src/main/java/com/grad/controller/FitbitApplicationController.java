@@ -1,11 +1,6 @@
 package com.grad.controller;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.mail.MessagingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,27 +37,27 @@ public class FitbitApplicationController {
 	public static class VaadinUI extends UI {
 
 		private static final long serialVersionUID = 1L;
-		private FitbitHeartCheckPeakService heartService;
+		private FitbitHeartCheckPeakService heartPeakService;
 		private CreateCollectionsService collectionsService;
 		private AuthCodeRequestService codeService;
-		private ActivitiesDataService activitiesDataStore;
-		private HeartDataService heartDataStore;
-		private OtherDataService otherDataStore;
-		private SleepDataService sleepDataStore;
+		private ActivitiesDataService activitiesService;
+		private HeartDataService heartService;
+		private OtherDataService otherService;
+		private SleepDataService sleepService;
 		private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 		@Autowired
-		public VaadinUI(FitbitHeartCheckPeakService heartService, CreateCollectionsService collectionsService,
-				AuthCodeRequestService codeService, ActivitiesDataService activitiesDataStore,
-				HeartDataService heartDataStore, OtherDataService otherDataStore, SleepDataService sleepDataStore) {
+		public VaadinUI(FitbitHeartCheckPeakService heartPeakService, CreateCollectionsService collectionsService,
+				AuthCodeRequestService codeService, ActivitiesDataService activitiesService,
+				HeartDataService heartService, OtherDataService otherService, SleepDataService sleepService) {
 
 			this.codeService = codeService;
 			this.collectionsService = collectionsService;
+			this.heartPeakService = heartPeakService;
+			this.activitiesService = activitiesService;
 			this.heartService = heartService;
-			this.activitiesDataStore = activitiesDataStore;
-			this.heartDataStore = heartDataStore;
-			this.otherDataStore = otherDataStore;
-			this.sleepDataStore = sleepDataStore;
+			this.otherService = otherService;
+			this.sleepService = sleepService;
 		}
 
 		@Override
@@ -97,11 +92,15 @@ public class FitbitApplicationController {
 			collections.setWidth("150");
 			collections.addClickListener(click -> {
 				collections.setVisible(false);
-				collectionsService.collectionsCreate();
-				Notification.show("Collections created successfully!");
-				float current = bar.getValue();
-				if (current < 1.0f)
-					bar.setValue(current + 0.125f);
+				if (collectionsService.collectionsCreate()) {
+					float current = bar.getValue();
+					if (current < 1.0f)
+						bar.setValue(current + 0.125f);
+					LOG.info("Collections created successfully into Mongo database");
+					Notification.show("Collections created successfully!");
+				} else {
+					Notification.show("Something went wrong! Check if \"fitbit\" database exists", Type.ERROR_MESSAGE);
+				}
 			});
 
 			Button authorizationCode = new Button();
@@ -109,18 +108,15 @@ public class FitbitApplicationController {
 			authorizationCode.setCaption("Start");
 			authorizationCode.setWidth("150");
 			authorizationCode.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.1 && current < 1.0f) {
-						authorizationCode.setVisible(false);
-						codeService.codeRequest();
-						bar.setValue(current + 0.125f);
-						Notification.show("Authorization code saved into Redis database and it's ready for use!");
-					} else {
-						Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-					}
-				} catch (IOException | InterruptedException | URISyntaxException e) {
-					LOG.error(e.toString());
+				float current = bar.getValue();
+				if (current > 0.1 && current < 1.0f) {
+					authorizationCode.setVisible(false);
+					codeService.codeRequest();
+					bar.setValue(current + 0.125f);
+					LOG.info("Authorization code saved into Redis database and it's ready for use");
+					Notification.show("Authorization code saved into Redis database and it's ready for use!");
+				} else {
+					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
 			});
 
@@ -129,19 +125,18 @@ public class FitbitApplicationController {
 			heart.setCaption("Start");
 			heart.setWidth("150");
 			heart.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.2f && current < 1.0f) {
-						heart.setVisible(false);
-						heartDataStore.heart();
+				float current = bar.getValue();
+				if (current > 0.2f && current < 1.0f) {
+					heart.setVisible(false);
+					if (heartService.filterHeartRateValues()) {
+						bar.setValue(current + 0.125f);
 						LOG.info("Heart rate data recieved and stored to database");
 						Notification.show("User data stored successfully!");
-						bar.setValue(current + 0.125f);
 					} else {
-						Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
+						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
 					}
-				} catch (IOException e) {
-					LOG.error(e.toString());
+				} else {
+					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
 			});
 
@@ -150,19 +145,18 @@ public class FitbitApplicationController {
 			sleep.setCaption("Start");
 			sleep.setWidth("150");
 			sleep.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.2f && current < 1.0f) {
-						sleep.setVisible(false);
-						sleepDataStore.sleep();
+				float current = bar.getValue();
+				if (current > 0.2f && current < 1.0f) {
+					sleep.setVisible(false);
+					if (sleepService.sleep()) {
+						bar.setValue(current + 0.125f);
 						LOG.info("Sleep data recieved and stored to database");
 						Notification.show("User data stored successfully!");
-						bar.setValue(current + 0.125f);
 					} else {
-						Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
+						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
 					}
-				} catch (IOException e) {
-					LOG.error(e.toString());
+				} else {
+					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
 			});
 
@@ -171,19 +165,18 @@ public class FitbitApplicationController {
 			activities.setCaption("Start");
 			activities.setWidth("150");
 			activities.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.2f && current < 1.0f) {
-						activities.setVisible(false);
-						activitiesDataStore.activities();
+				float current = bar.getValue();
+				if (current > 0.2f && current < 1.0f) {
+					activities.setVisible(false);
+					if (activitiesService.activities()) {
+						bar.setValue(current + 0.125f);
 						LOG.info("Activities data recieved and stored to database");
 						Notification.show("User data stored successfully!");
-						bar.setValue(current + 0.125f);
 					} else {
-						Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
+						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
 					}
-				} catch (IOException e) {
-					LOG.error(e.toString());
+				} else {
+					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
 			});
 
@@ -192,20 +185,18 @@ public class FitbitApplicationController {
 			other.setCaption("Start");
 			other.setWidth("150");
 			other.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.2f && current < 1.0f) {
-						other.setVisible(false);
-						otherDataStore.lifetime();
-						otherDataStore.frequence();
+				float current = bar.getValue();
+				if (current > 0.2f && current < 1.0f) {
+					other.setVisible(false);
+					if (otherService.lifetime() && otherService.frequence()) {
+						bar.setValue(current + 0.125f);
 						LOG.info("Lifetime and frequence data recieved and stored to database");
 						Notification.show("User data stored successfully!");
-						bar.setValue(current + 0.125f);
 					} else {
-						Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
+						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
 					}
-				} catch (IOException e) {
-					LOG.error(e.toString());
+				} else {
+					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
 			});
 
@@ -214,19 +205,18 @@ public class FitbitApplicationController {
 			profile.setCaption("Start");
 			profile.setWidth("150");
 			profile.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.2f && current < 1.0f) {
-						profile.setVisible(false);
-						otherDataStore.profile();
+				float current = bar.getValue();
+				if (current > 0.2f && current < 1.0f) {
+					profile.setVisible(false);
+					if (otherService.profile()) {
+						bar.setValue(current + 0.125f);
 						LOG.info("Profile data recieved and stored to database");
 						Notification.show("User data stored successfully!");
-						bar.setValue(current + 0.125f);
 					} else {
-						Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
+						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
 					}
-				} catch (IOException e) {
-					LOG.error(e.toString());
+				} else {
+					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
 			});
 
@@ -235,24 +225,21 @@ public class FitbitApplicationController {
 			heartRateMail.setCaption("Submit");
 			heartRateMail.setWidth("150");
 			heartRateMail.addClickListener(click -> {
-				try {
-					float current = bar.getValue();
-					if (current > 0.8f && current < 1.0f) {
-						if (!mail.getValue().isEmpty() && !heartRate.getValue().isEmpty()
-								&& mail.getValue().contains("@")) {
-							heartRateMail.setVisible(false);
-							heartService.heartRateSelect(mail.getValue(), heartRate.getValue());
-							Notification.show("Mail successfully sent to user with heart rate information");
-							bar.setValue(current + 0.125f);
-						} else {
-							Notification.show("Complete the required fields with a valid e-mail & number of minutes",
-									Type.ERROR_MESSAGE);
-						}
+				float current = bar.getValue();
+				if (current > 0.8f && current < 1.0f) {
+					if (!mail.getValue().isEmpty() && !heartRate.getValue().isEmpty()
+							&& mail.getValue().contains("@")) {
+						heartRateMail.setVisible(false);
+						heartPeakService.heartRateSelect(mail.getValue(), heartRate.getValue());
+						bar.setValue(current + 0.125f);
+						LOG.info("Mail successfully sent to user with heart rate information");
+						Notification.show("Mail successfully sent to user with heart rate information!");
 					} else {
-						Notification.show("Complete the required steps before send the e-mail", Type.ERROR_MESSAGE);
+						Notification.show("Complete the required fields with a valid e-mail & number of minutes",
+								Type.ERROR_MESSAGE);
 					}
-				} catch (IOException | MessagingException e) {
-					LOG.error(e.toString());
+				} else {
+					Notification.show("Complete the required steps before send the e-mail", Type.ERROR_MESSAGE);
 				}
 			});
 

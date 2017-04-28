@@ -2,11 +2,13 @@ package com.grad.data.services;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.grad.collections.CollectionEnum;
@@ -26,29 +28,82 @@ public class OtherDataService {
 	private static final String PROFILE_USER = "user";
 	private static final String FREQUENCE_CATEGORIES = "categories";
 
-	private DataSaveService dataService;
-	
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+
+	@Autowired
+	private SaveOperationsService dataService;
+
 	@Autowired
 	private RestTemplate restTemplateGet;
 
-	@Autowired
-	public OtherDataService(DataSaveService dataService) {
-		
-		this.dataService = dataService;
+	public boolean profile() {
+		try {
+			ResponseEntity<String> profile;
+			profile = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, dataService.getEntity(false), String.class);
+
+			if (profile.getStatusCodeValue() == 401) {
+				ResponseEntity<String> profileWithRefreshToken = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET,
+						dataService.getEntity(true), String.class);
+				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.getDescription(),
+						PROFILE_USER);
+				return true;
+			} else if (profile.getStatusCodeValue() == 200) {
+				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.getDescription(), PROFILE_USER);
+				return true;
+			}
+			return false;
+
+		} catch (RestClientException | IOException e) {
+			LOG.error(e.toString());
+			return false;
+		}
 	}
 
-	public void profile() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, dataService.getEntity(),String.class);
-		dataService.dataTypeInsert(data, CollectionEnum.PROFILE.getDescription(), PROFILE_USER);
+	public boolean lifetime() {
+		try {
+			ResponseEntity<String> lifetime;
+			lifetime = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, dataService.getEntity(false),
+					String.class);
+			if (lifetime.getStatusCodeValue() == 401) {
+				ResponseEntity<String> lifetimeWithRefreshToken = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET,
+						dataService.getEntity(true), String.class);
+				dataService.dataTypeInsert(lifetimeWithRefreshToken,
+						CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
+				return true;
+			} else if (lifetime.getStatusCodeValue() == 200) {
+				dataService.dataTypeInsert(lifetime, CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
+				return true;
+			}
+			return false;
+
+		} catch (RestClientException | IOException e) {
+			LOG.error(e.toString());
+			return false;
+		}
 	}
 
-	public void lifetime() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, dataService.getEntity(),	String.class);
-		dataService.dataTypeInsert(data, CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
-	}
+	public boolean frequence() {
+		try {
+			ResponseEntity<String> frequence;
+			frequence = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, dataService.getEntity(false),
+					String.class);
 
-	public void frequence() throws JsonProcessingException, IOException {
-		ResponseEntity<String> data = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, dataService.getEntity(),String.class);
-		dataService.dataTypeInsert(data, CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(), FREQUENCE_CATEGORIES);
+			if (frequence.getStatusCodeValue() == 401) {
+				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(URI_FREQUENCE,
+						HttpMethod.GET, dataService.getEntity(true), String.class);
+				dataService.dataTypeInsert(frequenceWithRefreshToken,
+						CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(), FREQUENCE_CATEGORIES);
+				return true;
+			} else if (frequence.getStatusCodeValue() == 200) {
+				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(),
+						FREQUENCE_CATEGORIES);
+				return true;
+			}
+			return false;
+
+		} catch (RestClientException | IOException e) {
+			LOG.error(e.toString());
+			return false;
+		}
 	}
 }

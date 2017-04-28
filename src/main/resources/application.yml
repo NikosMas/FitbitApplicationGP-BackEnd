@@ -21,7 +21,7 @@ refreshtoken:
 
 # e-mail credentials 
 mailInfo:
-  username: 
-  password: 
+  username: nickma72@gmail.com
+  password: mastronikos
   fileName: heartRatePeaks.txt
-  sendFrom: 
+  sendFrom: nickma72@gmail.com

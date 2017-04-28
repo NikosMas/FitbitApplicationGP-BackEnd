@@ -31,4 +31,9 @@ public class RefreshTokenProperties {
 	public void setHeaderAccept(String headerAccept) {
 		this.headerAccept = headerAccept;
 	}
+	@Override
+	public String toString() {
+		return "RefreshTokenProperties [headerAuth=" + headerAuth + ", grantType=" + grantType + ", headerAccept="
+				+ headerAccept + "]";
+	}
 }
