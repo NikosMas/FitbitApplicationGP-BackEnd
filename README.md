@@ -1,4 +1,4 @@
-# Fitbit_Data_Project
+# Fitbit Desktop Application
 Fitbit App for retrieving User Data from the Fitbit API and sending e-mail for unexpected high Heart-rate
 
 
