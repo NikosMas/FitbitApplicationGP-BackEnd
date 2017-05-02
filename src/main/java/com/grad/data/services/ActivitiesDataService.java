@@ -66,6 +66,8 @@ public class ActivitiesDataService {
 					service.getEntity(false), String.class);
 			ResponseEntity<String> calories = restTemplateGet.exchange(URI_CALORIES + month, HttpMethod.GET,
 					service.getEntity(false), String.class);
+			ResponseEntity<String> distance = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET,
+					service.getEntity(false), String.class);
 
 			if (steps.getStatusCodeValue() == 401) {
 				ResponseEntity<String> stepsWithRefreshToken = restTemplateGet.exchange(URI_STEPS + month,
@@ -92,12 +94,18 @@ public class ActivitiesDataService {
 				return false;
 			}
 
-			// ResponseEntity<String> dataDistance =
-			// restTemplateGet.exchange(URI_DISTANCE + temp, HttpMethod.GET,
-			// fdata.getEntity(), String.class);
-			// fdata.dataTypeInsert(dataDistance,
-			// Collections.ACTIVITIES_DISTANCE.getDescription(),
-			// DISTANCE);
+			if (distance.getStatusCodeValue() == 401) {
+				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(URI_DISTANCE + month,
+						HttpMethod.GET, service.getEntity(false), String.class);
+				service.dataTypeInsert(distanceWithRefreshToken, CollectionEnum.ACTIVITIES_DISTANCE.getDescription(),
+						DISTANCE);
+				success = true;
+			} else if (distance.getStatusCodeValue() == 200) {
+				service.dataTypeInsert(distance, CollectionEnum.ACTIVITIES_DISTANCE.getDescription(), DISTANCE);
+				success = true;
+			} else {
+				return false;
+			}
 
 			if (calories.getStatusCodeValue() == 401) {
 				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(URI_CALORIES + month,

@@ -2,6 +2,7 @@ package com.grad.auth.services;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -46,6 +47,10 @@ public class RefreshTokenRequestService {
 
 	public String refreshToken() throws JsonProcessingException, IOException {
 
+		String headerAuth = Base64.getEncoder().encodeToString(
+				(redisTemplate.opsForValue().get("Client-id") + ":" + redisTemplate.opsForValue().get("Client-secret"))
+						.getBytes("utf-8"));
+		
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
 		parameters.add("grant_type", refreshProperties.getGrantType());
 		parameters.add("refresh_token", redisTemplate.opsForValue().get("RefreshToken"));
@@ -53,7 +58,7 @@ public class RefreshTokenRequestService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.set("Authorization", refreshProperties.getHeaderAuth());
+		headers.set("Authorization", "Basic " + headerAuth);
 		headers.set("Accept", refreshProperties.getHeaderAccept());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,

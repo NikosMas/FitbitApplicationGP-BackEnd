@@ -9,19 +9,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("accesstoken")
 public class AuthorizationProperties {
 	
-	private String clientid;
 	private String grantType;
 	private String redirectUri;
-	private String headerAuth;
 	private String headerAccept;
-	private String authCodeUri;
+	private String authCodeUri1;
+	private String authCodeUri2;
 	
-	public String getClientid() {
-		return clientid;
-	}
-	public void setClientid(String clientid) {
-		this.clientid = clientid;
-	}
 	public String getGrantType() {
 		return grantType;
 	}
@@ -34,29 +27,27 @@ public class AuthorizationProperties {
 	public void setRedirectUri(String redirectUri) {
 		this.redirectUri = redirectUri;
 	}
-	public String getHeaderAuth() {
-		return headerAuth;
-	}
-	public void setHeaderAuth(String headerAuth) {
-		this.headerAuth = headerAuth;
-	}
 	public String getHeaderAccept() {
 		return headerAccept;
 	}
 	public void setHeaderAccept(String headerAccept) {
 		this.headerAccept = headerAccept;
 	}
-	public String getAuthCodeUri() {
-		return authCodeUri;
+	public String getAuthCodeUri1() {
+		return authCodeUri1;
 	}
-	public void setAuthCodeUri(String authCodeUri) {
-		this.authCodeUri = authCodeUri;
+	public void setAuthCodeUri1(String authCodeUri1) {
+		this.authCodeUri1 = authCodeUri1;
+	}
+	public String getAuthCodeUri2() {
+		return authCodeUri2;
+	}
+	public void setAuthCodeUri2(String authCodeUri2) {
+		this.authCodeUri2 = authCodeUri2;
 	}
 	@Override
 	public String toString() {
-		return "AuthorizationProperties [clientid=" + clientid + ", grantType=" + grantType + ", redirectUri="
-				+ redirectUri + ", headerAuth=" + headerAuth + ", headerAccept=" + headerAccept + ", authCodeUri="
-				+ authCodeUri + "]";
+		return "AuthorizationProperties [grantType=" + grantType + ", redirectUri=" + redirectUri + ", headerAccept="
+				+ headerAccept + ", authCodeUri1=" + authCodeUri1 + ", authCodeUri2=" + authCodeUri2 + "]";
 	}
-	
 }

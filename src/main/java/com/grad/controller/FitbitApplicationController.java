@@ -4,6 +4,8 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import com.grad.auth.services.AuthCodeRequestService;
 import com.grad.collections.CreateCollectionsService;
 import com.grad.data.services.ActivitiesDataService;
@@ -60,9 +62,11 @@ public class FitbitApplicationController {
 			this.sleepService = sleepService;
 		}
 
+		@Autowired
+		private RedisTemplate<String, String> redisTemplate;
+
 		@Override
 		public void init(VaadinRequest request) {
-
 			VerticalLayout content = new VerticalLayout();
 			setContent(content);
 
@@ -78,6 +82,18 @@ public class FitbitApplicationController {
 			mail.setWidth("250");
 			mail.setPlaceholder("e-mail");
 			mail.setIcon(VaadinIcons.ENVELOPE_O);
+
+			TextField clientId = new TextField();
+			clientId.setCaption("Put the clientId of your application to Fitbit server");
+			clientId.setWidth("250");
+			clientId.setPlaceholder("client id");
+			clientId.setIcon(VaadinIcons.USER);
+
+			TextField clientSecret = new TextField();
+			clientSecret.setCaption("Put the clientSecret of your application to Fitbit server");
+			clientSecret.setWidth("250");
+			clientSecret.setPlaceholder("client secret");
+			clientSecret.setIcon(VaadinIcons.PASSWORD);
 
 			Image image = new Image();
 			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
@@ -104,17 +120,25 @@ public class FitbitApplicationController {
 			});
 
 			Button authorizationCode = new Button();
-			authorizationCode.setIcon(VaadinIcons.PLAY);
-			authorizationCode.setCaption("Start");
+			authorizationCode.setIcon(VaadinIcons.CHECK_CIRCLE);
+			authorizationCode.setCaption("Submit");
 			authorizationCode.setWidth("150");
 			authorizationCode.addClickListener(click -> {
 				float current = bar.getValue();
 				if (current > 0.1 && current < 1.0f) {
-					authorizationCode.setVisible(false);
-					codeService.codeRequest();
-					bar.setValue(current + 0.125f);
-					LOG.info("Authorization code saved into Redis database and it's ready for use");
-					Notification.show("Authorization code saved into Redis database and it's ready for use!");
+					if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
+						redisTemplate.opsForValue().set("Client-id", clientId.getValue());
+						redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
+						authorizationCode.setVisible(false);
+						codeService.codeRequest();
+						bar.setValue(current + 0.125f);
+						LOG.info("Authorization code saved into Redis database and it's ready for use");
+						Notification.show("Authorization code saved into Redis database and it's ready for use!");
+					} else {
+						Notification.show(
+								"Complete with valid client id and client secret given from to your account at Fitbit",
+								Type.ERROR_MESSAGE);
+					}
 				} else {
 					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
 				}
@@ -247,6 +271,8 @@ public class FitbitApplicationController {
 			content.addComponent(new Label("Push to start creating the collections into Mongo database"));
 			content.addComponent(collections);
 			content.addComponent(new Label("\n"));
+			content.addComponent(clientId);
+			content.addComponent(clientSecret);
 			content.addComponent(new Label(
 					"Push to start connecting with Fitbit API for recieving the authorization code required to next calls to the API"));
 			content.addComponent(authorizationCode);
