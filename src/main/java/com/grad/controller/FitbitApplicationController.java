@@ -1,6 +1,9 @@
 package com.grad.controller;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.Month;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -69,6 +73,40 @@ public class FitbitApplicationController {
 		public void init(VaadinRequest request) {
 			VerticalLayout content = new VerticalLayout();
 			setContent(content);
+			
+			DateField startDate = new DateField();
+			startDate.setDateFormat("yyyy-MM-dd");
+			startDate.setPlaceholder("yyyy-mm-dd");
+			startDate.setCaption("Pick the start date of downloading data");
+			startDate.addAttachListener(new AttachListener() {
+				
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void attach(AttachEvent event) {
+					startDate.setDateOutOfRangeMessage("The date you picked is out of range with available dates");
+					startDate.setRangeStart(LocalDate.of(2014, Month.DECEMBER, 31));
+					startDate.setRangeEnd(LocalDate.now());
+					startDate.setShowISOWeekNumbers(true);
+				}
+			});
+			
+			DateField endDate = new DateField();
+			endDate.setDateFormat("yyyy-MM-dd");
+			endDate.setPlaceholder("yyyy-mm-dd");
+			endDate.setCaption("Pick the end date of downloading data");
+			endDate.addAttachListener(new AttachListener() {
+				
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public void attach(AttachEvent event) {
+					endDate.setDateOutOfRangeMessage("The date you picked is out of range with available dates");
+					endDate.setRangeStart(LocalDate.of(2014, Month.DECEMBER, 31));
+					endDate.setRangeEnd(LocalDate.now());
+					endDate.setShowISOWeekNumbers(true);					
+				}
+			});
 
 			TextField heartRate = new TextField();
 			heartRate.setCaption("Put the minimum number of minutes that user's heart rate was at its peak");
@@ -276,6 +314,10 @@ public class FitbitApplicationController {
 			content.addComponent(new Label(
 					"Push to start connecting with Fitbit API for recieving the authorization code required to next calls to the API"));
 			content.addComponent(authorizationCode);
+			content.addComponent(new Label("\n"));
+			content.addComponent(new Label("Pick the dates in which range the application will use for the data calls"));
+			content.addComponent(startDate);
+			content.addComponent(endDate);
 			content.addComponent(new Label("\n"));
 			content.addComponent(new Label("Push to start receiving and saving user data associated with heart rate"));
 			content.addComponent(heart);
