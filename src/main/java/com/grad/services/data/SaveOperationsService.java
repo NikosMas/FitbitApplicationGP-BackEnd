@@ -1,4 +1,4 @@
-package com.grad.data.services;
+package com.grad.services.data;
 
 import java.io.IOException;
 import org.codehaus.jackson.JsonNode;
@@ -11,9 +11,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.grad.auth.services.AccessTokenRequestService;
-import com.grad.auth.services.RefreshTokenRequestService;
-import com.grad.collections.CollectionEnum;
+import com.grad.domain.CollectionEnum;
+import com.grad.services.auth.AccessTokenRequestService;
+import com.grad.services.auth.RefreshTokenRequestService;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;

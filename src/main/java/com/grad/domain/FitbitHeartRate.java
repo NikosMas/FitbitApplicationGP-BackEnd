@@ -1,4 +1,4 @@
-package com.grad.heart.domain;
+package com.grad.domain;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 

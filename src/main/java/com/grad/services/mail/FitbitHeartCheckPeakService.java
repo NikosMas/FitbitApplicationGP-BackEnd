@@ -1,4 +1,4 @@
-package com.grad.heart.services;
+package com.grad.services.mail;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.grad.config.MailInfoProperties;
 import com.grad.heart.repository.FitbitHeartZoneRepo;
-import com.grad.heart.services.mail.FitbitHeartSendEmailService;
 
 /**
  * @author nikos_mas

@@ -1,4 +1,4 @@
-package com.grad.auth.services;
+package com.grad.services.auth;
 
 import java.io.IOException;
 import org.slf4j.Logger;

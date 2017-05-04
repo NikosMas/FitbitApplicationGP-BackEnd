@@ -3,19 +3,23 @@ package com.grad.controller;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.grad.auth.services.AuthCodeRequestService;
-import com.grad.collections.CreateCollectionsService;
-import com.grad.data.services.ActivitiesDataService;
-import com.grad.data.services.HeartDataService;
-import com.grad.data.services.OtherDataService;
-import com.grad.data.services.SleepDataService;
-import com.grad.heart.services.FitbitHeartCheckPeakService;
+import com.grad.services.auth.AuthCodeRequestService;
+import com.grad.services.calendar.CalendarService;
+import com.grad.services.collections.CreateCollectionsService;
+import com.grad.services.data.ActivitiesDataService;
+import com.grad.services.data.HeartDataService;
+import com.grad.services.data.OtherDataService;
+import com.grad.services.data.SleepDataService;
+import com.grad.services.mail.FitbitHeartCheckPeakService;
 import com.vaadin.annotations.Title;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
@@ -50,12 +54,15 @@ public class FitbitApplicationController {
 		private HeartDataService heartService;
 		private OtherDataService otherService;
 		private SleepDataService sleepService;
+		private CalendarService calendarService;
 		private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+		List<Map<String, String>> dates = new ArrayList<>();
 
 		@Autowired
 		public VaadinUI(FitbitHeartCheckPeakService heartPeakService, CreateCollectionsService collectionsService,
 				AuthCodeRequestService codeService, ActivitiesDataService activitiesService,
-				HeartDataService heartService, OtherDataService otherService, SleepDataService sleepService) {
+				HeartDataService heartService, OtherDataService otherService, SleepDataService sleepService,
+				CalendarService calendarService) {
 
 			this.codeService = codeService;
 			this.collectionsService = collectionsService;
@@ -64,6 +71,7 @@ public class FitbitApplicationController {
 			this.heartService = heartService;
 			this.otherService = otherService;
 			this.sleepService = sleepService;
+			this.calendarService = calendarService;
 		}
 
 		@Autowired
@@ -139,6 +147,22 @@ public class FitbitApplicationController {
 			ProgressBar bar = new ProgressBar(0.0f);
 			bar.setWidth("800");
 			bar.setDescription("Operations progress");
+			
+			Button submitDates = new Button();
+			submitDates.setIcon(VaadinIcons.CHECK_CIRCLE);
+			submitDates.setCaption("Submit");
+			submitDates.setWidth("150");
+			submitDates.addClickListener(click -> {
+				
+				if (startDate.getValue().isBefore(endDate.getValue())){
+					
+					dates = calendarService.getDates(startDate.getValue(), endDate.getValue());
+					
+				}else{
+					Notification.show("Dates given are invalid", Type.ERROR_MESSAGE);
+				}
+				
+			});
 
 			Button collections = new Button();
 			collections.setIcon(VaadinIcons.PLAY);
@@ -318,6 +342,7 @@ public class FitbitApplicationController {
 			content.addComponent(new Label("Pick the dates in which range the application will use for the data calls"));
 			content.addComponent(startDate);
 			content.addComponent(endDate);
+			content.addComponent(submitDates);
 			content.addComponent(new Label("\n"));
 			content.addComponent(new Label("Push to start receiving and saving user data associated with heart rate"));
 			content.addComponent(heart);

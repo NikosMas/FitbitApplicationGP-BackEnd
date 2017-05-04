@@ -1,4 +1,4 @@
-package com.grad.heart.services.mail;
+package com.grad.services.mail;
 
 import java.util.Date;
 import java.util.Properties;

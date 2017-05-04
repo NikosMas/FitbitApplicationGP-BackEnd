@@ -1,4 +1,4 @@
-package com.grad.collections;
+package com.grad.domain;
 
 /**
  * @author nikos_mas

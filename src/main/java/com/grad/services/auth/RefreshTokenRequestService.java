@@ -1,4 +1,4 @@
-package com.grad.auth.services;
+package com.grad.services.auth;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,24 +21,23 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.grad.config.AuthorizationProperties;
+import com.grad.config.RefreshTokenProperties;
 
 /**
  * @author nikos_mas
  */
 
 @Service
-public class AccessTokenRequestService {
+public class RefreshTokenRequestService {
 
-	private static final Logger LOG = LoggerFactory.getLogger("Fitbit application");
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 	private static final String uriToken = "https://api.fitbit.com/oauth2/token";
-	private static String accessToken;
 
 	@Autowired
-	private ObjectMapper mapper;
+	private RefreshTokenProperties refreshProperties;
 
 	@Autowired
-	private AuthorizationProperties properties;
+	private ObjectMapper mapperToken;
 
 	@Autowired
 	private RestTemplate restTemplateToken;
@@ -46,36 +45,28 @@ public class AccessTokenRequestService {
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 
-	public String token() throws JsonProcessingException, IOException {
+	public String refreshToken() throws JsonProcessingException, IOException {
 
 		String headerAuth = Base64.getEncoder().encodeToString(
 				(redisTemplate.opsForValue().get("Client-id") + ":" + redisTemplate.opsForValue().get("Client-secret"))
 						.getBytes("utf-8"));
-
+		
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-		parameters.add("clientId", redisTemplate.opsForValue().get("Client-id"));
-		parameters.add("grant_type", properties.getGrantType());
-		parameters.add("redirect_uri", properties.getRedirectUri());
-		parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
+		parameters.add("grant_type", refreshProperties.getGrantType());
+		parameters.add("refresh_token", redisTemplate.opsForValue().get("RefreshToken"));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.set("Authorization", "Basic " + headerAuth);
-		headers.set("Accept", properties.getHeaderAccept());
+		headers.set("Accept", refreshProperties.getHeaderAccept());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,
 				headers);
 		ResponseEntity<String> response = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
 
-		JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
-		accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
-
-		JsonNode jsonResponseRefreshToken = mapper.readTree(response.getBody()).path("refresh_token");
-		String refreshToken = jsonResponseRefreshToken.toString().substring(1,
-				jsonResponseRefreshToken.toString().length() - 1);
-
-		redisTemplate.opsForValue().set("RefreshToken", refreshToken);
+		JsonNode jsonResponse = mapperToken.readTree(response.getBody()).path("access_token");
+		String accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
 
 		return accessToken;
 	}

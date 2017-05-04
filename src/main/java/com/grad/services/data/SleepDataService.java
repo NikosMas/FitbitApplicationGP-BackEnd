@@ -1,4 +1,4 @@
-package com.grad.data.services;
+package com.grad.services.data;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.grad.collections.CollectionEnum;
+import com.grad.domain.CollectionEnum;
 
 /**
  * @author nikos_mas

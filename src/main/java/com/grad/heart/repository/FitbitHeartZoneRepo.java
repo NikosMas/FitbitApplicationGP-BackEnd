@@ -2,7 +2,8 @@ package com.grad.heart.repository;
 
 import java.util.stream.Stream;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import com.grad.heart.domain.FitbitHeartRate;
+
+import com.grad.domain.FitbitHeartRate;
 
 /**
  * @author nikos_mas

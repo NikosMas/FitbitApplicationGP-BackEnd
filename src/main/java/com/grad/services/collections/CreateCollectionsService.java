@@ -1,4 +1,4 @@
-package com.grad.collections;
+package com.grad.services.collections;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import com.grad.collections.CollectionEnum;
+import com.grad.domain.CollectionEnum;
 
 /**
  * @author nikos_mas
