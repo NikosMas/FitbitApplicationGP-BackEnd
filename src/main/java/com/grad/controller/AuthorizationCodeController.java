@@ -24,6 +24,8 @@ public class AuthorizationCodeController {
 	public void authorization(@RequestParam(value = "code") String code){
 
 		redisTemplate.opsForValue().set("AuthorizationCode", code);
+		LOG.info("Authorization code saved into Redis database and it's ready for use");
+
 	}
 
 }

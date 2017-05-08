@@ -1,27 +1,11 @@
 package com.grad.controller;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 
-import com.grad.services.auth.AuthCodeRequestService;
-import com.grad.services.calendar.CalendarService;
-import com.grad.services.collections.CreateCollectionsService;
-import com.grad.services.data.ActivitiesDataService;
-import com.grad.services.data.HeartDataService;
-import com.grad.services.data.OtherDataService;
-import com.grad.services.data.SleepDataService;
-import com.grad.services.mail.FitbitHeartCheckPeakService;
+import com.grad.services.builders.ButtonsBuilderService;
+import com.grad.services.builders.FieldsBuilderService;
 import com.vaadin.annotations.Title;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -29,8 +13,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -47,99 +29,17 @@ public class FitbitApplicationController {
 	public static class VaadinUI extends UI {
 
 		private static final long serialVersionUID = 1L;
-		private FitbitHeartCheckPeakService heartPeakService;
-		private CreateCollectionsService collectionsService;
-		private AuthCodeRequestService codeService;
-		private ActivitiesDataService activitiesService;
-		private HeartDataService heartService;
-		private OtherDataService otherService;
-		private SleepDataService sleepService;
-		private CalendarService calendarService;
-		private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-		List<Map<String, String>> dates = new ArrayList<>();
 
 		@Autowired
-		public VaadinUI(FitbitHeartCheckPeakService heartPeakService, CreateCollectionsService collectionsService,
-				AuthCodeRequestService codeService, ActivitiesDataService activitiesService,
-				HeartDataService heartService, OtherDataService otherService, SleepDataService sleepService,
-				CalendarService calendarService) {
-
-			this.codeService = codeService;
-			this.collectionsService = collectionsService;
-			this.heartPeakService = heartPeakService;
-			this.activitiesService = activitiesService;
-			this.heartService = heartService;
-			this.otherService = otherService;
-			this.sleepService = sleepService;
-			this.calendarService = calendarService;
-		}
+		private FieldsBuilderService fieldsService;
 
 		@Autowired
-		private RedisTemplate<String, String> redisTemplate;
+		private ButtonsBuilderService buttonsService;
 
 		@Override
 		public void init(VaadinRequest request) {
 			VerticalLayout content = new VerticalLayout();
 			setContent(content);
-			
-			DateField startDate = new DateField();
-			startDate.setDateFormat("yyyy-MM-dd");
-			startDate.setPlaceholder("yyyy-mm-dd");
-			startDate.setCaption("Pick the start date of downloading data");
-			startDate.addAttachListener(new AttachListener() {
-				
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void attach(AttachEvent event) {
-					startDate.setDateOutOfRangeMessage("The date you picked is out of range with available dates");
-					startDate.setRangeStart(LocalDate.of(2014, Month.DECEMBER, 31));
-					startDate.setRangeEnd(LocalDate.now());
-					startDate.setShowISOWeekNumbers(true);
-				}
-			});
-			
-			DateField endDate = new DateField();
-			endDate.setDateFormat("yyyy-MM-dd");
-			endDate.setPlaceholder("yyyy-mm-dd");
-			endDate.setCaption("Pick the end date of downloading data");
-			endDate.addAttachListener(new AttachListener() {
-				
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				public void attach(AttachEvent event) {
-					endDate.setDateOutOfRangeMessage("The date you picked is out of range with available dates");
-					endDate.setRangeStart(LocalDate.of(2014, Month.DECEMBER, 31));
-					endDate.setRangeEnd(LocalDate.now());
-					endDate.setShowISOWeekNumbers(true);					
-				}
-			});
-
-			TextField heartRate = new TextField();
-			heartRate.setCaption("Put the minimum number of minutes that user's heart rate was at its peak");
-			heartRate.setWidth("250");
-			heartRate.setPlaceholder("minutes");
-			heartRate.setIcon(VaadinIcons.CLOCK);
-
-			TextField mail = new TextField();
-			mail.setCaption(
-					"Put the mail address that you want the application send information about high heart rate values");
-			mail.setWidth("250");
-			mail.setPlaceholder("e-mail");
-			mail.setIcon(VaadinIcons.ENVELOPE_O);
-
-			TextField clientId = new TextField();
-			clientId.setCaption("Put the clientId of your application to Fitbit server");
-			clientId.setWidth("250");
-			clientId.setPlaceholder("client id");
-			clientId.setIcon(VaadinIcons.USER);
-
-			TextField clientSecret = new TextField();
-			clientSecret.setCaption("Put the clientSecret of your application to Fitbit server");
-			clientSecret.setWidth("250");
-			clientSecret.setPlaceholder("client secret");
-			clientSecret.setIcon(VaadinIcons.PASSWORD);
 
 			Image image = new Image();
 			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
@@ -147,187 +47,51 @@ public class FitbitApplicationController {
 			ProgressBar bar = new ProgressBar(0.0f);
 			bar.setWidth("800");
 			bar.setDescription("Operations progress");
-			
-			Button submitDates = new Button();
-			submitDates.setIcon(VaadinIcons.CHECK_CIRCLE);
-			submitDates.setCaption("Submit");
-			submitDates.setWidth("150");
-			submitDates.addClickListener(click -> {
-				
-				if (startDate.getValue().isBefore(endDate.getValue())){
-					
-					dates = calendarService.getDates(startDate.getValue(), endDate.getValue());
-					
-				}else{
-					Notification.show("Dates given are invalid", Type.ERROR_MESSAGE);
-				}
-				
-			});
+
+			DateField startDate = new DateField();
+			fieldsService.dateBuilder(startDate);
+
+			DateField endDate = new DateField();
+			fieldsService.dateBuilder(endDate);
+
+			TextField heartRate = new TextField();
+			fieldsService.heartRateBuilder(heartRate);
+
+			TextField mail = new TextField();
+			fieldsService.mailBuilder(mail);
+
+			TextField clientId = new TextField();
+			fieldsService.clientIdBuilder(clientId);
+
+			TextField clientSecret = new TextField();
+			fieldsService.clientSecretBuilder(clientSecret);
 
 			Button collections = new Button();
-			collections.setIcon(VaadinIcons.PLAY);
-			collections.setCaption("Start");
-			collections.setWidth("150");
-			collections.addClickListener(click -> {
-				collections.setVisible(false);
-				if (collectionsService.collectionsCreate()) {
-					float current = bar.getValue();
-					if (current < 1.0f)
-						bar.setValue(current + 0.125f);
-					LOG.info("Collections created successfully into Mongo database");
-					Notification.show("Collections created successfully!");
-				} else {
-					Notification.show("Something went wrong! Check if \"fitbit\" database exists", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.collectionsBuilder(collections, bar);
 
 			Button authorizationCode = new Button();
-			authorizationCode.setIcon(VaadinIcons.CHECK_CIRCLE);
-			authorizationCode.setCaption("Submit");
-			authorizationCode.setWidth("150");
-			authorizationCode.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.1 && current < 1.0f) {
-					if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
-						redisTemplate.opsForValue().set("Client-id", clientId.getValue());
-						redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
-						authorizationCode.setVisible(false);
-						codeService.codeRequest();
-						bar.setValue(current + 0.125f);
-						LOG.info("Authorization code saved into Redis database and it's ready for use");
-						Notification.show("Authorization code saved into Redis database and it's ready for use!");
-					} else {
-						Notification.show(
-								"Complete with valid client id and client secret given from to your account at Fitbit",
-								Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.authorizationBuilder(authorizationCode, bar, clientId, clientSecret);
+
+			Button submitDates = new Button();
+			buttonsService.submitDates(submitDates, bar, startDate, endDate);
 
 			Button heart = new Button();
-			heart.setIcon(VaadinIcons.PLAY);
-			heart.setCaption("Start");
-			heart.setWidth("150");
-			heart.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.2f && current < 1.0f) {
-					heart.setVisible(false);
-					if (heartService.filterHeartRateValues()) {
-						bar.setValue(current + 0.125f);
-						LOG.info("Heart rate data recieved and stored to database");
-						Notification.show("User data stored successfully!");
-					} else {
-						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.heartBuilder(heart, bar, startDate, endDate);
 
 			Button sleep = new Button();
-			sleep.setIcon(VaadinIcons.PLAY);
-			sleep.setCaption("Start");
-			sleep.setWidth("150");
-			sleep.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.2f && current < 1.0f) {
-					sleep.setVisible(false);
-					if (sleepService.sleep()) {
-						bar.setValue(current + 0.125f);
-						LOG.info("Sleep data recieved and stored to database");
-						Notification.show("User data stored successfully!");
-					} else {
-						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.sleepBuilder(sleep, bar, startDate, endDate);
 
 			Button activities = new Button();
-			activities.setIcon(VaadinIcons.PLAY);
-			activities.setCaption("Start");
-			activities.setWidth("150");
-			activities.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.2f && current < 1.0f) {
-					activities.setVisible(false);
-					if (activitiesService.activities()) {
-						bar.setValue(current + 0.125f);
-						LOG.info("Activities data recieved and stored to database");
-						Notification.show("User data stored successfully!");
-					} else {
-						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.activitiesBuilder(activities, bar, startDate, endDate);
 
 			Button other = new Button();
-			other.setIcon(VaadinIcons.PLAY);
-			other.setCaption("Start");
-			other.setWidth("150");
-			other.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.2f && current < 1.0f) {
-					other.setVisible(false);
-					if (otherService.lifetime() && otherService.frequence()) {
-						bar.setValue(current + 0.125f);
-						LOG.info("Lifetime and frequence data recieved and stored to database");
-						Notification.show("User data stored successfully!");
-					} else {
-						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.otherBuilder(other, bar);
 
 			Button profile = new Button();
-			profile.setIcon(VaadinIcons.PLAY);
-			profile.setCaption("Start");
-			profile.setWidth("150");
-			profile.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.2f && current < 1.0f) {
-					profile.setVisible(false);
-					if (otherService.profile()) {
-						bar.setValue(current + 0.125f);
-						LOG.info("Profile data recieved and stored to database");
-						Notification.show("User data stored successfully!");
-					} else {
-						Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.profileBuilder(profile, bar);
 
 			Button heartRateMail = new Button();
-			heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
-			heartRateMail.setCaption("Submit");
-			heartRateMail.setWidth("150");
-			heartRateMail.addClickListener(click -> {
-				float current = bar.getValue();
-				if (current > 0.8f && current < 1.0f) {
-					if (!mail.getValue().isEmpty() && !heartRate.getValue().isEmpty()
-							&& mail.getValue().contains("@")) {
-						heartRateMail.setVisible(false);
-						heartPeakService.heartRateSelect(mail.getValue(), heartRate.getValue());
-						bar.setValue(current + 0.125f);
-						LOG.info("Mail successfully sent to user with heart rate information");
-						Notification.show("Mail successfully sent to user with heart rate information!");
-					} else {
-						Notification.show("Complete the required fields with a valid e-mail & number of minutes",
-								Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required steps before send the e-mail", Type.ERROR_MESSAGE);
-				}
-			});
+			buttonsService.heartRateMailBuilder(heartRateMail, bar, mail, heartRate);
 
 			content.addComponent(image);
 			content.addComponent(new Label("Push to start creating the collections into Mongo database"));
@@ -339,7 +103,8 @@ public class FitbitApplicationController {
 					"Push to start connecting with Fitbit API for recieving the authorization code required to next calls to the API"));
 			content.addComponent(authorizationCode);
 			content.addComponent(new Label("\n"));
-			content.addComponent(new Label("Pick the dates in which range the application will use for the data calls"));
+			content.addComponent(
+					new Label("Pick the dates in which range the application will use for the data calls"));
 			content.addComponent(startDate);
 			content.addComponent(endDate);
 			content.addComponent(submitDates);

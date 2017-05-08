@@ -10,6 +10,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.grad.domain.CollectionEnum;
 import com.grad.services.auth.AccessTokenRequestService;
@@ -23,6 +25,7 @@ import com.mongodb.util.JSON;
  */
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class SaveOperationsService {
 
 	@Autowired
@@ -40,12 +43,19 @@ public class SaveOperationsService {
 	private static String accessToken;
 
 
+	/**
+	 * @param responseData
+	 * @param collection
+	 * @param filterCollectionName
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 */
 	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName)
 			throws IOException, JsonProcessingException {
 		JsonNode responseDataBody = mapper.readTree(responseData.getBody());
 		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
 
-		if (collection.equals(CollectionEnum.ACTIVITIES_LIFETIME.getDescription())) {
+		if (collection.equals(CollectionEnum.ACTIVITIES_LIFETIME.description())) {
 			mongoTemplate.insert(dataToInsert, collection);
 		} else if (filterCollectionName.equals("user")) {
 			DBObject filteredValue = (DBObject) dataToInsert.get(filterCollectionName);
@@ -56,6 +66,12 @@ public class SaveOperationsService {
 		}
 	}
 
+	/**
+	 * @param unauthorized
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
 	public HttpEntity<String> getEntity(boolean unauthorized) throws JsonProcessingException, IOException {
 		HttpHeaders headers = new HttpHeaders();
 		
@@ -68,6 +84,11 @@ public class SaveOperationsService {
 		return new HttpEntity<String>(headers);
 	}
 
+	/**
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
 	protected String getAccessToken() throws JsonProcessingException, IOException {
 
 		if (accessToken == null)

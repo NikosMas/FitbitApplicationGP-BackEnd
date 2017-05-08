@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,6 +20,7 @@ import com.grad.domain.CollectionEnum;
  */
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class OtherDataService {
 
 	// URI for each data. body part
@@ -36,6 +39,9 @@ public class OtherDataService {
 	@Autowired
 	private RestTemplate restTemplateGet;
 
+	/**
+	 * @return
+	 */
 	public boolean profile() {
 		try {
 			ResponseEntity<String> profile;
@@ -44,11 +50,11 @@ public class OtherDataService {
 			if (profile.getStatusCodeValue() == 401) {
 				ResponseEntity<String> profileWithRefreshToken = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET,
 						dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.getDescription(),
+				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.description(),
 						PROFILE_USER);
 				return true;
 			} else if (profile.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.getDescription(), PROFILE_USER);
+				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.description(), PROFILE_USER);
 				return true;
 			}
 			return false;
@@ -59,6 +65,9 @@ public class OtherDataService {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean lifetime() {
 		try {
 			ResponseEntity<String> lifetime;
@@ -68,10 +77,10 @@ public class OtherDataService {
 				ResponseEntity<String> lifetimeWithRefreshToken = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET,
 						dataService.getEntity(true), String.class);
 				dataService.dataTypeInsert(lifetimeWithRefreshToken,
-						CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
+						CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
 				return true;
 			} else if (lifetime.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(lifetime, CollectionEnum.ACTIVITIES_LIFETIME.getDescription(), null);
+				dataService.dataTypeInsert(lifetime, CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
 				return true;
 			}
 			return false;
@@ -82,6 +91,9 @@ public class OtherDataService {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean frequence() {
 		try {
 			ResponseEntity<String> frequence;
@@ -92,10 +104,10 @@ public class OtherDataService {
 				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(URI_FREQUENCE,
 						HttpMethod.GET, dataService.getEntity(true), String.class);
 				dataService.dataTypeInsert(frequenceWithRefreshToken,
-						CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(), FREQUENCE_CATEGORIES);
+						CollectionEnum.ACTIVITIES_FREQUENCE.description(), FREQUENCE_CATEGORIES);
 				return true;
 			} else if (frequence.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.getDescription(),
+				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.description(),
 						FREQUENCE_CATEGORIES);
 				return true;
 			}

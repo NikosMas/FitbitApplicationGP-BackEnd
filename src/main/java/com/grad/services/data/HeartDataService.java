@@ -1,8 +1,9 @@
 package com.grad.services.data;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +14,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.grad.domain.CollectionEnum;
+import com.grad.services.calendar.CalendarService;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -24,20 +28,22 @@ import com.mongodb.util.JSON;
  */
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class HeartDataService {
 
 	// URI for heart data. body part
 	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
+
 	// filtered field from response
 	private static final String HEART = "activities-heart";
-	// URI for heart data. date part
-	private static final List<String> months = Arrays.asList("2015-12-01/2016-02-29.json", "2016-03-01/2016-05-31.json",
-			"2016-06-01/2016-08-31.json", "2016-09-01/2016-11-30.json", "2016-12-01/2017-02-28.json");
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 	@Autowired
-	private SaveOperationsService service;
+	private SaveOperationsService saveOperationsService;
+
+	@Autowired
+	private CalendarService calendarService;
 
 	@Autowired
 	private RestTemplate restTemplateGet;
@@ -45,15 +51,18 @@ public class HeartDataService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public boolean filterHeartRateValues() {
-		String s = months.stream().filter(month -> getFilterHeartRate(month) == false).findFirst().orElse(null);
+	public boolean filterHeartRateValues(List<Map<String, String>> dates) {
 
-		if (s == null)
-			return true;
+		String p = calendarService.months(dates).stream().filter(month -> getFilterHeartRate(month) == false)
+				.findFirst().orElse(null);
 
-		return false;
+		return (p == null) ? true : false;
 	}
 
+	/**
+	 * @param month
+	 * @return
+	 */
 	private boolean getFilterHeartRate(String month) {
 		JSONArray responseDataArray = heartCallResponse(month);
 		if (responseDataArray != null) {
@@ -68,30 +77,41 @@ public class HeartDataService {
 		return false;
 	}
 
+	/**
+	 * @param responseDataArray
+	 * @param rda
+	 * @param heartRateZonesArray
+	 * @param hrza
+	 * @throws JSONException
+	 */
 	private void insertHeartRateValues(JSONArray responseDataArray, int rda, JSONArray heartRateZonesArray, int hrza)
 			throws JSONException {
 		DBObject heartRateZonesValue = (DBObject) JSON.parse(heartRateZonesArray.getJSONObject(hrza).toString());
 		heartRateZonesValue.put("date", responseDataArray.getJSONObject(rda).getString("dateTime"));
-		mongoTemplate.insert(heartRateZonesValue, CollectionEnum.HEART_RATE.getDescription());
+		mongoTemplate.insert(heartRateZonesValue, CollectionEnum.HEART_RATE.description());
 	}
 
 	private JSONArray getValues(JSONArray responseDataArray, int i) throws JSONException {
-		JSONObject valueField = responseDataArray.getJSONObject(i).getJSONObject("value");
-		return valueField.getJSONArray("heartRateZones");
+		return responseDataArray.getJSONObject(i).getJSONObject("value").getJSONArray("heartRateZones");
 	}
 
+	/**
+	 * @param month
+	 * @return
+	 */
 	private JSONArray heartCallResponse(String month) {
 		try {
 			ResponseEntity<String> heart = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,
-					service.getEntity(false), String.class);
+					saveOperationsService.getEntity(false), String.class);
 
 			if (heart.getStatusCodeValue() == 401) {
 				ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(URI_HEART + month,
-						HttpMethod.GET, service.getEntity(true), String.class);
-				service.dataTypeInsert(heartWithRefreshToken, CollectionEnum.ACTIVITIES_HEART.getDescription(), HEART);
+						HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(heartWithRefreshToken,
+						CollectionEnum.ACTIVITIES_HEART.description(), HEART);
 				return new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(HEART);
 			} else if (heart.getStatusCodeValue() == 200) {
-				service.dataTypeInsert(heart, CollectionEnum.ACTIVITIES_HEART.getDescription(), HEART);
+				saveOperationsService.dataTypeInsert(heart, CollectionEnum.ACTIVITIES_HEART.description(), HEART);
 				return new JSONObject(heart.getBody()).getJSONArray(HEART);
 			} else {
 				return null;

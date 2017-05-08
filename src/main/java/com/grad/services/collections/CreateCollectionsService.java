@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.grad.domain.CollectionEnum;
 
@@ -14,6 +16,7 @@ import com.grad.domain.CollectionEnum;
  */
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CreateCollectionsService {
 
 	private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values());
@@ -26,11 +29,11 @@ public class CreateCollectionsService {
 		if (mongoTemplate.getDb() != null) {
 			collections.stream().forEach(collectionName -> {
 
-				if (mongoTemplate.collectionExists(collectionName.getDescription())) {
-					mongoTemplate.dropCollection(collectionName.getDescription());
-					mongoTemplate.createCollection(collectionName.getDescription());
+				if (mongoTemplate.collectionExists(collectionName.description())) {
+					mongoTemplate.dropCollection(collectionName.description());
+					mongoTemplate.createCollection(collectionName.description());
 				} else {
-					mongoTemplate.createCollection(collectionName.getDescription());
+					mongoTemplate.createCollection(collectionName.description());
 				}
 			});
 			return true;

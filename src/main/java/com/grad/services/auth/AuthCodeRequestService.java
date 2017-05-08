@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.grad.config.AuthorizationProperties;
 
@@ -14,6 +16,7 @@ import com.grad.config.AuthorizationProperties;
  */
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class AuthCodeRequestService {
 
 	@Autowired

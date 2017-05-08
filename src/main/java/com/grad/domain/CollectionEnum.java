@@ -1,5 +1,13 @@
 package com.grad.domain;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import javaslang.control.Option;
+
 /**
  * @author nikos_mas
  */
@@ -23,17 +31,39 @@ public enum CollectionEnum {
 	HEART_RATE("heart_rate");
 	
 	private String description;
-	
+
 	private CollectionEnum(String description) {
 		this.description = description;
 	}
-	
-	@Override
-	public String toString() {
-		return this.name();
-	}
-	
-	public String getDescription() {
+
+	public String description() {
 		return description;
+	}
+
+	// Keep the enum instances in a static map, in order to efficiently
+	// implement the fromString method
+	private static final Map<String, CollectionEnum> stringToEnum = new HashMap<>();
+	// static initializer block to populate the map
+	static {
+		Arrays.stream(values()).forEach(description -> stringToEnum.put(description.toString(), description));
+	}
+
+	@Override
+	@JsonValue
+	public String toString() {
+		return this.description;
+	}
+
+	/**
+	 * Attempts to find a {@link ProductSpeed} instance which matches the given
+	 * string representation. Returns an {@link Option}.
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public static Option<CollectionEnum> fromString(String string) {
+		CollectionEnum responseCode = stringToEnum.get(string);
+
+		return Option.of(responseCode);
 	}
 }
