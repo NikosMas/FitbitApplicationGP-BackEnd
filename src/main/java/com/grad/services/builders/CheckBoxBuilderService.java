@@ -56,6 +56,8 @@ public class CheckBoxBuilderService {
 	 * @param bar
 	 * @param startDate
 	 * @param endDate
+	 * @param heartRateMailBuilder
+	 * @param content
 	 * @return
 	 */
 	public Button checkBoxButton(CheckBoxGroup<String> multiCheckBox, Button submitCheckBoxButton, ProgressBar bar,
@@ -156,6 +158,7 @@ public class CheckBoxBuilderService {
 	 * @param bar
 	 * @param startDate
 	 * @param endDate
+	 * @param multiCheckBox
 	 * @return
 	 */
 	public Button submitDates(Button submitDates, ProgressBar bar, DateField startDate, DateField endDate,

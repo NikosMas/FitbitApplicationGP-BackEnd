@@ -16,6 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class CalendarService {
 
+	/**
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
 	public List<Map<String, String>> getDates(LocalDate startDate, LocalDate endDate) {
 
 		long between = ChronoUnit.DAYS.between(startDate, endDate);
@@ -43,6 +48,10 @@ public class CalendarService {
 		return dates;
 	}
 
+	/**
+	 * @param dates
+	 * @return
+	 */
 	private List<String> mapToListDates(List<Map<String, String>> dates) {
 
 		return dates.stream().map(date -> {
@@ -52,6 +61,10 @@ public class CalendarService {
 		}).collect(Collectors.toList()).stream().flatMap(result -> result.stream()).collect(Collectors.toList());
 	}
 
+	/**
+	 * @param dates
+	 * @return
+	 */
 	public List<String> months(List<Map<String, String>> dates) {
 		List<String> packOfMonths = new ArrayList<>();
 		String months;

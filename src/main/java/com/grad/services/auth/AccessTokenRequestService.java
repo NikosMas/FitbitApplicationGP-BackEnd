@@ -49,6 +49,11 @@ public class AccessTokenRequestService {
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 
+	/**
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
 	public String token() throws JsonProcessingException, IOException {
 
 		String headerAuth = Base64.getEncoder().encodeToString(

@@ -48,6 +48,11 @@ public class RefreshTokenRequestService {
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 
+	/**
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
 	public String refreshToken() throws JsonProcessingException, IOException {
 
 		String headerAuth = Base64.getEncoder().encodeToString(

@@ -24,6 +24,13 @@ public class ClearAllService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
+	/**
+	 * @param dateFields
+	 * @param textFields
+	 * @param buttons
+	 * @param multiCheckBox
+	 * @param bar
+	 */
 	public void clearAll(List<DateField> dateFields, List<TextField> textFields, List<Button> buttons,
 			CheckBoxGroup<String> multiCheckBox, ProgressBar bar) {
 
@@ -35,6 +42,9 @@ public class ClearAllService {
 		bar.setValue(0);
 	}
 
+	/**
+	 * @param content
+	 */
 	public void removeAll(VerticalLayout content) {
 		content.removeAllComponents();
 

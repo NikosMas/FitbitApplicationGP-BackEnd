@@ -31,7 +31,7 @@ public class AuthCodeRequestService {
 
 	public void codeRequest() {
 		try {
-			if (OS.equalsIgnoreCase("win")) {
+			if (OS.equalsIgnoreCase("ind")) {
 
 				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri1() + "client_id="
 						+ redisTemplate.opsForValue().get("Client-id") + "&" + properties.getAuthCodeUri2());

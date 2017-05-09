@@ -4,6 +4,8 @@ import java.io.IOException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
@@ -12,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.grad.domain.CollectionEnum;
 import com.grad.services.auth.AccessTokenRequestService;
 import com.grad.services.auth.RefreshTokenRequestService;
@@ -36,12 +37,12 @@ public class SaveOperationsService {
 
 	@Autowired
 	private AccessTokenRequestService fitbitTokenService;
-	
+
 	@Autowired
 	private RefreshTokenRequestService refreshTokenService;
-	
-	private static String accessToken;
 
+	private static String accessToken;
+	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 	/**
 	 * @param responseData
@@ -50,19 +51,23 @@ public class SaveOperationsService {
 	 * @throws IOException
 	 * @throws JsonProcessingException
 	 */
-	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName)
-			throws IOException, JsonProcessingException {
-		JsonNode responseDataBody = mapper.readTree(responseData.getBody());
-		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
+	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName) {
+		try {
+			JsonNode responseDataBody = mapper.readTree(responseData.getBody());
+			DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
 
-		if (collection.equals(CollectionEnum.ACTIVITIES_LIFETIME.description())) {
-			mongoTemplate.insert(dataToInsert, collection);
-		} else if (filterCollectionName.equals("user")) {
-			DBObject filteredValue = (DBObject) dataToInsert.get(filterCollectionName);
-			mongoTemplate.insert(filteredValue, collection);
-		} else {
-			BasicDBList filteredValue = (BasicDBList) dataToInsert.get(filterCollectionName);
-			mongoTemplate.insert(filteredValue, collection);
+			if (collection.equals(CollectionEnum.ACTIVITIES_LIFETIME.description())) {
+				mongoTemplate.insert(dataToInsert, collection);
+			} else if (filterCollectionName.equals("user")) {
+				DBObject filteredValue = (DBObject) dataToInsert.get(filterCollectionName);
+				mongoTemplate.insert(filteredValue, collection);
+			} else {
+				BasicDBList filteredValue = (BasicDBList) dataToInsert.get(filterCollectionName);
+				mongoTemplate.insert(filteredValue, collection);
+			}
+
+		} catch (IOException e) {
+			LOG.error(e.toString());
 		}
 	}
 
@@ -74,13 +79,13 @@ public class SaveOperationsService {
 	 */
 	public HttpEntity<String> getEntity(boolean unauthorized) throws JsonProcessingException, IOException {
 		HttpHeaders headers = new HttpHeaders();
-		
-		if (unauthorized == false){
+
+		if (unauthorized == false) {
 			headers.set("Authorization", "Bearer " + getAccessToken());
-		}else if (unauthorized == true){
+		} else if (unauthorized == true) {
 			headers.set("Authorization", "Bearer " + refreshTokenService.refreshToken());
 		}
-		
+
 		return new HttpEntity<String>(headers);
 	}
 

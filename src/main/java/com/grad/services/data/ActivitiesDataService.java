@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.grad.domain.CollectionEnum;
@@ -116,7 +117,7 @@ public class ActivitiesDataService {
 				return false;
 			}
 
-		} catch (IOException e) {
+		} catch (IOException | RestClientException e) {
 			LOG.error(e.toString());
 			return false;
 		}

@@ -53,6 +53,10 @@ public class SleepDataService {
 	@Autowired
 	private CalendarService calendarService;
 
+	/**
+	 * @param dates
+	 * @return
+	 */
 	public boolean sleep(List<Map<String, String>> dates) {
 
 		String p = calendarService.months(dates).stream().filter(month -> dataRetriever(month) == false).findFirst()
@@ -61,6 +65,10 @@ public class SleepDataService {
 		return (p == null) ? true : false;
 	}
 
+	/**
+	 * @param month
+	 * @return
+	 */
 	private boolean dataRetriever(String month) {
 		boolean success;
 		try {
