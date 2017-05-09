@@ -37,7 +37,7 @@ public class FitbitHeartCheckPeakService {
 	@Autowired
 	private FitbitHeartSendEmailService sendMailService;
 
-	public void heartRateSelect(String mail, String minutes) {
+	public void heartRateSelect(String mail, Long minutes) {
 		try {
 			File peaksfile = new File(properties.getFileName());
 			FileOutputStream stream;
@@ -50,7 +50,7 @@ public class FitbitHeartCheckPeakService {
 			w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
 					+ '\n' + '\n');
 
-			heartRepository.findByMinutesGreaterThanAndNameIs(Long.valueOf(minutes), "Peak").forEach(peak -> {
+			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, "Peak").forEach(peak -> {
 
 				try {
 					w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()

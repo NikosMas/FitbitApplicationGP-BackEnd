@@ -13,51 +13,36 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
 
 import com.grad.services.auth.AuthCodeRequestService;
-import com.grad.services.calendar.CalendarService;
 import com.grad.services.collections.CreateCollectionsService;
-import com.grad.services.data.ActivitiesDataService;
-import com.grad.services.data.HeartDataService;
-import com.grad.services.data.OtherDataService;
-import com.grad.services.data.SleepDataService;
 import com.grad.services.mail.FitbitHeartCheckPeakService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class ButtonsBuilderService {
 
-	private FitbitHeartCheckPeakService heartPeakService;
-	private CreateCollectionsService collectionsService;
-	private AuthCodeRequestService codeService;
-	private ActivitiesDataService activitiesService;
-	private HeartDataService heartService;
-	private OtherDataService otherService;
-	private SleepDataService sleepService;
-	private CalendarService calendarService;
-
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 	List<Map<String, String>> dates = new ArrayList<>();
 
 	@Autowired
-	public ButtonsBuilderService(FitbitHeartCheckPeakService heartPeakService,
-			CreateCollectionsService collectionsService, AuthCodeRequestService codeService,
-			ActivitiesDataService activitiesService, HeartDataService heartService, OtherDataService otherService,
-			SleepDataService sleepService, CalendarService calendarService) {
-		this.codeService = codeService;
-		this.collectionsService = collectionsService;
-		this.heartPeakService = heartPeakService;
-		this.activitiesService = activitiesService;
-		this.heartService = heartService;
-		this.otherService = otherService;
-		this.sleepService = sleepService;
-		this.calendarService = calendarService;
-	}
+	private FitbitHeartCheckPeakService heartPeakService;
+
+	@Autowired
+	private CreateCollectionsService collectionsService;
+
+	@Autowired
+	private AuthCodeRequestService codeService;
+
+	@Autowired
+	private ClearAllService clearFieldsService;
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
@@ -72,16 +57,13 @@ public class ButtonsBuilderService {
 		collections.setCaption("Start");
 		collections.setWidth("150");
 		collections.addClickListener(click -> {
-			collections.setVisible(false);
-			if (collectionsService.collectionsCreate()) {
-				float current = bar.getValue();
-				if (current < 1.0f)
-					bar.setValue(current + 0.125f);
-				LOG.info("Collections created successfully into Mongo database");
-				Notification.show("Collections created successfully!");
-			} else {
-				Notification.show("Something went wrong! Check if \"fitbit\" database exists", Type.ERROR_MESSAGE);
-			}
+			collections.setEnabled(false);
+			float current = bar.getValue();
+			collectionsService.collectionsCreate();
+			if (current < 1.0f)
+				bar.setValue(current + 0.25f);
+			LOG.info("Collections created successfully into Mongo database");
+			Notification.show("Collections created successfully!");
 		});
 
 		return collections;
@@ -101,13 +83,13 @@ public class ButtonsBuilderService {
 		authorizationCode.setWidth("150");
 		authorizationCode.addClickListener(click -> {
 			float current = bar.getValue();
-			if (current > 0.1 && current < 1.0f) {
+			if (current > 0.2 && current < 1.0f) {
 				if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
 					redisTemplate.opsForValue().set("Client-id", clientId.getValue());
 					redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
-					authorizationCode.setVisible(false);
+					authorizationCode.setEnabled(false);
 					codeService.codeRequest();
-					bar.setValue(current + 0.125f);
+					bar.setValue(current + 0.25f);
 					Notification.show("Authorization code saved into Redis database and it's ready for use!");
 				} else {
 					Notification.show(
@@ -123,196 +105,31 @@ public class ButtonsBuilderService {
 	}
 
 	/**
-	 * @param submitDates
-	 * @param bar
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public Button submitDates(Button submitDates, ProgressBar bar, DateField startDate, DateField endDate) {
-		submitDates.setIcon(VaadinIcons.CHECK_CIRCLE);
-		submitDates.setCaption("Submit");
-		submitDates.setWidth("150");
-		submitDates.addClickListener(click -> {
-			float current = bar.getValue();
-			if (!startDate.isEmpty() && !endDate.isEmpty() && startDate.getValue().isBefore(endDate.getValue())
-					&& current > 0.2f && current < 1.0f) {
-				submitDates.setVisible(false);
-				dates = calendarService.getDates(startDate.getValue(), endDate.getValue());
-			} else {
-				Notification.show("You missed some steps before or dates given are invalid", Type.ERROR_MESSAGE);
-			}
-		});
-
-		return submitDates;
-	}
-
-	/**
-	 * @param heart
-	 * @param bar
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public Button heartBuilder(Button heart, ProgressBar bar, DateField startDate, DateField endDate) {
-		heart.setIcon(VaadinIcons.PLAY);
-		heart.setCaption("Start");
-		heart.setWidth("150");
-		heart.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current > 0.2f && current < 1.0f && startDate != null && endDate != null) {
-				heart.setVisible(false);
-				if (heartService.filterHeartRateValues(dates)) {
-					bar.setValue(current + 0.125f);
-					LOG.info("Heart rate data recieved and stored to database");
-					Notification.show("User data stored successfully!");
-				} else {
-					Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-				}
-			} else {
-				Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-			}
-		});
-
-		return heart;
-	}
-
-	/**
-	 * @param sleep
-	 * @param bar
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public Button sleepBuilder(Button sleep, ProgressBar bar, DateField startDate, DateField endDate) {
-		sleep.setIcon(VaadinIcons.PLAY);
-		sleep.setCaption("Start");
-		sleep.setWidth("150");
-		sleep.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current > 0.2f && current < 1.0f && startDate != null && endDate != null) {
-				sleep.setVisible(false);
-				if (sleepService.sleep(dates)) {
-					bar.setValue(current + 0.125f);
-					LOG.info("Sleep data recieved and stored to database");
-					Notification.show("User data stored successfully!");
-				} else {
-					Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-				}
-			} else {
-				Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-			}
-		});
-
-		return sleep;
-	}
-
-	/**
-	 * @param activities
-	 * @param bar
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public Button activitiesBuilder(Button activities, ProgressBar bar, DateField startDate, DateField endDate) {
-		activities.setIcon(VaadinIcons.PLAY);
-		activities.setCaption("Start");
-		activities.setWidth("150");
-		activities.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current > 0.2f && current < 1.0f && startDate != null && endDate != null) {
-				activities.setVisible(false);
-				if (activitiesService.activities(dates)) {
-					bar.setValue(current + 0.125f);
-					LOG.info("Activities data recieved and stored to database");
-					Notification.show("User data stored successfully!");
-				} else {
-					Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-				}
-			} else {
-				Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-			}
-		});
-
-		return activities;
-	}
-
-	/**
-	 * @param other
-	 * @param bar
-	 * @return
-	 */
-	public Button otherBuilder(Button other, ProgressBar bar) {
-		other.setIcon(VaadinIcons.PLAY);
-		other.setCaption("Start");
-		other.setWidth("150");
-		other.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current > 0.2f && current < 1.0f) {
-				other.setVisible(false);
-				if (otherService.lifetime() && otherService.frequence()) {
-					bar.setValue(current + 0.125f);
-					LOG.info("Lifetime and frequence data recieved and stored to database");
-					Notification.show("User data stored successfully!");
-				} else {
-					Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-				}
-			} else {
-				Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-			}
-		});
-
-		return other;
-	}
-
-	/**
-	 * @param profile
-	 * @param bar
-	 * @return
-	 */
-	public Button profileBuilder(Button profile, ProgressBar bar) {
-		profile.setIcon(VaadinIcons.PLAY);
-		profile.setCaption("Start");
-		profile.setWidth("150");
-		profile.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current > 0.2f && current < 1.0f) {
-				profile.setVisible(false);
-				if (otherService.profile()) {
-					bar.setValue(current + 0.125f);
-					LOG.info("Profile data recieved and stored to database");
-					Notification.show("User data stored successfully!");
-				} else {
-					Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-				}
-			} else {
-				Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
-			}
-		});
-
-		return profile;
-	}
-
-	/**
 	 * @param heartRateMail
 	 * @param bar
 	 * @param mail
 	 * @param heartRate
+	 * @param multiCheckBox
 	 * @return
 	 */
-	public Button heartRateMailBuilder(Button heartRateMail, ProgressBar bar, TextField mail, TextField heartRate) {
+	public Button heartRateMailBuilder(Button heartRateMail, ProgressBar bar, TextField mail, TextField heartRate,
+			CheckBoxGroup<String> multiCheckBox) {
 		heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
 		heartRateMail.setCaption("Submit");
 		heartRateMail.setWidth("150");
 		heartRateMail.addClickListener(click -> {
 			float current = bar.getValue();
-			if (current > 0.8f && current < 1.0f) {
+			if (current > 0.75f && current < 1.0f) {
 				if (!mail.getValue().isEmpty() && !heartRate.getValue().isEmpty() && mail.getValue().contains("@")) {
-					heartRateMail.setVisible(false);
-					heartPeakService.heartRateSelect(mail.getValue(), heartRate.getValue());
-					bar.setValue(current + 0.125f);
-					LOG.info("Mail successfully sent to user with heart rate information");
-					Notification.show("Mail successfully sent to user with heart rate information!");
+					try {
+						heartPeakService.heartRateSelect(mail.getValue(), Long.valueOf(heartRate.getValue()));
+						bar.setValue(current + 0.25f);
+						heartRateMail.setEnabled(false);
+						LOG.info("Mail successfully sent to user with heart rate information");
+						Notification.show("Mail successfully sent to user with heart rate information!");
+					} catch (NumberFormatException e) {
+						Notification.show("Complete the minutes field with number", Type.ERROR_MESSAGE);
+					}
 				} else {
 					Notification.show("Complete the required fields with a valid e-mail & number of minutes",
 							Type.ERROR_MESSAGE);
@@ -323,5 +140,47 @@ public class ButtonsBuilderService {
 		});
 
 		return heartRateMail;
+	}
+
+	/**
+	 * @param complete
+	 * @param bar
+	 * @param dateFields
+	 * @param textFields
+	 * @param buttons
+	 * @param multiCheckBox
+	 * @return
+	 */
+	public Button completeBuilder(Button complete, ProgressBar bar, List<DateField> dateFields,
+			List<TextField> textFields, List<Button> buttons, CheckBoxGroup<String> multiCheckBox) {
+		complete.setIcon(VaadinIcons.FILE_REFRESH);
+		complete.setCaption("Try again");
+		complete.setWidth("150");
+		complete.addClickListener(click -> {
+			float current = bar.getValue();
+			if (current == 1.0f) {
+				clearFieldsService.clearAll(dateFields, textFields, buttons, multiCheckBox, bar);
+			} else {
+				Notification.show("The process is not completed.", Type.ERROR_MESSAGE);
+			}
+		});
+
+		return complete;
+	}
+
+	/**
+	 * @param exit
+	 * @param content
+	 * @return
+	 */
+	public Button exitBuilder(Button exit, VerticalLayout content) {
+		exit.setIcon(VaadinIcons.EXIT);
+		exit.setCaption("Exit");
+		exit.setWidth("150");
+		exit.addClickListener(click -> {
+			clearFieldsService.removeAll(content);
+		});
+
+		return exit;
 	}
 }

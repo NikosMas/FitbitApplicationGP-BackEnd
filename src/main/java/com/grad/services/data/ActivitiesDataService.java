@@ -67,14 +67,10 @@ public class ActivitiesDataService {
 	private boolean dataRetriever(String month) {
 		boolean success = false;
 		try {
-			ResponseEntity<String> steps = restTemplateGet.exchange(URI_STEPS + month, HttpMethod.GET,
-					saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> floors = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET,
-					saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> calories = restTemplateGet.exchange(URI_CALORIES + month, HttpMethod.GET,
-					saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> distance = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET,
-					saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> steps = restTemplateGet.exchange(URI_STEPS + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> floors = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> calories = restTemplateGet.exchange(URI_CALORIES + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> distance = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
 
 			if (steps.getStatusCodeValue() == 401) {
 				ResponseEntity<String> stepsWithRefreshToken = restTemplateGet.exchange(URI_STEPS + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
@@ -110,14 +106,11 @@ public class ActivitiesDataService {
 			}
 
 			if (calories.getStatusCodeValue() == 401) {
-				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(URI_CALORIES + month,
-						HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(caloriesWithRefreshToken,
-						CollectionEnum.ACTIVITIES_CALORIES.description(), CALORIES);
+				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(URI_CALORIES + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(caloriesWithRefreshToken,CollectionEnum.ACTIVITIES_CALORIES.description(), CALORIES);
 				success = true;
 			} else if (calories.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(calories, CollectionEnum.ACTIVITIES_CALORIES.description(),
-						CALORIES);
+				saveOperationsService.dataTypeInsert(calories, CollectionEnum.ACTIVITIES_CALORIES.description(),CALORIES);
 				success = true;
 			} else {
 				return false;

@@ -24,9 +24,8 @@ public class CreateCollectionsService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public boolean collectionsCreate() {
+	public void collectionsCreate() {
 		
-		if (mongoTemplate.getDb() != null) {
 			collections.stream().forEach(collectionName -> {
 
 				if (mongoTemplate.collectionExists(collectionName.description())) {
@@ -36,9 +35,6 @@ public class CreateCollectionsService {
 					mongoTemplate.createCollection(collectionName.description());
 				}
 			});
-			return true;
-		}
-		return false;
 	}
 
 }

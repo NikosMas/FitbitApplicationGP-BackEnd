@@ -48,10 +48,8 @@ public class OtherDataService {
 			profile = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET, dataService.getEntity(false), String.class);
 
 			if (profile.getStatusCodeValue() == 401) {
-				ResponseEntity<String> profileWithRefreshToken = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET,
-						dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.description(),
-						PROFILE_USER);
+				ResponseEntity<String> profileWithRefreshToken = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET,dataService.getEntity(true), String.class);
+				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.description(),PROFILE_USER);
 				return true;
 			} else if (profile.getStatusCodeValue() == 200) {
 				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.description(), PROFILE_USER);
@@ -71,13 +69,10 @@ public class OtherDataService {
 	public boolean lifetime() {
 		try {
 			ResponseEntity<String> lifetime;
-			lifetime = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, dataService.getEntity(false),
-					String.class);
+			lifetime = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, dataService.getEntity(false),	String.class);
 			if (lifetime.getStatusCodeValue() == 401) {
-				ResponseEntity<String> lifetimeWithRefreshToken = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET,
-						dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(lifetimeWithRefreshToken,
-						CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
+				ResponseEntity<String> lifetimeWithRefreshToken = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET,dataService.getEntity(true), String.class);
+				dataService.dataTypeInsert(lifetimeWithRefreshToken,CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
 				return true;
 			} else if (lifetime.getStatusCodeValue() == 200) {
 				dataService.dataTypeInsert(lifetime, CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
@@ -101,14 +96,11 @@ public class OtherDataService {
 					String.class);
 
 			if (frequence.getStatusCodeValue() == 401) {
-				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(URI_FREQUENCE,
-						HttpMethod.GET, dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(frequenceWithRefreshToken,
-						CollectionEnum.ACTIVITIES_FREQUENCE.description(), FREQUENCE_CATEGORIES);
+				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(URI_FREQUENCE,HttpMethod.GET, dataService.getEntity(true), String.class);
+				dataService.dataTypeInsert(frequenceWithRefreshToken,CollectionEnum.ACTIVITIES_FREQUENCE.description(), FREQUENCE_CATEGORIES);
 				return true;
 			} else if (frequence.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.description(),
-						FREQUENCE_CATEGORIES);
+				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.description(),FREQUENCE_CATEGORIES);
 				return true;
 			}
 			return false;

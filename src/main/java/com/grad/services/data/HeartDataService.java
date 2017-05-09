@@ -105,10 +105,8 @@ public class HeartDataService {
 					saveOperationsService.getEntity(false), String.class);
 
 			if (heart.getStatusCodeValue() == 401) {
-				ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(URI_HEART + month,
-						HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(heartWithRefreshToken,
-						CollectionEnum.ACTIVITIES_HEART.description(), HEART);
+				ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(URI_HEART + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(heartWithRefreshToken,	CollectionEnum.ACTIVITIES_HEART.description(), HEART);
 				return new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(HEART);
 			} else if (heart.getStatusCodeValue() == 200) {
 				saveOperationsService.dataTypeInsert(heart, CollectionEnum.ACTIVITIES_HEART.description(), HEART);

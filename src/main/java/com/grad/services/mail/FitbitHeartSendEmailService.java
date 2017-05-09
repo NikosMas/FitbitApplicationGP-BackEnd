@@ -38,7 +38,7 @@ public class FitbitHeartSendEmailService {
 	@Autowired
 	private MailInfoProperties appProperties;
 
-	public void email(String mail, String minutes) throws MessagingException {
+	public void email(String mail, Long minutes) throws MessagingException {
 		
 		final String subject = "Fitbit app Info mails";
 		final String text = "Goodmorning, " +'\n'+'\n'
