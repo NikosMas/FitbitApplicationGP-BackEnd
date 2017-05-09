@@ -23,6 +23,7 @@ public class CalendarService {
 	 */
 	public List<Map<String, String>> getDates(LocalDate startDate, LocalDate endDate) {
 
+		long addedDays = 0;
 		long between = ChronoUnit.DAYS.between(startDate, endDate);
 		List<Map<String, String>> dates = new ArrayList<Map<String, String>>();
 
@@ -37,12 +38,13 @@ public class CalendarService {
 			between -= 90;
 
 			startDate = endDate.plusDays(1);
+			addedDays += 1;
 		}
 
 		if (between > 0) {
 			Map<String, String> date = new HashMap<>();
 			date.put("StartDate", startDate.toString());
-			date.put("EndDate", startDate.plusDays(between).toString());
+			date.put("EndDate", startDate.plusDays(between).minusDays(addedDays).toString());
 			dates.add(date);
 		}
 		return dates;

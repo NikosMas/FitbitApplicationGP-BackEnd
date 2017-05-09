@@ -92,7 +92,7 @@ public class FitbitApplicationController {
 			buttonsService.authorizationBuilder(authorizationCode, bar, clientId, clientSecret);
 			buttons.add(authorizationCode);
 
-			CheckBoxGroup<String> multiCheckBox = new CheckBoxGroup<>("Multiple Selection");
+			CheckBoxGroup<String> multiCheckBox = new CheckBoxGroup<>("User data categories");
 			multiCheckBox.setItems("Sleep data", "Profile data", "Activities data", "Lifetime activities data",
 					"Frequent activities data", "HeartRate data");
 			multiCheckBox.setEnabled(false);
