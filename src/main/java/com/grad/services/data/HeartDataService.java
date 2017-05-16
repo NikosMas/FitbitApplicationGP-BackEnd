@@ -102,8 +102,7 @@ public class HeartDataService {
 	 */
 	private JSONArray heartCallResponse(String month) {
 		try {
-			ResponseEntity<String> heart = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,
-					saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> heart = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
 
 			if (heart.getStatusCodeValue() == 401) {
 				ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(URI_HEART + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);

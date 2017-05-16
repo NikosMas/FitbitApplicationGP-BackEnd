@@ -92,8 +92,7 @@ public class OtherDataService {
 	public boolean frequence() {
 		try {
 			ResponseEntity<String> frequence;
-			frequence = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, dataService.getEntity(false),
-					String.class);
+			frequence = restTemplateGet.exchange(URI_FREQUENCE, HttpMethod.GET, dataService.getEntity(false),String.class);
 
 			if (frequence.getStatusCodeValue() == 401) {
 				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(URI_FREQUENCE,HttpMethod.GET, dataService.getEntity(true), String.class);

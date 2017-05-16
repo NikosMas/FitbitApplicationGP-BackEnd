@@ -85,7 +85,7 @@ public class ActivitiesDataService {
 			}
 
 			if (floors.getStatusCodeValue() == 401) {
-				ResponseEntity<String> floorsWithRefreshToken = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET, saveOperationsService.getEntity(false), String.class);
+				ResponseEntity<String> floorsWithRefreshToken = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(floorsWithRefreshToken, CollectionEnum.ACTIVITIES_FLOORS.description(), FLOORS);
 				success = true;
 			} else if (floors.getStatusCodeValue() == 200) {
@@ -96,7 +96,7 @@ public class ActivitiesDataService {
 			}
 
 			if (distance.getStatusCodeValue() == 401) {
-				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET, saveOperationsService.getEntity(false), String.class);
+				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(distanceWithRefreshToken, CollectionEnum.ACTIVITIES_DISTANCE.description(), DISTANCE);
 				success = true;
 			} else if (distance.getStatusCodeValue() == 200) {

@@ -30,20 +30,18 @@ public enum CollectionEnum {
 	SLEEP_TIME_IN_BED("sleep_timeInBed"),
 	HEART_RATE("heart_rate");
 	
-	private String description;
+	private String code;
 
 	private CollectionEnum(String description) {
-		this.description = description;
+		this.code = description;
 	}
 
 	public String description() {
-		return description;
+		return code;
 	}
 
-	// Keep the enum instances in a static map, in order to efficiently
-	// implement the fromString method
 	private static final Map<String, CollectionEnum> stringToEnum = new HashMap<>();
-	// static initializer block to populate the map
+	
 	static {
 		Arrays.stream(values()).forEach(description -> stringToEnum.put(description.toString(), description));
 	}
@@ -51,14 +49,11 @@ public enum CollectionEnum {
 	@Override
 	@JsonValue
 	public String toString() {
-		return this.description;
+		return this.code;
 	}
 
 	/**
-	 * Attempts to find a {@link ProductSpeed} instance which matches the given
-	 * string representation. Returns an {@link Option}.
-	 * 
-	 * @param code
+	 * @param string
 	 * @return
 	 */
 	public static Option<CollectionEnum> fromString(String string) {

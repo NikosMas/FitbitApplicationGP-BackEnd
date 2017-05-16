@@ -11,6 +11,8 @@ import com.grad.domain.FitbitHeartRate;
 
 public interface FitbitHeartZoneRepo extends MongoRepository<FitbitHeartRate, String> {
 
-	public Stream<FitbitHeartRate> findByMinutesGreaterThanAndNameIs(long minutes, String name);
+	Stream<FitbitHeartRate> findByMinutesGreaterThanAndNameIs(long minutes, String name);
+	
+	FitbitHeartRate findDistinctByName(String name);
 
 }

@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.grad.config.MailInfoProperties;
+import com.grad.domain.FitbitHeartRate;
+import com.grad.domain.HeartRateCategory;
 import com.grad.heart.repository.FitbitHeartZoneRepo;
+import com.grad.services.builders.ClearAllService;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author nikos_mas
@@ -35,9 +39,13 @@ public class FitbitHeartCheckPeakService {
 	private FitbitHeartZoneRepo heartRepository;
 
 	@Autowired
+	private ClearAllService clearFieldsService;
+
+	@Autowired
 	private FitbitHeartSendEmailService sendMailService;
 
-	public void heartRateSelect(String mail, Long minutes) {
+	public void heartRateSelect(String mail, Long minutes, HeartRateCategory category, String startDate, String endDate,
+			VerticalLayout content) {
 		try {
 			File peaksfile = new File(properties.getFileName());
 			FileOutputStream stream;
@@ -47,25 +55,29 @@ public class FitbitHeartCheckPeakService {
 			OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
 			Writer w = new BufferedWriter(peakswrite);
 
-			w.write("These are Heart-Rate data during December 2015 and March 2016 when the user's heart-rate was at its Peak!"
-					+ '\n' + '\n');
-
-			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, "Peak").forEach(peak -> {
+			w.write("These are Heart-Rate data during " + startDate + " and " + endDate
+					+ " when the user's heart-rate was at its " + category + "!" + '\n' + '\n');
+			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.description()).forEach(d -> {
 
 				try {
-					w.write("In " + peak.getDate() + " your heart rate was at Peak zone for : " + peak.getMinutes()
-							+ " minutes" + '\n');
+					w.write("In " + d.getDate() + " your heart rate was at " + category.description() + " zone for : "
+							+ d.getMinutes() + " minutes" + '\n');
 				} catch (IOException e) {
 					LOG.error(e.toString());
+					clearFieldsService.removeAll(content);
 				}
-
 			});
-
+			
+			FitbitHeartRate heartRateZone = heartRepository.findDistinctByName(category.description());
+			Long min = heartRateZone.getMin();
+			Long max = heartRateZone.getMax();
+			
 			w.close();
-			sendMailService.email(mail, minutes);
+			sendMailService.email(mail, minutes, category, min, max);
 
 		} catch (MessagingException | IOException e) {
 			LOG.error(e.toString());
+			clearFieldsService.removeAll(content);
 		}
 	}
 }

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.grad.config.MailInfoProperties;
+import com.grad.domain.HeartRateCategory;
 
 /**
  * @author nikos_mas
@@ -34,19 +35,18 @@ import com.grad.config.MailInfoProperties;
 public class FitbitHeartSendEmailService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-	
+
 	@Autowired
 	private MailInfoProperties appProperties;
 
-	public void email(String mail, Long minutes) throws MessagingException {
-		
+	public void email(String mail, Long minutes, HeartRateCategory category, Long min, Long max)
+			throws MessagingException {
+
 		final String subject = "Fitbit app Info mails";
-		final String text = "Goodmorning, " +'\n'+'\n'
-							+ "These dates declared in this file describe "
-							+ "the Heart-Rate of the user which was at its Peak which means between 160 and 220 "
-							+ "for more than "+minutes+" minutes during these days per day." +'\n'
-							+ "Check it out please as soon as possible and take care." +'\n'+'\n'
-							+ "Hope we've helped. Keep on";
+		final String text = "Goodmorning, " + '\n' + '\n' + "These dates declared in this file describe "
+				+ "the Heart-Rate of the user which was at its " + category.description() + " which means between "
+				+ min + " and " + max + " " + "for more than " + minutes + " minutes during these days per day." + '\n'
+				+ "Check it out please as soon as possible and take care." + '\n' + '\n' + "Hope we've helped. Keep on";
 
 		Properties properties = new Properties();
 		properties.put("mail.smtp.starttls.enable", "true");
@@ -59,7 +59,7 @@ public class FitbitHeartSendEmailService {
 				return new PasswordAuthentication(appProperties.getUsername(), appProperties.getPassword());
 			}
 		});
-		
+
 		Multipart multipart = new MimeMultipart();
 		BodyPart messageBodyPart = new MimeBodyPart();
 		Message message = new MimeMessage(session);
@@ -77,7 +77,7 @@ public class FitbitHeartSendEmailService {
 		messageBodyPart.setFileName(appProperties.getFileName());
 		multipart.addBodyPart(messageBodyPart);
 		message.setContent(multipart);
-		
+
 		Transport.send(message);
 	}
 }

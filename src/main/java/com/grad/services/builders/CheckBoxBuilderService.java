@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.grad.domain.HeartRateCategory;
 import com.grad.services.calendar.CalendarService;
 import com.grad.services.data.ActivitiesDataService;
 import com.grad.services.data.HeartDataService;
@@ -19,12 +20,17 @@ import com.grad.services.data.SleepDataService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
 
+/**
+ * @author nikosmas
+ *
+ */
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class CheckBoxBuilderService {
@@ -58,17 +64,18 @@ public class CheckBoxBuilderService {
 	 * @param endDate
 	 * @param heartRateMailBuilder
 	 * @param content
+	 * @param select 
 	 * @return
 	 */
-	public Button checkBoxButton(CheckBoxGroup<String> multiCheckBox, Button submitCheckBoxButton, ProgressBar bar,
-			DateField startDate, DateField endDate, Button heartRateMailBuilder, VerticalLayout content) {
+	public void checkBoxButton(CheckBoxGroup<String> multiCheckBox, Button submitCheckBoxButton, ProgressBar bar,
+			DateField startDate, DateField endDate, Button heartRateMailBuilder, VerticalLayout content, ComboBox<HeartRateCategory> select) {
 
 		submitCheckBoxButton.setIcon(VaadinIcons.CHECK_CIRCLE);
 		submitCheckBoxButton.setCaption("Submit");
 		submitCheckBoxButton.setWidth("150");
 		submitCheckBoxButton.addClickListener(click -> {
 			float current = bar.getValue();
-			if (current > 0.4f && current < 1.0f && !multiCheckBox.getSelectedItems().isEmpty()) {
+			if (current > 0.4f && current < 1.0f && !multiCheckBox.isEmpty()) {
 
 				multiCheckBox.getSelectedItems().stream().forEach(check -> {
 
@@ -139,6 +146,7 @@ public class CheckBoxBuilderService {
 				float cur = 0.75f;
 				if (!multiCheckBox.isSelected("HeartRate data")) {
 					heartRateMailBuilder.setEnabled(false);
+					select.setEnabled(false);
 					cur += 0.25f;
 				}
 				bar.setValue(current + (cur - current));
@@ -149,8 +157,6 @@ public class CheckBoxBuilderService {
 				Notification.show("You missed some steps before or you didn't select anything", Type.ERROR_MESSAGE);
 			}
 		});
-
-		return submitCheckBoxButton;
 	}
 
 	/**
@@ -161,7 +167,7 @@ public class CheckBoxBuilderService {
 	 * @param multiCheckBox
 	 * @return
 	 */
-	public Button submitDates(Button submitDates, ProgressBar bar, DateField startDate, DateField endDate,
+	public void submitDates(Button submitDates, ProgressBar bar, DateField startDate, DateField endDate,
 			CheckBoxGroup<String> multiCheckBox) {
 		submitDates.setIcon(VaadinIcons.CHECK_CIRCLE);
 		submitDates.setCaption("Submit");
@@ -179,8 +185,6 @@ public class CheckBoxBuilderService {
 				Notification.show("You missed some steps before or dates given are invalid", Type.ERROR_MESSAGE);
 			}
 		});
-
-		return submitDates;
 	}
 
 }
