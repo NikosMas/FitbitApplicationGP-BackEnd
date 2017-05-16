@@ -58,7 +58,7 @@ public class ButtonsBuilderService {
 	 * @param bar
 	 * @return
 	 */
-	public Button collectionsBuilder(Button collections, ProgressBar bar) {
+	public void collectionsBuilder(Button collections, ProgressBar bar) {
 		collections.setIcon(VaadinIcons.PLAY);
 		collections.setCaption("Start");
 		collections.setWidth("150");
@@ -71,8 +71,6 @@ public class ButtonsBuilderService {
 			LOG.info("Collections created successfully into Mongo database");
 			Notification.show("Collections created successfully!");
 		});
-
-		return collections;
 	}
 
 	/**
