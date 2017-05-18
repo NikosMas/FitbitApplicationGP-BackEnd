@@ -65,10 +65,22 @@ public class ClearAllService {
 
 		Image image = new Image();
 		image.setSource(new FileResource(new File("src/main/resources/images/ThankYou.png")));
-		image.setSizeFull();
 
 		content.addComponent(image);
 		LOG.info("Exit application. Thank you!!");
+	}
+	
+	/**
+	 * @param content
+	 */
+	public void tryLater(VerticalLayout content) {
+		content.removeAllComponents();
+
+		Image image = new Image();
+		image.setSource(new FileResource(new File("src/main/resources/images/Later.png")));
+		
+		content.addComponent(image);
+		LOG.info("Please try later. Application exited");
 	}
 
 }

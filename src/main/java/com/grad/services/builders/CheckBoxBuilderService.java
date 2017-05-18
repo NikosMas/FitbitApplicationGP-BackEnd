@@ -84,8 +84,7 @@ public class CheckBoxBuilderService {
 						if (sleepService.sleep(dates)) {
 							LOG.info("Sleep data recieved and stored to database");
 						} else {
-							Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-							clearFieldsService.removeAll(content);
+							clearFieldsService.tryLater(content);
 						}
 						break;
 					case "Profile data":
@@ -94,8 +93,7 @@ public class CheckBoxBuilderService {
 							bar.setValue(current + 0.041666667f);
 							Notification.show("User data stored successfully!");
 						} else {
-							Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-							clearFieldsService.removeAll(content);
+							clearFieldsService.tryLater(content);
 						}
 						break;
 					case "Activities data":
@@ -104,8 +102,7 @@ public class CheckBoxBuilderService {
 							bar.setValue(current + 0.041666667f);
 							Notification.show("User data stored successfully!");
 						} else {
-							Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-							clearFieldsService.removeAll(content);
+							clearFieldsService.tryLater(content);
 						}
 						break;
 					case "Lifetime activities data":
@@ -114,8 +111,7 @@ public class CheckBoxBuilderService {
 							bar.setValue(current + 0.041666667f);
 							Notification.show("User data stored successfully!");
 						} else {
-							Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-							clearFieldsService.removeAll(content);
+							clearFieldsService.tryLater(content);
 						}
 						break;
 					case "Frequent activities data":
@@ -124,8 +120,7 @@ public class CheckBoxBuilderService {
 							bar.setValue(current + 0.041666667f);
 							Notification.show("User data stored successfully!");
 						} else {
-							Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-							clearFieldsService.removeAll(content);
+							clearFieldsService.tryLater(content);
 						}
 						break;
 					case "HeartRate data":
@@ -134,8 +129,7 @@ public class CheckBoxBuilderService {
 							bar.setValue(current + 0.041666667f);
 							Notification.show("User data stored successfully!");
 						} else {
-							Notification.show("Something went wrong! Please try later", Type.ERROR_MESSAGE);
-							clearFieldsService.removeAll(content);
+							clearFieldsService.tryLater(content);
 						}
 						break;
 					default:

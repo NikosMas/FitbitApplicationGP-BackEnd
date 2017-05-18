@@ -56,11 +56,11 @@ public class FitbitHeartCheckPeakService {
 			Writer w = new BufferedWriter(peakswrite);
 
 			w.write("These are Heart-Rate data during " + startDate + " and " + endDate
-					+ " when the user's heart-rate was at its " + category + "!" + '\n' + '\n');
+					+ " when the user's heart-rate was at " + category + " zone!" + '\n' + '\n');
 			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.description()).forEach(d -> {
 
 				try {
-					w.write("In " + d.getDate() + " your heart rate was at " + category.description() + " zone for : "
+					w.write("In " + d.getDate() + " for : "
 							+ d.getMinutes() + " minutes" + '\n');
 				} catch (IOException e) {
 					LOG.error(e.toString());
@@ -77,7 +77,7 @@ public class FitbitHeartCheckPeakService {
 
 		} catch (MessagingException | IOException e) {
 			LOG.error(e.toString());
-			clearFieldsService.removeAll(content);
+			clearFieldsService.tryLater(content);
 		}
 	}
 }

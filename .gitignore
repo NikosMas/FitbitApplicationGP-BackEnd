@@ -8,8 +8,8 @@ target/
 .project
 .settings
 .springBeans
-heartRatePeaks.txt
-src/main/resources/
+*.txt
+
 
 ### IntelliJ IDEA ###
 .idea
