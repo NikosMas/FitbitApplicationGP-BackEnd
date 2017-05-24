@@ -6,9 +6,7 @@ import java.time.Month;
 import org.springframework.stereotype.Service;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.TextField;
 
 /**
@@ -18,6 +16,9 @@ import com.vaadin.ui.TextField;
 @Service
 public class FieldsBuilderService {
 
+	/**
+	 * @param date
+	 */
 	public void dateBuilder(DateField date) {
 		date.setDateFormat("yyyy-MM-dd");
 		date.setPlaceholder("yyyy-mm-dd");
@@ -28,6 +29,9 @@ public class FieldsBuilderService {
 		date.setDateOutOfRangeMessage("The date you picked is out of range with available dates");
 	}
 
+	/**
+	 * @param mail
+	 */
 	public void mailBuilder(TextField mail) {
 		mail.setCaption(
 				"Put the mail address that you want the application send information about high heart rate values");
@@ -36,6 +40,9 @@ public class FieldsBuilderService {
 		mail.setIcon(VaadinIcons.ENVELOPE_O);
 	}
 
+	/**
+	 * @param heartRate
+	 */
 	public void heartRateBuilder(TextField heartRate) {
 		heartRate.setCaption(
 				"Write the minimum number of minutes that you want to filter out by the category you chose");
@@ -44,6 +51,9 @@ public class FieldsBuilderService {
 		heartRate.setIcon(VaadinIcons.CLOCK);
 	}
 
+	/**
+	 * @param clientId
+	 */
 	public void clientIdBuilder(TextField clientId) {
 		clientId.setCaption("Put the clientId of your application at -> dev.fitbit.com");
 		clientId.setWidth("250");
@@ -51,6 +61,9 @@ public class FieldsBuilderService {
 		clientId.setIcon(VaadinIcons.USER);
 	}
 
+	/**
+	 * @param clientSecret
+	 */
 	public void clientSecretBuilder(TextField clientSecret) {
 		clientSecret.setCaption("Put the clientSecret of your application at -> dev.fitbit.com");
 		clientSecret.setWidth("250");

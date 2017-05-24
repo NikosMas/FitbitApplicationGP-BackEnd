@@ -96,6 +96,13 @@ public class ButtonsBuilderService {
 		});
 	}
 
+	/**
+	 * @param heartRateMail
+	 * @param mail
+	 * @param heartRate
+	 * @param select
+	 * @param content
+	 */
 	public void heartRateMailBuilder(Button heartRateMail, TextField mail, TextField heartRate,
 			ComboBox<HeartRateCategory> select, VerticalLayout content) {
 		heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
@@ -132,7 +139,6 @@ public class ButtonsBuilderService {
 	 * @param buttons
 	 * @param multiCheckBox
 	 * @param select
-	 * @return
 	 */
 	public void completeBuilder(Button complete, ProgressBar bar, List<DateField> dateFields,
 			List<TextField> textFields, List<Button> buttons, CheckBoxGroup<String> multiCheckBox,

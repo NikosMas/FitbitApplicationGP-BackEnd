@@ -59,7 +59,6 @@ public class CheckBoxBuilderService {
 	 * @param startDate
 	 * @param endDate
 	 * @param content
-	 * @return
 	 */
 	public void checkBoxButton(CheckBoxGroup<String> multiCheckBox, Button submitCheckBoxButton, DateField startDate,
 			DateField endDate, VerticalLayout content) {
@@ -136,7 +135,6 @@ public class CheckBoxBuilderService {
 	 * @param startDate
 	 * @param endDate
 	 * @param multiCheckBox
-	 * @return
 	 */
 	public void submitDates(Button submitDates, DateField startDate, DateField endDate,
 			CheckBoxGroup<String> multiCheckBox) {
