@@ -55,19 +55,15 @@ public class ButtonsBuilderService {
 
 	/**
 	 * @param collections
-	 * @param bar
 	 * @return
 	 */
-	public void collectionsBuilder(Button collections, ProgressBar bar) {
+	public void collectionsBuilder(Button collections) {
 		collections.setIcon(VaadinIcons.PLAY);
 		collections.setCaption("Start");
 		collections.setWidth("150");
 		collections.addClickListener(click -> {
 			collections.setEnabled(false);
-			float current = bar.getValue();
 			collectionsService.collectionsCreate();
-			if (current < 1.0f)
-				bar.setValue(current + 0.25f);
 			LOG.info("Collections created successfully into Mongo database");
 			Notification.show("Collections created successfully!");
 		});
@@ -75,80 +71,55 @@ public class ButtonsBuilderService {
 
 	/**
 	 * @param authorizationCode
-	 * @param bar
 	 * @param clientId
 	 * @param clientSecret
 	 * @return
 	 */
-	public void authorizationBuilder(Button authorizationCode, ProgressBar bar, TextField clientId,
-			TextField clientSecret) {
+	public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret) {
 		authorizationCode.setIcon(VaadinIcons.CHECK_CIRCLE);
 		authorizationCode.setCaption("Submit");
 		authorizationCode.setWidth("150");
 		authorizationCode.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current > 0.2 && current < 1.0f) {
-				if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
-					redisTemplate.opsForValue().set("Client-id", clientId.getValue());
-					redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
-					authorizationCode.setEnabled(false);
-					clientId.setEnabled(false);
-					clientSecret.setEnabled(false);
-					codeService.codeRequest();
-					bar.setValue(current + 0.25f);
-					Notification.show("Authorization code saved into Redis database and it's ready for use!");
-				} else {
-					Notification.show(
-							"Complete with valid client id and client secret given from to your account at Fitbit",
-							Type.ERROR_MESSAGE);
-				}
+			if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
+				redisTemplate.opsForValue().set("Client-id", clientId.getValue());
+				redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
+				authorizationCode.setEnabled(false);
+				clientId.setEnabled(false);
+				clientSecret.setEnabled(false);
+				codeService.codeRequest();
+				Notification.show("Authorization code saved into Redis database and it's ready for use!");
 			} else {
-				Notification.show("Complete the required steps before do this", Type.ERROR_MESSAGE);
+				Notification.show(
+						"Complete with valid client id and client secret given from to your account at Fitbit",
+						Type.ERROR_MESSAGE);
 			}
 		});
 	}
 
-	/**
-	 * @param heartRateMail
-	 * @param bar
-	 * @param mail
-	 * @param heartRate
-	 * @param multiCheckBox
-	 * @param endDate
-	 * @param startDate
-	 * @param select
-	 * @param content 
-	 * @return
-	 */
-	public void heartRateMailBuilder(Button heartRateMail, ProgressBar bar, TextField mail, TextField heartRate,
-			CheckBoxGroup<String> multiCheckBox, DateField startDate, DateField endDate,
+	public void heartRateMailBuilder(Button heartRateMail, TextField mail, TextField heartRate,
 			ComboBox<HeartRateCategory> select, VerticalLayout content) {
 		heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
 		heartRateMail.setCaption("Submit");
 		heartRateMail.setWidth("150");
 		heartRateMail.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current >= 0.75f && current < 1.0f) {
-				if (!mail.getValue().isEmpty() && !heartRate.getValue().isEmpty() && mail.getValue().contains("@") && !select.isEmpty()) {
-					try {
-						heartPeakService.heartRateSelect(mail.getValue(), Long.valueOf(heartRate.getValue()),
-								select.getValue(), startDate.getValue().toString(), endDate.getValue().toString(), content);
-						bar.setValue(current + 0.25f);
-						heartRateMail.setEnabled(false);
-						select.setEnabled(false);
-						mail.setEnabled(false);
-						heartRate.setEnabled(false);
-						LOG.info("Mail successfully sent to user with heart rate information");
-						Notification.show("Mail successfully sent to user with heart rate information!");
-					} catch (NumberFormatException e) {
-						Notification.show("Complete the minutes field with number", Type.ERROR_MESSAGE);
-					}
-				} else {
-					Notification.show("Complete the required fields with a valid e-mail & number of minutes and choose category",
-							Type.ERROR_MESSAGE);
+			if (!mail.getValue().isEmpty() && !heartRate.getValue().isEmpty() && mail.getValue().contains("@")
+					&& !select.isEmpty()) {
+				try {
+					heartPeakService.heartRateSelect(mail.getValue(), Long.valueOf(heartRate.getValue()),
+							select.getValue(), content);
+					heartRateMail.setEnabled(false);
+					select.setEnabled(false);
+					mail.setEnabled(false);
+					heartRate.setEnabled(false);
+					LOG.info("Mail successfully sent to user with heart rate information");
+					Notification.show("Mail successfully sent to user with heart rate information!");
+				} catch (NumberFormatException e) {
+					Notification.show("Complete the minutes field with number", Type.ERROR_MESSAGE);
 				}
 			} else {
-				Notification.show("Complete the required steps before send the e-mail", Type.ERROR_MESSAGE);
+				Notification.show(
+						"Complete the required fields with a valid e-mail & number of minutes and choose category",
+						Type.ERROR_MESSAGE);
 			}
 		});
 	}

@@ -20,7 +20,7 @@ public class AuthorizationCodeController {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
-	@RequestMapping("/")
+	@RequestMapping("fitbitApp/authCode")
 	public void authorization(@RequestParam(value = "code") String code){
 
 		redisTemplate.opsForValue().set("AuthorizationCode", code);

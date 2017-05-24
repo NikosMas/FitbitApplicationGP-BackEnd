@@ -5,20 +5,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.grad.domain.HeartRateCategory;
 import com.grad.services.builders.ButtonsBuilderService;
 import com.grad.services.builders.CheckBoxBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
-import com.grad.services.builders.OtherWidgetsBuilderService;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -27,10 +24,10 @@ import com.vaadin.ui.VerticalLayout;
  * @author nikosmas
  *
  */
-public class FitbitApplicationController {
+public class UserDataController {
 
 	@Title("FitbitApplication")
-	@SpringUI(path = "home")
+	@SpringUI(path = "fitbitApp/userData")
 	public static class VaadinUI extends UI {
 
 		private static final long serialVersionUID = 1L;
@@ -47,9 +44,6 @@ public class FitbitApplicationController {
 		@Autowired
 		private CheckBoxBuilderService checkBoxService;
 
-		@Autowired
-		private OtherWidgetsBuilderService widgetService;
-
 		@Override
 		public void init(VaadinRequest request) {
 			VerticalLayout content = new VerticalLayout();
@@ -57,10 +51,10 @@ public class FitbitApplicationController {
 			setResponsive(true);
 
 			Image image = new Image();
-			ProgressBar bar = new ProgressBar(0.0f);
-			ComboBox<HeartRateCategory> select = new ComboBox<>("Select Heart rate category");
 			CheckBoxGroup<String> multiCheckBox = new CheckBoxGroup<>("User data categories");
-			widgetService.other(image, bar, select, multiCheckBox);
+			multiCheckBox.setItems("Sleep data", "Profile data", "Activities data", "Lifetime activities data",
+					"Frequent activities data", "HeartRate data");
+			multiCheckBox.setEnabled(false);
 
 			DateField startDate = new DateField();
 			fieldsService.dateBuilder(startDate);
@@ -74,52 +68,40 @@ public class FitbitApplicationController {
 			fieldsService.heartRateBuilder(heartRate);
 			textFields.add(heartRate);
 
-			TextField mail = new TextField();
-			fieldsService.mailBuilder(mail);
-			textFields.add(mail);
-
-			TextField clientId = new TextField();
-			fieldsService.clientIdBuilder(clientId);
-			textFields.add(clientId);
-
-			TextField clientSecret = new TextField();
-			fieldsService.clientSecretBuilder(clientSecret);
-			textFields.add(clientSecret);
-
-			Button collections = new Button();
-			buttonsService.collectionsBuilder(collections, bar);
-			buttons.add(collections);
-
-			Button authorizationCode = new Button();
-			buttonsService.authorizationBuilder(authorizationCode, bar, clientId, clientSecret);
-			buttons.add(authorizationCode);
-
 			Button submitDates = new Button();
-			checkBoxService.submitDates(submitDates, bar, startDate, endDate, multiCheckBox);
+			checkBoxService.submitDates(submitDates, startDate, endDate, multiCheckBox);
 			buttons.add(submitDates);
-
-			Button heartRateMail = new Button();
-			buttonsService.heartRateMailBuilder(heartRateMail, bar, mail, heartRate, multiCheckBox, startDate, endDate,
-					select, content);
-			buttons.add(heartRateMail);
 
 			Button submitCheckBoxButton = new Button();
 			buttons.add(submitCheckBoxButton);
 
-			checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, bar, startDate, endDate, heartRateMail,
-					content, select);
+			checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, startDate, endDate, content);
 
 			Button exit = new Button();
 			buttonsService.exitBuilder(exit, content);
 			buttons.add(exit);
 
-			Button complete = new Button();
-			buttons.add(complete);
-			buttonsService.completeBuilder(complete, bar, dateFields, textFields, buttons, multiCheckBox, select);
-
-			widgetService.contentSetters(content, image, bar, select, multiCheckBox, startDate, endDate, heartRate,
-					mail, clientId, clientSecret, collections, authorizationCode, submitDates, heartRateMail,
-					submitCheckBoxButton, exit, complete);
+			content.addComponent(image);
+			content.addComponent(new Label("\n"));
+			content.addComponent(new Label("Pick the date range that the application will use for the data calls"));
+			content.addComponent(startDate);
+			content.addComponent(endDate);
+			content.addComponent(new Label("\n"));
+			content.addComponent(submitDates);
+			content.addComponent(new Label("\n"));
+			content.addComponent(new Label("Pick the categories you want to retrieve data from fitbit API"));
+			content.addComponent(multiCheckBox);
+			content.addComponent(new Label("\n"));
+			content.addComponent(submitCheckBoxButton);
+			content.addComponent(new Label("\n"));
+			content.addComponent(new Button("Continue heart-rate filtering and mail process", event -> {
+				getPage().setLocation("heartRateFilter");
+				getSession().close();
+			}));
+			content.addComponent(new Label("\n"));
+			content.addComponent(new Label("\n"));
+			content.addComponent(new Label("Push to exit and stop all processes"));
+			content.addComponent(exit);
 
 		}
 	}
