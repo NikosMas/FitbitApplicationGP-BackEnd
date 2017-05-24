@@ -1,5 +1,6 @@
 package com.grad.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import com.grad.services.builders.ButtonsBuilderService;
 import com.grad.services.builders.CheckBoxBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
 import com.vaadin.annotations.Title;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
@@ -51,6 +53,7 @@ public class UserDataController {
 			setResponsive(true);
 
 			Image image = new Image();
+			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
 			CheckBoxGroup<String> multiCheckBox = new CheckBoxGroup<>("User data categories");
 			multiCheckBox.setItems("Sleep data", "Profile data", "Activities data", "Lifetime activities data",
 					"Frequent activities data", "HeartRate data");

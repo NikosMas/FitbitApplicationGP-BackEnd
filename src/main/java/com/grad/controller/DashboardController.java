@@ -45,6 +45,9 @@ public class DashboardController {
 			setContent(content);
 			setResponsive(true);
 
+			Image image = new Image();
+			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
+			
 			Image clientIdImage = new Image();
 			clientIdImage.setSource(new FileResource(new File("src/main/resources/images/clientid.gif")));
 			clientIdImage.setWidth("300");
@@ -75,7 +78,7 @@ public class DashboardController {
 			buttonsService.exitBuilder(exit, content);
 			buttons.add(exit);
 
-			
+			content.addComponent(image);
 			content.addComponent(new Label("Push to start creating the collections into Mongo database"));
 			content.addComponent(collections);
 			content.addComponent(new Label("\n"));
