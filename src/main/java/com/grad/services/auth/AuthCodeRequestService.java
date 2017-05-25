@@ -23,20 +23,20 @@ public class AuthCodeRequestService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 	private static String OS = System.getProperty("os.name");
-	
 
 	public void codeRequest() {
 		try {
-			if (OS.equalsIgnoreCase("ind")) {
-
-				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri1() + "client_id="
-						+ redisTemplate.opsForValue().get("Client-id") + "&" + properties.getAuthCodeUri2());
-
-			} else if (OS.equalsIgnoreCase("linux")) {
+			if (OS.equalsIgnoreCase("linux")) {
 
 				Runtime.getRuntime().exec("xdg-open " + properties.getAuthCodeUri1() + "client_id="
 						+ redisTemplate.opsForValue().get("Client-id") + "&" + properties.getAuthCodeUri2());
+			} else {
+				
+				Runtime.getRuntime()
+						.exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri1() + "client_id="
+								+ redisTemplate.opsForValue().get("Client-id") + "&" + properties.getAuthCodeUri2());
 			}
+
 		} catch (IOException e) {
 			LOG.error(e.toString());
 		}
