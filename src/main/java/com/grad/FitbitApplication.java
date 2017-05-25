@@ -12,9 +12,9 @@ import com.grad.config.RefreshTokenProperties;
  * @author nikos_mas
  */
 
-@SpringBootApplication
 @EnableConfigurationProperties({ MongoProperties.class, AuthorizationProperties.class, MailInfoProperties.class,
 		RefreshTokenProperties.class })
+@SpringBootApplication
 public class FitbitApplication {
 
 	public static void main(String[] args) {

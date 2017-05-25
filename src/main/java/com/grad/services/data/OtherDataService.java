@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +18,6 @@ import com.grad.domain.CollectionEnum;
  */
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class OtherDataService {
 
 	// URI for each data. body part
@@ -42,6 +39,7 @@ public class OtherDataService {
 	/**
 	 * @return
 	 */
+	
 	public boolean profile() {
 		try {
 			ResponseEntity<String> profile;
@@ -66,6 +64,7 @@ public class OtherDataService {
 	/**
 	 * @return
 	 */
+	
 	public boolean lifetime() {
 		try {
 			ResponseEntity<String> lifetime;
@@ -89,6 +88,7 @@ public class OtherDataService {
 	/**
 	 * @return
 	 */
+	
 	public boolean frequence() {
 		try {
 			ResponseEntity<String> frequence;

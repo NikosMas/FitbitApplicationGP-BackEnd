@@ -17,8 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -30,7 +28,6 @@ import com.grad.config.AuthorizationProperties;
  */
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class AccessTokenRequestService {
 
 	private static final Logger LOG = LoggerFactory.getLogger("Fitbit application");

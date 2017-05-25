@@ -14,8 +14,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +27,6 @@ import com.mongodb.util.JSON;
  */
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class HeartDataService {
 
 	// URI for heart data. body part

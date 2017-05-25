@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,7 +21,6 @@ import com.grad.services.calendar.CalendarService;
  */
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class ActivitiesDataService {
 
 	// URI for each data. body part
@@ -53,6 +50,7 @@ public class ActivitiesDataService {
 	 * @param dates
 	 * @return
 	 */
+	
 	public boolean activities(List<Map<String, String>> dates) {
 
 		String p = calendarService.months(dates).stream().filter(pack -> dataRetriever(pack) == false).findFirst()

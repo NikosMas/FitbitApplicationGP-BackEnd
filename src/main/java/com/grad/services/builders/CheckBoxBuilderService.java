@@ -8,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.grad.services.calendar.CalendarService;
 import com.grad.services.data.ActivitiesDataService;
 import com.grad.services.data.HeartDataService;
@@ -29,7 +26,6 @@ import com.vaadin.ui.Notification.Type;
  *
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class CheckBoxBuilderService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
@@ -152,6 +148,18 @@ public class CheckBoxBuilderService {
 				Notification.show("You missed some steps before or dates given are invalid", Type.ERROR_MESSAGE);
 			}
 		});
+	}
+
+	/**
+	 * @param multiCheckBox
+	 */
+	public void checkBoxBuilder(CheckBoxGroup<String> multiCheckBox) {
+
+		multiCheckBox.setCaption("User data categories");
+		multiCheckBox.setItems("Sleep data", "Profile data", "Activities data", "Lifetime activities data",
+				"Frequent activities data", "HeartRate data");
+		multiCheckBox.setEnabled(false);
+
 	}
 
 }

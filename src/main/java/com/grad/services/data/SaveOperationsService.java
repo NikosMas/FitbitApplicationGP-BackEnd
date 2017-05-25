@@ -12,8 +12,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import com.grad.domain.CollectionEnum;
 import com.grad.services.auth.AccessTokenRequestService;
 import com.grad.services.auth.RefreshTokenRequestService;
@@ -26,7 +24,6 @@ import com.mongodb.util.JSON;
  */
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class SaveOperationsService {
 
 	@Autowired

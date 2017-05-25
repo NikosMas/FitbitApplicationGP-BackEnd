@@ -9,21 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
-
 import com.grad.domain.HeartRateCategory;
 import com.grad.services.auth.AuthCodeRequestService;
 import com.grad.services.collections.CreateCollectionsService;
 import com.grad.services.mail.FitbitHeartCheckPeakService;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -32,7 +28,6 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class ButtonsBuilderService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
@@ -73,14 +68,16 @@ public class ButtonsBuilderService {
 	 * @param authorizationCode
 	 * @param clientId
 	 * @param clientSecret
+	 * @param collections
 	 * @return
 	 */
-	public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret) {
+	public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret,
+			Button collections) {
 		authorizationCode.setIcon(VaadinIcons.CHECK_CIRCLE);
 		authorizationCode.setCaption("Submit");
 		authorizationCode.setWidth("150");
 		authorizationCode.addClickListener(click -> {
-			if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
+			if (!(clientId.isEmpty() || clientSecret.isEmpty()) && !collections.isEnabled()) {
 				redisTemplate.opsForValue().set("Client-id", clientId.getValue());
 				redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
 				authorizationCode.setEnabled(false);
@@ -132,28 +129,44 @@ public class ButtonsBuilderService {
 	}
 
 	/**
-	 * @param complete
-	 * @param bar
-	 * @param dateFields
-	 * @param textFields
-	 * @param buttons
+	 * @param continueProcess
+	 * @param request
+	 * @param authorizationCode
+	 * @param submitCheckBoxButton
 	 * @param multiCheckBox
-	 * @param select
+	 * @return
 	 */
-	public void completeBuilder(Button complete, ProgressBar bar, List<DateField> dateFields,
-			List<TextField> textFields, List<Button> buttons, CheckBoxGroup<String> multiCheckBox,
-			ComboBox<HeartRateCategory> select) {
-		complete.setIcon(VaadinIcons.FILE_REFRESH);
-		complete.setCaption("Try again");
-		complete.setWidth("150");
-		complete.addClickListener(click -> {
-			float current = bar.getValue();
-			if (current == 1.0f) {
-				clearFieldsService.clearAll(dateFields, textFields, buttons, multiCheckBox, bar, select);
-			} else {
-				Notification.show("The process is not completed.", Type.ERROR_MESSAGE);
+	public boolean continueBuilder(Button continueProcess, VaadinRequest request, Button authorizationCode,
+			Button submitCheckBoxButton, CheckBoxGroup<String> multiCheckBox) {
+
+		String endpoint = request.getPathInfo();
+
+		switch (endpoint) {
+		case "/fitbitApp/dashboard":
+			continueProcess.setCaption("Continue to user data receiving process");
+			if (authorizationCode.isEnabled()) {
+				Notification.show(
+						"Complete with a valid clientId & clientSecret and receive the authorization code required",
+						Type.ERROR_MESSAGE);
+				return false;
 			}
-		});
+			break;
+		case "/fitbitApp/userData":
+			continueProcess.setCaption("Continue heart-rate filtering and mail process");
+			if (submitCheckBoxButton.isEnabled()) {
+				Notification.show("Complete the required steps before", Type.ERROR_MESSAGE);
+				return false;
+			} else if (!multiCheckBox.getValue().contains("HeartRate data")) {
+				Notification.show(
+						"Heart Rate data aren't exist into database so you can't continue to email process. Thank you!");
+				return false;
+			}
+			break;
+		default:
+			break;
+		}
+		return true;
+
 	}
 
 	/**

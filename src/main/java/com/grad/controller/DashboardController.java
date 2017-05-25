@@ -1,20 +1,18 @@
 package com.grad.controller;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.grad.services.builders.ButtonsBuilderService;
+import com.grad.services.builders.ContentBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
+import com.grad.services.builders.ToolsBuilderService;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -25,13 +23,11 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class DashboardController {
 
-	@Title("FitbitApplication")
+	@Title("Home")
 	@SpringUI(path = "fitbitApp/dashboard")
 	public static class VaadinUI extends UI {
 
 		private static final long serialVersionUID = 1L;
-		private List<TextField> textFields = new ArrayList<TextField>();
-		private List<Button> buttons = new ArrayList<Button>();
 
 		@Autowired
 		private FieldsBuilderService fieldsService;
@@ -39,68 +35,57 @@ public class DashboardController {
 		@Autowired
 		private ButtonsBuilderService buttonsService;
 
+		@Autowired
+		private ToolsBuilderService imageService;
+
+		@Autowired
+		private ContentBuilderService contentService;
+
+		
 		@Override
 		public void init(VaadinRequest request) {
 			VerticalLayout content = new VerticalLayout();
 			setContent(content);
 			setResponsive(true);
-
+			
 			Image image = new Image();
 			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
-			
+
 			Image clientIdImage = new Image();
-			clientIdImage.setSource(new FileResource(new File("src/main/resources/images/clientid.gif")));
-			clientIdImage.setWidth("300");
-			clientIdImage.setHeight("150");
-			
+			imageService.imageBuilder(clientIdImage, new File("src/main/resources/images/clientid.gif"));
+
 			Image clientSecretImage = new Image();
-			clientSecretImage.setSource(new FileResource(new File("src/main/resources/images/clientSecret.gif")));
-			clientSecretImage.setWidth("300");
-			clientSecretImage.setHeight("150");
+			imageService.imageBuilder(clientSecretImage, new File("src/main/resources/images/clientSecret.gif"));
 
 			TextField clientId = new TextField();
 			fieldsService.clientIdBuilder(clientId);
-			textFields.add(clientId);
 
 			TextField clientSecret = new TextField();
 			fieldsService.clientSecretBuilder(clientSecret);
-			textFields.add(clientSecret);
 
 			Button collections = new Button();
 			buttonsService.collectionsBuilder(collections);
-			buttons.add(collections);
 
 			Button authorizationCode = new Button();
-			buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret);
-			buttons.add(authorizationCode);
+			buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, collections);
 
 			Button exit = new Button();
 			buttonsService.exitBuilder(exit, content);
-			buttons.add(exit);
 
-			content.addComponent(image);
-			content.addComponent(new Label("Push to start creating the collections into Mongo database"));
-			content.addComponent(collections);
-			content.addComponent(new Label("\n"));
-			content.addComponent(clientIdImage);
-			content.addComponent(clientId);
-			content.addComponent(new Label("\n"));
-			content.addComponent(clientSecretImage);
-			content.addComponent(clientSecret);
-			content.addComponent(new Label("\n"));
-			content.addComponent(new Label(
-					"Push to start connecting with Fitbit API for recieving the authorization code required to next calls to the API"));
-			content.addComponent(authorizationCode);
-			content.addComponent(new Label("\n"));
-			content.addComponent(new Button("Continue to user data receiving process", event -> {
-				getPage().setLocation("userData");
-				getSession().close();
-			}));
-			content.addComponent(new Label("\n"));
-			content.addComponent(new Label("\n"));
-			content.addComponent(new Label("Push to exit and stop all processes"));
-			content.addComponent(exit);
+			// business part with redirection is here because of private {@link
+			// Page} at {@link UI}
+			Button continueProcess = new Button();
+			continueProcess.setCaption("Continue to user data receiving process");
+			continueProcess.addClickListener(click -> {
+				if (buttonsService.continueBuilder(continueProcess, request, authorizationCode, null, null)) {
+					getPage().setLocation("userData");
+					getSession().close();
+				}
+			});
 
+			contentService.dashboardContentBuilder(content, image, clientIdImage, clientSecretImage, clientId, clientSecret,
+					collections, authorizationCode, exit, continueProcess);
 		}
 	}
+
 }
