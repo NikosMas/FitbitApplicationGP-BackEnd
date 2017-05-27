@@ -64,7 +64,7 @@ public class CheckBoxBuilderService {
 		submitCheckBoxButton.setWidth("150");
 		submitCheckBoxButton.addClickListener(click -> {
 			if (!multiCheckBox.isEmpty()) {
-
+				submitCheckBoxButton.setEnabled(false);
 				multiCheckBox.getSelectedItems().stream().forEach(check -> {
 
 					switch (check) {
