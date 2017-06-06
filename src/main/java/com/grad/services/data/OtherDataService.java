@@ -47,10 +47,10 @@ public class OtherDataService {
 
 			if (profile.getStatusCodeValue() == 401) {
 				ResponseEntity<String> profileWithRefreshToken = restTemplateGet.exchange(URI_PROFILE, HttpMethod.GET,dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.description(),PROFILE_USER);
+				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.desc(),PROFILE_USER);
 				return true;
 			} else if (profile.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.description(), PROFILE_USER);
+				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.desc(), PROFILE_USER);
 				return true;
 			}
 			return false;
@@ -71,10 +71,10 @@ public class OtherDataService {
 			lifetime = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET, dataService.getEntity(false),	String.class);
 			if (lifetime.getStatusCodeValue() == 401) {
 				ResponseEntity<String> lifetimeWithRefreshToken = restTemplateGet.exchange(URI_LIFETIME, HttpMethod.GET,dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(lifetimeWithRefreshToken,CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
+				dataService.dataTypeInsert(lifetimeWithRefreshToken,CollectionEnum.ACTIVITIES_LIFETIME.desc(), null);
 				return true;
 			} else if (lifetime.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(lifetime, CollectionEnum.ACTIVITIES_LIFETIME.description(), null);
+				dataService.dataTypeInsert(lifetime, CollectionEnum.ACTIVITIES_LIFETIME.desc(), null);
 				return true;
 			}
 			return false;
@@ -96,10 +96,10 @@ public class OtherDataService {
 
 			if (frequence.getStatusCodeValue() == 401) {
 				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(URI_FREQUENCE,HttpMethod.GET, dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(frequenceWithRefreshToken,CollectionEnum.ACTIVITIES_FREQUENCE.description(), FREQUENCE_CATEGORIES);
+				dataService.dataTypeInsert(frequenceWithRefreshToken,CollectionEnum.ACTIVITIES_FREQUENCE.desc(), FREQUENCE_CATEGORIES);
 				return true;
 			} else if (frequence.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.description(),FREQUENCE_CATEGORIES);
+				dataService.dataTypeInsert(frequence, CollectionEnum.ACTIVITIES_FREQUENCE.desc(),FREQUENCE_CATEGORIES);
 				return true;
 			}
 			return false;

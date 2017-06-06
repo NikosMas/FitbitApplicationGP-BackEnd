@@ -24,11 +24,11 @@ public class CreateCollectionsService {
 		
 			collections.stream().forEach(collectionName -> {
 
-				if (mongoTemplate.collectionExists(collectionName.description())) {
-					mongoTemplate.dropCollection(collectionName.description());
-					mongoTemplate.createCollection(collectionName.description());
+				if (mongoTemplate.collectionExists(collectionName.desc())) {
+					mongoTemplate.dropCollection(collectionName.desc());
+					mongoTemplate.createCollection(collectionName.desc());
 				} else {
-					mongoTemplate.createCollection(collectionName.description());
+					mongoTemplate.createCollection(collectionName.desc());
 				}
 			});
 	}

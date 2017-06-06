@@ -16,6 +16,20 @@ public class FitbitHeartRate {
 	private Long max;
 	private Long min;
 
+	public FitbitHeartRate() {
+		super();
+	}
+
+	public FitbitHeartRate(String date, String name, Long minutes, Long caloriesOut, Long max, Long min) {
+		super();
+		this.date = date;
+		this.name = name;
+		this.minutes = minutes;
+		this.caloriesOut = caloriesOut;
+		this.max = max;
+		this.min = min;
+	}
+
 	public String getDate() {
 		return date;
 	}
