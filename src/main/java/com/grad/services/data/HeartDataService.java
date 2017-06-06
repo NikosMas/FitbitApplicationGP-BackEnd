@@ -23,7 +23,9 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
- * @author nikos_mas
+ * Service about requesting to fitbit api for heart-rate data
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service

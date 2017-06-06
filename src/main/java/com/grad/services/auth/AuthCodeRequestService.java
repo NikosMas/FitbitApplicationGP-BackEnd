@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.grad.config.AuthorizationProperties;
 
 /**
- * @author nikos_mas
+ * Service about receiving authorization code from fitbit api
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service

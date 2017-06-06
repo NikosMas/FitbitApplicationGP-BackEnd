@@ -12,9 +12,11 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author nikosmas
- *
+ * Service about clearing all Vaadin contents
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class ClearAllService {

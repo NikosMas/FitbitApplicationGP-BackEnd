@@ -10,9 +10,11 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.TextField;
 
 /**
- * @author nikosmas
- *
+ * Service about Vaadin text & date fields building 
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 @Service
 public class FieldsBuilderService {
 

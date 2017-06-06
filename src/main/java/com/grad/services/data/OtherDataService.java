@@ -14,7 +14,9 @@ import org.springframework.web.client.RestTemplate;
 import com.grad.domain.CollectionEnum;
 
 /**
- * @author nikos_mas
+ * Service about requesting to fitbit api for profile, lifetime activities & frequent activities data
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service

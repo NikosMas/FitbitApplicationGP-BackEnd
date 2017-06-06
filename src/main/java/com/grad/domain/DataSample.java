@@ -1,5 +1,11 @@
 package com.grad.domain;
 
+/**
+ * model class required at saving service  
+ * 
+ * @author nikos_mas, alex_kak
+ */
+
 public class DataSample {
 
 	private String dateTime;

@@ -21,10 +21,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.grad.config.MailInfoProperties;
+import com.grad.controller.HeartRateFilterController;
 import com.grad.domain.HeartRateCategory;
 
 /**
- * @author nikos_mas
+ * Service about sending email information about user's heart rate according to info given at {@link HeartRateFilterController}
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service
@@ -40,7 +43,7 @@ public class FitbitHeartSendEmailService {
 
 		final String subject = "Fitbit app Info mails";
 		final String text = "Goodmorning, " + '\n' + '\n' + "These dates declared in this file describe "
-				+ "the Heart-Rate of the user which was at its " + category.description() + " which means between "
+				+ "the Heart-Rate of the user which was at its " + category.desc() + " which means between "
 				+ min + " and " + max + " " + "for more than " + minutes + " minutes during these days per day." + '\n'
 				+ "Check it out please as soon as possible and take care." + '\n' + '\n' + "Hope we've helped. Keep on";
 

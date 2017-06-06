@@ -20,9 +20,11 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author nikosmas
- *
+ * controller at /fitbitApp/heartRateFilter waiting the user to fill the form about heart rate & mail info
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 public class HeartRateFilterController {
 
 	@Title("Heart Rate Mail")

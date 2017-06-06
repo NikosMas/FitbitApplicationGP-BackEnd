@@ -18,9 +18,11 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author nikosmas
- *
+ * controller at /fitbitApp/dashboard waiting the user to fill the form about authorization info
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 public class DashboardController {
 
 	@Title("Home")

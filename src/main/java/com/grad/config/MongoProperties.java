@@ -3,7 +3,9 @@ package com.grad.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author nikos_mas
+ * property configuration associated with Mongo database requirements
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @ConfigurationProperties("mongoDB")

@@ -1,17 +1,11 @@
 package com.grad.domain;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import javaslang.control.Option;
-
 /**
- * @author nikosmas
- *
+ * Enum class containing heart rate zone names 
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 public enum HeartRateCategory {
 	
 	OUT_OF_RANGE("Out of Range"),
@@ -19,36 +13,14 @@ public enum HeartRateCategory {
 	CARDIO("Cardio"),
 	PEAK("Peak");
 	
-	private String code;
+	private String desc;
 
-	private HeartRateCategory(String description) {
-		this.code = description;
+	private HeartRateCategory(String desc) {
+		this.desc = desc;
 	}
 
-	public String description() {
-		return code;
-	}
-
-	private static final Map<String, HeartRateCategory> stringToEnum = new HashMap<>();
-	
-	static {
-		Arrays.stream(values()).forEach(description -> stringToEnum.put(description.toString(), description));
-	}
-
-	@Override
-	@JsonValue
-	public String toString() {
-		return this.code;
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	public static Option<HeartRateCategory> fromString(String string) {
-		HeartRateCategory responseCode = stringToEnum.get(string);
-
-		return Option.of(responseCode);
+	public String desc() {
+		return desc;
 	}
 
 }

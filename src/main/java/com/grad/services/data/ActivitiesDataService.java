@@ -17,7 +17,9 @@ import com.grad.domain.CollectionEnum;
 import com.grad.services.calendar.CalendarService;
 
 /**
- * @author nikos_mas
+ * Service about requesting to fitbit api for activity data
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service

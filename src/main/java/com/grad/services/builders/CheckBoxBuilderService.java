@@ -22,9 +22,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
 
 /**
- * @author nikosmas
- *
+ * Service about Vaadin checkbox building 
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 @Service
 public class CheckBoxBuilderService {
 

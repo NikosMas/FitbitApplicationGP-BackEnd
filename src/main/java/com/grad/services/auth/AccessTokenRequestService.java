@@ -24,7 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import com.grad.config.AuthorizationProperties;
 
 /**
- * @author nikos_mas
+ * Service about receiving access token from fitbit api
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service

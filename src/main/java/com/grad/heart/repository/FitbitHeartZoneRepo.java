@@ -6,7 +6,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.grad.domain.FitbitHeartRate;
 
 /**
- * @author nikos_mas
+ * Repository about {@link FitbitHeartRate}
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 public interface FitbitHeartZoneRepo extends MongoRepository<FitbitHeartRate, String> {

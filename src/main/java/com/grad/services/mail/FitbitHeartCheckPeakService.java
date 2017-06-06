@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.grad.config.MailInfoProperties;
+import com.grad.controller.HeartRateFilterController;
 import com.grad.domain.FitbitHeartRate;
 import com.grad.domain.HeartRateCategory;
 import com.grad.heart.repository.FitbitHeartZoneRepo;
@@ -20,7 +21,9 @@ import com.grad.services.builders.ClearAllService;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author nikos_mas
+ * Service about filtering heart rate data from database according to info given at {@link HeartRateFilterController}
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service
@@ -51,7 +54,7 @@ public class FitbitHeartCheckPeakService {
 			Writer w = new BufferedWriter(peakswrite);
 
 			w.write("These are Heart-Rate data when the user's heart-rate was at " + category + " zone!" + '\n' + '\n');
-			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.description()).forEach(d -> {
+			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.desc()).forEach(d -> {
 
 				try {
 					w.write("In " + d.getDate() + " for : "
@@ -62,7 +65,7 @@ public class FitbitHeartCheckPeakService {
 				}
 			});
 			
-			FitbitHeartRate heartRateZone = heartRepository.findDistinctByName(category.description());
+			FitbitHeartRate heartRateZone = heartRepository.findDistinctByName(category.desc());
 			Long min = heartRateZone.getMin();
 			Long max = heartRateZone.getMax();
 			

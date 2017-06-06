@@ -1,15 +1,9 @@
 package com.grad.domain;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import javaslang.control.Option;
-
 /**
- * @author nikos_mas
+ * Enum class containing Mongo collection names 
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 public enum CollectionEnum {
@@ -41,35 +35,14 @@ public enum CollectionEnum {
 	TIME_IN_BED_MONTHLY("time_in_bed_monthly");
 	
 	
-	private String code;
+	private String desc;
 
-	private CollectionEnum(String description) {
-		this.code = description;
+	private CollectionEnum(String desc) {
+		this.desc = desc;
 	}
 
 	public String desc() {
-		return code;
+		return desc;
 	}
 
-	private static final Map<String, CollectionEnum> stringToEnum = new HashMap<>();
-	
-	static {
-		Arrays.stream(values()).forEach(description -> stringToEnum.put(description.toString(), description));
-	}
-
-	@Override
-	@JsonValue
-	public String toString() {
-		return this.code;
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	public static Option<CollectionEnum> fromString(String string) {
-		CollectionEnum responseCode = stringToEnum.get(string);
-
-		return Option.of(responseCode);
-	}
 }

@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author nikos_mas
+ * rest controller on localhost waiting get request from fitbit api
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @RestController

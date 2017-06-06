@@ -3,7 +3,9 @@ package com.grad.domain;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * @author nikos_mas
+ * model class about collection 'heart_rate' 
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Document(collection = "heart_rate")

@@ -21,7 +21,9 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
- * @author nikos_mas
+ * Service about saving user data received to database
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Service

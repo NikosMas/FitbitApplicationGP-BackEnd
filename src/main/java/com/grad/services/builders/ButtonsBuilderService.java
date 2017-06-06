@@ -24,9 +24,11 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author nikosmas
- *
+ * Service about Vaadin buttons building 
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 @Service
 public class ButtonsBuilderService {
 

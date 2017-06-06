@@ -10,10 +10,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.grad.controller.UserDataController;
+
 /**
- * @author nikosmas
- *
+ * Service about dates given from the user at {@link UserDataController}. Devides them by 90 days if required
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 @Service
 public class CalendarService {
 

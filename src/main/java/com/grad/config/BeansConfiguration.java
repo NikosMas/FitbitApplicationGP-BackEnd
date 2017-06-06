@@ -11,7 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import com.mongodb.MongoClient;
 
 /**
- * @author nikos_mas
+ * beans configuration associated with required beans
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @Configuration

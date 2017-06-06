@@ -20,9 +20,11 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author nikosmas
- *
+ * controller at /fitbitApp/userData waiting the user to fill the form about user data 
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 public class UserDataController {
 
 	@Title("User Data")

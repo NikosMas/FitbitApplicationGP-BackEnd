@@ -12,9 +12,11 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Image;
 
 /**
- * @author nikosmas
- *
+ * Service about some Vaadin tools building 
+ * 
+ * @author nikos_mas, alex_kak
  */
+
 @Service
 public class ToolsBuilderService {
 
@@ -41,7 +43,7 @@ public class ToolsBuilderService {
 
 		select.setCaption("Select Heart rate category");
 		select.setItems(planets);
-		select.setItemCaptionGenerator(HeartRateCategory::description);
+		select.setItemCaptionGenerator(HeartRateCategory::desc);
 		select.setPlaceholder("heart-rate category");
 		select.setWidth("250");
 		select.setEmptySelectionAllowed(false);

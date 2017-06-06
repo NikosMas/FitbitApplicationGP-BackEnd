@@ -3,7 +3,9 @@ package com.grad.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author nikos_mas
+ * property configuration associated with refresh token service requirements
+ * 
+ * @author nikos_mas, alex_kak
  */
 
 @ConfigurationProperties("refreshtoken")
