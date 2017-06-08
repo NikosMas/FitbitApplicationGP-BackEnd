@@ -101,6 +101,8 @@ public class SaveOperationsService {
 	}
 
 	/**
+	 * finds all data and update the dateTime value to "yyyy-mm" date format
+	 * 
 	 * @param collection inserted the data
 	 * @param newCollection where will be stored the new data
 	 */
