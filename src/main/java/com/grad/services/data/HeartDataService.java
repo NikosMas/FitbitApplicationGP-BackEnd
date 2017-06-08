@@ -82,7 +82,7 @@ public class HeartDataService {
 			}
 			return false;
 		} catch (IOException | JSONException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 			return false;
 		}
 	}

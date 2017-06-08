@@ -146,7 +146,7 @@ public class SleepDataService {
 			}
 
 		} catch (IOException | RestClientException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 			return false;
 		}
 		return success;

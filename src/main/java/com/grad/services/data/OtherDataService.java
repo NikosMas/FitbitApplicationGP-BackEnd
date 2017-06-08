@@ -58,7 +58,7 @@ public class OtherDataService {
 			return false;
 
 		} catch (RestClientException | IOException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 			return false;
 		}
 	}
@@ -82,7 +82,7 @@ public class OtherDataService {
 			return false;
 
 		} catch (RestClientException | IOException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 			return false;
 		}
 	}
@@ -107,7 +107,7 @@ public class OtherDataService {
 			return false;
 
 		} catch (RestClientException | IOException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 			return false;
 		}
 	}

@@ -60,7 +60,7 @@ public class FitbitHeartCheckPeakService {
 					w.write("In " + d.getDate() + " for : "
 							+ d.getMinutes() + " minutes" + '\n');
 				} catch (IOException e) {
-					LOG.error(e.toString());
+					LOG.error("Something went wrong: ", e);
 					clearFieldsService.removeAll(content);
 				}
 			});
@@ -73,7 +73,7 @@ public class FitbitHeartCheckPeakService {
 			sendMailService.email(mail, minutes, category, min, max);
 
 		} catch (MessagingException | IOException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 			clearFieldsService.tryLater(content);
 		}
 	}

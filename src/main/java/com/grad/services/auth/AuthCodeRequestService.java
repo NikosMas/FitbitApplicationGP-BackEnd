@@ -40,7 +40,7 @@ public class AuthCodeRequestService {
 			}
 
 		} catch (IOException e) {
-			LOG.error(e.toString());
+			LOG.error("Something went wrong: ", e);
 		}
 	}
 }
