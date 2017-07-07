@@ -75,8 +75,8 @@ public class UserDataController {
 			Button exit = new Button();
 			buttonsService.exitBuilder(exit, content);
 
-			// business part with redirection is here because of private {@link
-			// Page} at {@link UI}
+			/** business part with redirection is here because of private {@link
+			 Page} at {@link UI} */
 			Button continueProcess = new Button();
 			continueProcess.setCaption("Continue to user data receiving process");
 			continueProcess.addClickListener(click -> {
