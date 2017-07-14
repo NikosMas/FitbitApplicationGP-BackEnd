@@ -18,7 +18,7 @@ import com.grad.config.AuthorizationProperties;
 public class AuthCodeRequestService {
 
 	@Autowired
-	private AuthorizationProperties properties;
+	private AuthorizationProperties authProp;
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
@@ -30,13 +30,13 @@ public class AuthCodeRequestService {
 		try {
 			if (OS.equalsIgnoreCase("linux")) {
 
-				Runtime.getRuntime().exec("xdg-open " + properties.getAuthCodeUri1() + "client_id="
-						+ redisTemplate.opsForValue().get("Client-id") + "&" + properties.getAuthCodeUri2());
+				Runtime.getRuntime().exec("xdg-open " + authProp.getAuthCodeUri1() + "client_id="
+						+ redisTemplate.opsForValue().get("Client-id") + "&" + authProp.getAuthCodeUri2());
 			} else {
 				
 				Runtime.getRuntime()
-						.exec("rundll32 url.dll,FileProtocolHandler " + properties.getAuthCodeUri1() + "client_id="
-								+ redisTemplate.opsForValue().get("Client-id") + "&" + properties.getAuthCodeUri2());
+						.exec("rundll32 url.dll,FileProtocolHandler " + authProp.getAuthCodeUri1() + "client_id="
+								+ redisTemplate.opsForValue().get("Client-id") + "&" + authProp.getAuthCodeUri2());
 			}
 
 		} catch (IOException e) {

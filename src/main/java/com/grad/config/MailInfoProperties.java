@@ -15,6 +15,11 @@ public class MailInfoProperties {
 	private String username;
 	private String password;
 	private String sendFrom;
+	private String mailSmtpStartEnable;
+	private String mailSmtpAuth;
+	private String mailSmtpHost;
+	private String mailSmtpPort;
+	private String mailSubject;
 	
 	public String getFileName() {
 		return fileName;
@@ -40,10 +45,35 @@ public class MailInfoProperties {
 	public void setSendFrom(String sendFrom) {
 		this.sendFrom = sendFrom;
 	}
-	@Override
-	public String toString() {
-		return "MailInfoProperties [fileName=" + fileName + ", username=" + username + ", password=" + password
-				+ ", sendFrom=" + sendFrom + "]";
+	public String getMailSmtpStartEnable() {
+		return mailSmtpStartEnable;
+	}
+	public void setMailSmtpStartEnable(String mailSmtpStartEnable) {
+		this.mailSmtpStartEnable = mailSmtpStartEnable;
+	}
+	public String getMailSmtpAuth() {
+		return mailSmtpAuth;
+	}
+	public void setMailSmtpAuth(String mailSmtpAuth) {
+		this.mailSmtpAuth = mailSmtpAuth;
+	}
+	public String getMailSmtpHost() {
+		return mailSmtpHost;
+	}
+	public void setMailSmtpHost(String mailSmtpHost) {
+		this.mailSmtpHost = mailSmtpHost;
+	}
+	public String getMailSmtpPort() {
+		return mailSmtpPort;
+	}
+	public void setMailSmtpPort(String mailSmtpPort) {
+		this.mailSmtpPort = mailSmtpPort;
+	}
+	public String getMailSubject() {
+		return mailSubject;
+	}
+	public void setMailSubject(String mailSubject) {
+		this.mailSubject = mailSubject;
 	}
 	
 }

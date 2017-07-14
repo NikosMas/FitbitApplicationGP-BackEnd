@@ -20,7 +20,7 @@ import com.mongodb.MongoClient;
 public class BeansConfiguration {
 
 	@Autowired
-	private MongoProperties properties;
+	private MongoProperties mongoProp;
 
 	@Bean
 	public RestTemplate restTemplate() {
@@ -29,7 +29,7 @@ public class BeansConfiguration {
 
 	@Bean
 	public MongoTemplate mongoTemplate() {
-		return new MongoTemplate(new MongoClient(properties.getHost(), properties.getPort()), properties.getDbname());
+		return new MongoTemplate(new MongoClient(mongoProp.getHost(), mongoProp.getPort()), mongoProp.getDbname());
 	}
 
 	@Bean

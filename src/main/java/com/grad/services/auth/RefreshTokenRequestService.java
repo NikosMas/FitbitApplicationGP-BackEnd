@@ -7,8 +7,6 @@ import java.util.Base64;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
@@ -21,6 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.grad.config.AuthorizationProperties;
 import com.grad.config.RefreshTokenProperties;
 
 /**
@@ -32,11 +31,11 @@ import com.grad.config.RefreshTokenProperties;
 @Service
 public class RefreshTokenRequestService {
 
-	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-	private static final String uriToken = "https://api.fitbit.com/oauth2/token";
-
 	@Autowired
-	private RefreshTokenProperties refreshProperties;
+	private RefreshTokenProperties refreshProp;
+	
+	@Autowired
+	private AuthorizationProperties authProp;
 
 	@Autowired
 	private ObjectMapper mapperToken;
@@ -59,18 +58,18 @@ public class RefreshTokenRequestService {
 						.getBytes("utf-8"));
 		
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-		parameters.add("grant_type", refreshProperties.getGrantType());
+		parameters.add("grant_type", refreshProp.getGrantType());
 		parameters.add("refresh_token", redisTemplate.opsForValue().get("RefreshToken"));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.set("Authorization", "Basic " + headerAuth);
-		headers.set("Accept", refreshProperties.getHeaderAccept());
+		headers.set("Accept", refreshProp.getHeaderAccept());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,
 				headers);
-		ResponseEntity<String> response = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> response = restTemplateToken.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
 
 		JsonNode jsonResponse = mapperToken.readTree(response.getBody()).path("access_token");
 		String accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);

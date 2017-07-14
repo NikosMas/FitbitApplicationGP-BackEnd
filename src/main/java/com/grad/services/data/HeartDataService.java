@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.grad.config.FitbitApiUrlProperties;
 import com.grad.domain.CollectionEnum;
 import com.grad.services.calendar.CalendarService;
 import com.mongodb.DBObject;
@@ -30,9 +31,6 @@ import com.mongodb.util.JSON;
 
 @Service
 public class HeartDataService {
-
-	// URI for heart data. body part
-	private static final String URI_HEART = "https://api.fitbit.com/1/user/-/activities/heart/date/";
 
 	// filtered field from response
 	private static final String HEART = "activities-heart";
@@ -50,6 +48,9 @@ public class HeartDataService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private FitbitApiUrlProperties urlsProp;
 
 	/**
 	 * @param dates
@@ -113,10 +114,10 @@ public class HeartDataService {
 	 * @throws JsonProcessingException
 	 */
 	private JSONArray heartCallResponse(String month) throws JsonProcessingException, IOException {
-		ResponseEntity<String> heart = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+		ResponseEntity<String> heart = restTemplateGet.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
 
 		if (heart.getStatusCodeValue() == 401) {
-			ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(URI_HEART + month, HttpMethod.GET,saveOperationsService.getEntity(true), String.class);
+			ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(true), String.class);
 			saveOperationsService.dataTypeInsert(heartWithRefreshToken, CollectionEnum.ACTIVITIES_HEART.desc(), HEART);
 			return new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(HEART);
 		} else if (heart.getStatusCodeValue() == 200) {

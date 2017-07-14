@@ -16,6 +16,7 @@ public class AuthorizationProperties {
 	private String headerAccept;
 	private String authCodeUri1;
 	private String authCodeUri2;
+	private String tokenUrl;
 	
 	public String getGrantType() {
 		return grantType;
@@ -47,9 +48,10 @@ public class AuthorizationProperties {
 	public void setAuthCodeUri2(String authCodeUri2) {
 		this.authCodeUri2 = authCodeUri2;
 	}
-	@Override
-	public String toString() {
-		return "AuthorizationProperties [grantType=" + grantType + ", redirectUri=" + redirectUri + ", headerAccept="
-				+ headerAccept + ", authCodeUri1=" + authCodeUri1 + ", authCodeUri2=" + authCodeUri2 + "]";
+	public String getTokenUrl() {
+		return tokenUrl;
+	}
+	public void setTokenUrl(String tokenUrl) {
+		this.tokenUrl = tokenUrl;
 	}
 }

@@ -30,8 +30,4 @@ public class RefreshTokenProperties {
 		this.headerAccept = headerAccept;
 	}
 
-	@Override
-	public String toString() {
-		return "RefreshTokenProperties [grantType=" + grantType + ", headerAccept=" + headerAccept + "]";
-	}
 }

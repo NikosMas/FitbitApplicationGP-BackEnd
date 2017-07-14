@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.grad.config.FitbitApiUrlProperties;
 import com.grad.domain.CollectionEnum;
 import com.grad.services.calendar.CalendarService;
 
@@ -24,13 +25,7 @@ import com.grad.services.calendar.CalendarService;
 
 @Service
 public class ActivitiesDataService {
-
-	// URI for each data. body part
-	private static final String URI_STEPS = "https://api.fitbit.com/1/user/-/activities/steps/date/";
-	private static final String URI_FLOORS = "https://api.fitbit.com/1/user/-/activities/floors/date/";
-	private static final String URI_DISTANCE = "https://api.fitbit.com/1/user/-/activities/distance/date";
-	private static final String URI_CALORIES = "https://api.fitbit.com/1/user/-/activities/calories/date/";
-
+	
 	// response data filter name
 	private static final String CALORIES = "activities-calories";
 	private static final String DISTANCE = "categories";
@@ -41,6 +36,9 @@ public class ActivitiesDataService {
 
 	@Autowired
 	private RestTemplate restTemplateGet;
+	
+	@Autowired
+	private FitbitApiUrlProperties urlsProp;
 
 	@Autowired
 	private SaveOperationsService saveOperationsService;
@@ -68,13 +66,13 @@ public class ActivitiesDataService {
 	private boolean dataRetriever(String month) {
 		boolean success = false;
 		try {
-			ResponseEntity<String> steps = restTemplateGet.exchange(URI_STEPS + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> floors = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> calories = restTemplateGet.exchange(URI_CALORIES + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> distance = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> steps = restTemplateGet.exchange(urlsProp.getStepsUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> floors = restTemplateGet.exchange(urlsProp.getFloorsUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> calories = restTemplateGet.exchange(urlsProp.getCaloriesUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> distance = restTemplateGet.exchange(urlsProp.getDistanceUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
 
 			if (steps.getStatusCodeValue() == 401) {
-				ResponseEntity<String> stepsWithRefreshToken = restTemplateGet.exchange(URI_STEPS + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				ResponseEntity<String> stepsWithRefreshToken = restTemplateGet.exchange(urlsProp.getStepsUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(stepsWithRefreshToken,	CollectionEnum.ACTIVITIES_STEPS.desc(), STEPS);
 				success = true;
 			} else if (steps.getStatusCodeValue() == 200) {
@@ -85,7 +83,7 @@ public class ActivitiesDataService {
 			}
 
 			if (floors.getStatusCodeValue() == 401) {
-				ResponseEntity<String> floorsWithRefreshToken = restTemplateGet.exchange(URI_FLOORS + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				ResponseEntity<String> floorsWithRefreshToken = restTemplateGet.exchange(urlsProp.getFloorsUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(floorsWithRefreshToken, CollectionEnum.ACTIVITIES_FLOORS.desc(), FLOORS);
 				success = true;
 			} else if (floors.getStatusCodeValue() == 200) {
@@ -96,7 +94,7 @@ public class ActivitiesDataService {
 			}
 
 			if (distance.getStatusCodeValue() == 401) {
-				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(URI_DISTANCE + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(urlsProp.getDistanceUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(distanceWithRefreshToken, CollectionEnum.ACTIVITIES_DISTANCE.desc(), DISTANCE);
 				success = true;
 			} else if (distance.getStatusCodeValue() == 200) {
@@ -107,7 +105,7 @@ public class ActivitiesDataService {
 			}
 
 			if (calories.getStatusCodeValue() == 401) {
-				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(URI_CALORIES + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(urlsProp.getCaloriesUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(caloriesWithRefreshToken,CollectionEnum.ACTIVITIES_CALORIES.desc(), CALORIES);
 				success = true;
 			} else if (calories.getStatusCodeValue() == 200) {

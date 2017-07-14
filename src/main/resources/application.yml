@@ -11,6 +11,7 @@ accesstoken:
   headerAccept: application/json
   authCodeUri1: https://www.fitbit.com/oauth2/authorize?redirect_uri=http://localhost:8080/fitbitApp/authCode&response_type=code&
   authCodeUri2: scope=activity%20nutrition%20heartrate%20profile%20settings%20sleep%20social%20weight&expires_in=3600&prompt=login
+  tokenUrl: https://api.fitbit.com/oauth2/token
 
 # refresh token credentials
 refreshtoken:
@@ -23,5 +24,30 @@ mailInfo:
   password: 
   fileName: heartData.txt
   sendFrom: nickma72@gmail.com
+  mailSmtpStartEnable: true
+  mailSmtpAuth: true
+  mailSmtpHost: smtp.gmail.com
+  mailSmtpPort: 587
+  mailSubject: Fitbit app Info mails
   
+# urls
+fitbitApiUrls:
+  
+  #sleep
+  timeInBedUrl: https://api.fitbit.com/1/user/-/sleep/timeInBed/date/
+  minutesAsleepUrl: https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/
+  minutesAwakeUrl: https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/
+  toFallAsleepUrl: https://api.fitbit.com/1/user/-/sleep/minutesToFallAsleep/date/
+  afterWakeUpUrl: https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/
+  efficiencyUrl: https://api.fitbit.com/1/user/-/sleep/efficiency/date/
+  
+  #activity
+  stepsUrl: https://api.fitbit.com/1/user/-/activities/steps/date/
+  floorsUrl: https://api.fitbit.com/1/user/-/activities/floors/date/
+  distanceUrl: https://api.fitbit.com/1/user/-/activities/distance/date/
+  caloriesUrl: https://api.fitbit.com/1/user/-/activities/calories/date/
+  heartUrl: https://api.fitbit.com/1/user/-/activities/heart/date/
+  profileUrl: https://api.fitbit.com/1/user/-/profile.json
+  frequenceUrl: https://api.fitbit.com/1/user/-/activities/frequence.json
+  lifetimeUrl: https://api.fitbit.com/1/user/-/activities.json 
   

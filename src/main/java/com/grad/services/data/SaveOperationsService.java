@@ -4,8 +4,6 @@ import java.io.IOException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
@@ -42,7 +40,6 @@ public class SaveOperationsService {
 	private RefreshTokenRequestService refreshTokenService;
 
 	private static String accessToken;
-	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 	/**
 	 * method that stores the data from API

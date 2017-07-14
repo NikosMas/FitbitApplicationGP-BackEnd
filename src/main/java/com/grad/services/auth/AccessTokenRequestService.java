@@ -7,8 +7,6 @@ import java.util.Base64;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
@@ -32,15 +30,13 @@ import com.grad.config.AuthorizationProperties;
 @Service
 public class AccessTokenRequestService {
 
-	private static final Logger LOG = LoggerFactory.getLogger("Fitbit application");
-	private static final String uriToken = "https://api.fitbit.com/oauth2/token";
 	private static String accessToken;
 
 	@Autowired
 	private ObjectMapper mapper;
 
 	@Autowired
-	private AuthorizationProperties properties;
+	private AuthorizationProperties authProp;
 
 	@Autowired
 	private RestTemplate restTemplateToken;
@@ -61,19 +57,19 @@ public class AccessTokenRequestService {
 
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
 		parameters.add("clientId", redisTemplate.opsForValue().get("Client-id"));
-		parameters.add("grant_type", properties.getGrantType());
-		parameters.add("redirect_uri", properties.getRedirectUri());
+		parameters.add("grant_type", authProp.getGrantType());
+		parameters.add("redirect_uri", authProp.getRedirectUri());
 		parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.set("Authorization", "Basic " + headerAuth);
-		headers.set("Accept", properties.getHeaderAccept());
+		headers.set("Accept", authProp.getHeaderAccept());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,
 				headers);
-		ResponseEntity<String> response = restTemplateToken.exchange(uriToken, HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> response = restTemplateToken.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
 
 		JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
 		accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
