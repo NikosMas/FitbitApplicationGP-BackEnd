@@ -33,11 +33,12 @@ public class ContentBuilderService {
 	 * @param image
 	 * @param content
 	 * @param image
+	 * @param restart 
 	 * @param file
 	 */
 	public void dashboardContentBuilder(VerticalLayout content, Image image, Image clientIdImage,
 			Image clientSecretImage, TextField clientId, TextField clientSecret, Button collections,
-			Button authorizationCode, Button exit, Button continueProcess) {
+			Button authorizationCode, Button exit, Button continueProcess, Button restart) {
 		content.addComponent(image);
 		content.addComponent(new Label("Push to start creating the collections into Mongo database"));
 		content.addComponent(collections);
@@ -57,6 +58,9 @@ public class ContentBuilderService {
 		content.addComponent(new Label("\n"));
 		content.addComponent(new Label("Push to exit and stop all processes"));
 		content.addComponent(exit);
+		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Push to refresh"));
+		content.addComponent(restart);
 	}
 
 	/**
@@ -70,10 +74,11 @@ public class ContentBuilderService {
 	 * @param submitCheckBoxButton
 	 * @param exit
 	 * @param continueProcess
+	 * @param restart 
 	 */
 	public void userDataContentBuilder(VerticalLayout content, Image image, CheckBoxGroup<String> multiCheckBox,
 			DateField startDate, DateField endDate, TextField heartRate, Button submitDates,
-			Button submitCheckBoxButton, Button exit, Button continueProcess) {
+			Button submitCheckBoxButton, Button exit, Button continueProcess, Button restart) {
 
 		content.addComponent(image);
 		content.addComponent(new Label("\n"));
@@ -93,6 +98,9 @@ public class ContentBuilderService {
 		content.addComponent(new Label("\n"));
 		content.addComponent(new Label("Push to exit and stop all processes"));
 		content.addComponent(exit);
+		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Push to restart the process"));
+		content.addComponent(restart);
 	}
 
 	/**
@@ -103,9 +111,10 @@ public class ContentBuilderService {
 	 * @param mail
 	 * @param heartRateMail
 	 * @param exit
+	 * @param restart 
 	 */
 	public void heartRateFilterContentBuilder(VerticalLayout content, Image image, ComboBox<HeartRateCategory> select,
-			TextField heartRate, TextField mail, Button heartRateMail, Button exit) {
+			TextField heartRate, TextField mail, Button heartRateMail, Button exit, Button restart) {
 
 		content.addComponent(image);
 		content.addComponent(new Label("Complete the next 3 fields to continue with e-mail process"));
@@ -120,6 +129,17 @@ public class ContentBuilderService {
 		content.addComponent(new Label("\n"));
 		content.addComponent(new Label("Push to exit and stop all processes"));
 		content.addComponent(exit);
+		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Push to restart the process"));
+		content.addComponent(restart);
+	}
+
+	public void finalizeContentBuilder(VerticalLayout content, Image image, Button restart) {
+		content.addComponent(image);
+		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Push to restart the process"));
+		content.addComponent(restart);
+		content.addComponent(new Label("\n"));
 	}
 
 }

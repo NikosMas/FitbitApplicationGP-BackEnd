@@ -9,6 +9,7 @@ import com.grad.services.builders.ContentBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
 import com.grad.services.builders.ToolsBuilderService;
 import com.vaadin.annotations.Title;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -67,9 +68,24 @@ public class HeartRateFilterController {
 			buttonsService.heartRateMailBuilder(heartRateMail, mail, heartRate, select, content);
 
 			Button exit = new Button();
-			buttonsService.exitBuilder(exit, content);
+			exit.setIcon(VaadinIcons.ROTATE_LEFT);
+			exit.setCaption("Exit");
+			exit.setWidth("150");
+			exit.addClickListener(click -> {
+				getPage().setLocation("finalize");
+				getSession().close();
+			});
 			
-			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit);
+			Button restart = new Button();
+			restart.setIcon(VaadinIcons.ROTATE_LEFT);
+			restart.setCaption("Restart");
+			restart.setWidth("150");
+			restart.addClickListener(click -> {
+				getPage().setLocation("dashboard");
+				getSession().close();
+			});
+			
+			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit, restart);
 		}
 	}
 }

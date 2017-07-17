@@ -8,6 +8,7 @@ import com.grad.services.builders.CheckBoxBuilderService;
 import com.grad.services.builders.ContentBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
 import com.vaadin.annotations.Title;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -73,7 +74,22 @@ public class UserDataController {
 			checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, startDate, endDate, content);
 
 			Button exit = new Button();
-			buttonsService.exitBuilder(exit, content);
+			exit.setIcon(VaadinIcons.ROTATE_LEFT);
+			exit.setCaption("Exit");
+			exit.setWidth("150");
+			exit.addClickListener(click -> {
+				getPage().setLocation("finalize");
+				getSession().close();
+			});
+			
+			Button restart = new Button();
+			restart.setIcon(VaadinIcons.ROTATE_LEFT);
+			restart.setCaption("Restart");
+			restart.setWidth("150");
+			restart.addClickListener(click -> {
+				getPage().setLocation("dashboard");
+				getSession().close();
+			});
 
 			/** business part with redirection is here because of private {@link
 			 Page} at {@link UI} */
@@ -88,7 +104,7 @@ public class UserDataController {
 			});
 
 			contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate, heartRate,
-					submitDates, submitCheckBoxButton, exit, continueProcess);
+					submitDates, submitCheckBoxButton, exit, continueProcess, restart);
 		}
 	}
 }
