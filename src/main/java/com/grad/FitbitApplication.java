@@ -6,14 +6,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import com.grad.config.AuthorizationProperties;
 import com.grad.config.FitbitApiUrlProperties;
 import com.grad.config.MailInfoProperties;
-import com.grad.config.MongoProperties;
 import com.grad.config.RefreshTokenProperties;
 
 /**
  * @author nikos_mas, alex_kak
  */
 
-@EnableConfigurationProperties({ MongoProperties.class, AuthorizationProperties.class, MailInfoProperties.class,
+@EnableConfigurationProperties({AuthorizationProperties.class, MailInfoProperties.class,
 		RefreshTokenProperties.class, FitbitApiUrlProperties.class })
 @SpringBootApplication
 public class FitbitApplication {

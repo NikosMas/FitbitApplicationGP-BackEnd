@@ -21,7 +21,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * controller at /fitbitApp/heartRateFilter waiting the user to fill the form about heart rate & mail info
+ * controller at /fitbitApp/heartRateFilter waiting the user to fill the form
+ * about heart rate & mail info
  * 
  * @author nikos_mas, alex_kak
  */
@@ -42,7 +43,7 @@ public class HeartRateFilterController {
 
 		@Autowired
 		private ToolsBuilderService toolsService;
-		
+
 		@Autowired
 		private ContentBuilderService contentService;
 
@@ -67,6 +68,8 @@ public class HeartRateFilterController {
 			Button heartRateMail = new Button();
 			buttonsService.heartRateMailBuilder(heartRateMail, mail, heartRate, select, content);
 
+			// business part with redirection is here because of private {@link
+			// Page} at {@link UI}
 			Button exit = new Button();
 			exit.setIcon(VaadinIcons.ROTATE_LEFT);
 			exit.setCaption("Exit");
@@ -75,7 +78,7 @@ public class HeartRateFilterController {
 				getPage().setLocation("finalize");
 				getSession().close();
 			});
-			
+
 			Button restart = new Button();
 			restart.setIcon(VaadinIcons.ROTATE_LEFT);
 			restart.setCaption("Restart");
@@ -84,8 +87,9 @@ public class HeartRateFilterController {
 				getPage().setLocation("dashboard");
 				getSession().close();
 			});
-			
-			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit, restart);
+
+			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit,
+					restart);
 		}
 	}
 }

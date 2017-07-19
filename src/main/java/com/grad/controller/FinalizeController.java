@@ -15,7 +15,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * controller at /fitbitApp/heartRateFilter waiting the user to fill the form about heart rate & mail info
+ * controller at /fitbitApp/finalize where user can restart the process
  * 
  * @author nikos_mas, alex_kak
  */

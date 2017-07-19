@@ -1,8 +1,10 @@
-# mongo database required credentials
-mongoDB:
-  dbname: fitbit
-  host: localhost
-  port: 27017
+# mongodb configuration
+spring:
+  data:
+    mongodb:
+      host: localhost
+      database: fitbit
+      port: 27017
 
 # access token credentials and authorization code uri
 accesstoken:

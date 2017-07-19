@@ -19,7 +19,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * controller at /fitbitApp/dashboard waiting the user to fill the form about authorization info
+ * controller at /fitbitApp/dashboard waiting the user to fill the form about
+ * authorization info
  * 
  * @author nikos_mas, alex_kak
  */
@@ -44,13 +45,12 @@ public class DashboardController {
 		@Autowired
 		private ContentBuilderService contentService;
 
-		
 		@Override
 		public void init(VaadinRequest request) {
 			VerticalLayout content = new VerticalLayout();
 			setContent(content);
 			setResponsive(true);
-			
+
 			Image image = new Image();
 			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
 
@@ -72,6 +72,8 @@ public class DashboardController {
 			Button authorizationCode = new Button();
 			buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, collections);
 
+			// business part with redirection is here because of private {@link
+			// Page} at {@link UI}
 			Button exit = new Button();
 			exit.setIcon(VaadinIcons.ROTATE_LEFT);
 			exit.setCaption("Exit");
@@ -80,7 +82,7 @@ public class DashboardController {
 				getPage().setLocation("finalize");
 				getSession().close();
 			});
-			
+
 			Button restart = new Button();
 			restart.setIcon(VaadinIcons.ROTATE_LEFT);
 			restart.setCaption("Restart");
@@ -89,8 +91,6 @@ public class DashboardController {
 				getPage().reload();
 			});
 
-			// business part with redirection is here because of private {@link
-			// Page} at {@link UI}
 			Button continueProcess = new Button();
 			continueProcess.setCaption("Continue to user data receiving process");
 			continueProcess.addClickListener(click -> {
@@ -100,8 +100,8 @@ public class DashboardController {
 				}
 			});
 
-			contentService.dashboardContentBuilder(content, image, clientIdImage, clientSecretImage, clientId, clientSecret,
-					collections, authorizationCode, exit, continueProcess, restart);
+			contentService.dashboardContentBuilder(content, image, clientIdImage, clientSecretImage, clientId,
+					clientSecret, collections, authorizationCode, exit, continueProcess, restart);
 		}
 	}
 

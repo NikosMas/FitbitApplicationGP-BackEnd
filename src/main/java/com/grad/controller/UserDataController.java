@@ -21,7 +21,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * controller at /fitbitApp/userData waiting the user to fill the form about user data 
+ * controller at /fitbitApp/userData waiting the user to fill the form about
+ * user data
  * 
  * @author nikos_mas, alex_kak
  */
@@ -73,6 +74,8 @@ public class UserDataController {
 			Button submitCheckBoxButton = new Button();
 			checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, startDate, endDate, content);
 
+			// business part with redirection is here because of private {@link
+			// Page} at {@link UI}
 			Button exit = new Button();
 			exit.setIcon(VaadinIcons.ROTATE_LEFT);
 			exit.setCaption("Exit");
@@ -81,7 +84,7 @@ public class UserDataController {
 				getPage().setLocation("finalize");
 				getSession().close();
 			});
-			
+
 			Button restart = new Button();
 			restart.setIcon(VaadinIcons.ROTATE_LEFT);
 			restart.setCaption("Restart");
@@ -91,8 +94,10 @@ public class UserDataController {
 				getSession().close();
 			});
 
-			/** business part with redirection is here because of private {@link
-			 Page} at {@link UI} */
+			/**
+			 * business part with redirection is here because of private {@link Page} at
+			 * {@link UI}
+			 */
 			Button continueProcess = new Button();
 			continueProcess.setCaption("Continue to user data receiving process");
 			continueProcess.addClickListener(click -> {

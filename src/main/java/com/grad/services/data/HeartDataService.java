@@ -112,8 +112,9 @@ public class HeartDataService {
 	 * @return
 	 * @throws IOException
 	 * @throws JsonProcessingException
+	 * @throws JSONException 
 	 */
-	private JSONArray heartCallResponse(String month) throws JsonProcessingException, IOException {
+	private JSONArray heartCallResponse(String month) throws JsonProcessingException, IOException, JSONException {
 		ResponseEntity<String> heart = restTemplateGet.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
 
 		if (heart.getStatusCodeValue() == 401) {
