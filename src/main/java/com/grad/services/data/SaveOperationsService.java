@@ -11,7 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.grad.domain.CollectionEnum;
-import com.grad.domain.DataSample;
+import com.grad.domain.CommonDataSample;
 import com.grad.services.auth.AccessTokenRequestService;
 import com.grad.services.auth.RefreshTokenRequestService;
 import com.mongodb.BasicDBList;
@@ -107,7 +107,7 @@ public class SaveOperationsService {
 	 * @param newCollection where will be stored the new data
 	 */
 	private void saveByMonth(String collection, String newCollection) {
-		mongoTemplate.findAll(DataSample.class, collection).forEach(v -> {
+		mongoTemplate.findAll(CommonDataSample.class, collection).forEach(v -> {
 			v.setDateTime(v.getDateTime().substring(0, 7));
 			mongoTemplate.insert(v, newCollection);
 		});

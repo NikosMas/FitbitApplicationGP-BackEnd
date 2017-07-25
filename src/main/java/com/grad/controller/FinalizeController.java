@@ -4,7 +4,7 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.grad.services.builders.ContentBuilderService;
-import com.grad.services.collections.CollectionsService;
+import com.grad.services.collections.CollectionService;
 import com.vaadin.annotations.Title;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
@@ -34,7 +34,7 @@ public class FinalizeController {
 		private ContentBuilderService contentService;
 		
 		@Autowired
-		private CollectionsService collectionsService;
+		private CollectionService collectionsService;
 
 		@Override
 		public void init(VaadinRequest request) {

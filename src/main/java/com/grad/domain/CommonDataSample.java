@@ -6,16 +6,16 @@ package com.grad.domain;
  * @author nikos_mas, alex_kak
  */
 
-public class DataSample {
+public class CommonDataSample {
 
 	private String dateTime;
 	private String value;
 	
-	public DataSample() {
+	public CommonDataSample() {
 		super();
 	}
 	
-	public DataSample(String dateTime, String value) {
+	public CommonDataSample(String dateTime, String value) {
 		super();
 		this.dateTime = dateTime;
 		this.value = value;

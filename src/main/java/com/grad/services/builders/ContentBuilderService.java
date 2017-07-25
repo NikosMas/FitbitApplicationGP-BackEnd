@@ -2,7 +2,7 @@ package com.grad.services.builders;
 
 import org.springframework.stereotype.Service;
 
-import com.grad.domain.HeartRateCategory;
+import com.grad.domain.HeartRateCategoryEnum;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.ComboBox;
@@ -112,7 +112,7 @@ public class ContentBuilderService {
 	 * @param heartRateMail
 	 * @param exit
 	 */
-	public void heartRateFilterContentBuilder(VerticalLayout content, Image image, ComboBox<HeartRateCategory> select,
+	public void heartRateFilterContentBuilder(VerticalLayout content, Image image, ComboBox<HeartRateCategoryEnum> select,
 			TextField heartRate, TextField mail, Button heartRateMail, Button exit) {
 
 		content.addComponent(image);

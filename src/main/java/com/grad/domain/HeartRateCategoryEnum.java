@@ -6,7 +6,7 @@ package com.grad.domain;
  * @author nikos_mas, alex_kak
  */
 
-public enum HeartRateCategory {
+public enum HeartRateCategoryEnum {
 	
 	OUT_OF_RANGE("Out of Range"),
 	FAT_BURN("Fat Burn"),
@@ -15,7 +15,7 @@ public enum HeartRateCategory {
 	
 	private String d;
 
-	private HeartRateCategory(String d) {
+	private HeartRateCategoryEnum(String d) {
 		this.d = d;
 	}
 

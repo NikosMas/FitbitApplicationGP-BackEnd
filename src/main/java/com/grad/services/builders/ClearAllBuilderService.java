@@ -19,7 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
-public class ClearAllService {
+public class ClearAllBuilderService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 

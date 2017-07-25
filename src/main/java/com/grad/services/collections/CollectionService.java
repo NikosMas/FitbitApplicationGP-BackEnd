@@ -16,7 +16,7 @@ import com.grad.domain.CollectionEnum;
  */
 
 @Service
-public class CollectionsService {
+public class CollectionService {
 
 	private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values());
 

@@ -3,7 +3,7 @@ package com.grad.controller;
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.grad.domain.HeartRateCategory;
+import com.grad.domain.HeartRateCategoryEnum;
 import com.grad.services.builders.ButtonsBuilderService;
 import com.grad.services.builders.ContentBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
@@ -27,7 +27,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author nikos_mas, alex_kak
  */
 
-public class HeartRateFilterController {
+public class HeartRateNotificationController {
 
 	@Title("Heart Rate Notification")
 	@SpringUI(path = "fitbitApp/heartRateNotification")
@@ -56,7 +56,7 @@ public class HeartRateFilterController {
 			Image image = new Image();
 			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
 
-			ComboBox<HeartRateCategory> select = new ComboBox<>();
+			ComboBox<HeartRateCategoryEnum> select = new ComboBox<>();
 			toolsService.comboBoxBuilder(select);
 
 			TextField mail = new TextField();

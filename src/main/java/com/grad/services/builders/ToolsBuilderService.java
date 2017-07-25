@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.grad.domain.HeartRateCategory;
+import com.grad.domain.HeartRateCategoryEnum;
 import com.vaadin.server.FileResource;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Image;
@@ -33,17 +33,17 @@ public class ToolsBuilderService {
 	/**
 	 * @param select
 	 */
-	public void comboBoxBuilder(ComboBox<HeartRateCategory> select){
+	public void comboBoxBuilder(ComboBox<HeartRateCategoryEnum> select){
 		
-		List<HeartRateCategory> planets = new ArrayList<>();
-		planets.add(HeartRateCategory.OUT_OF_RANGE);
-		planets.add(HeartRateCategory.FAT_BURN);
-		planets.add(HeartRateCategory.CARDIO);
-		planets.add(HeartRateCategory.PEAK);
+		List<HeartRateCategoryEnum> planets = new ArrayList<>();
+		planets.add(HeartRateCategoryEnum.OUT_OF_RANGE);
+		planets.add(HeartRateCategoryEnum.FAT_BURN);
+		planets.add(HeartRateCategoryEnum.CARDIO);
+		planets.add(HeartRateCategoryEnum.PEAK);
 
 		select.setCaption("Select Heart rate category");
 		select.setItems(planets);
-		select.setItemCaptionGenerator(HeartRateCategory::d);
+		select.setItemCaptionGenerator(HeartRateCategoryEnum::d);
 		select.setPlaceholder("heart-rate category");
 		select.setWidth("250");
 		select.setEmptySelectionAllowed(false);

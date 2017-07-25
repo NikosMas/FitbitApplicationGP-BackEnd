@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.grad.domain.HeartRateCategory;
+import com.grad.domain.HeartRateCategoryEnum;
 import com.grad.services.auth.AuthCodeRequestService;
-import com.grad.services.collections.CollectionsService;
+import com.grad.services.collections.CollectionService;
 import com.grad.services.data.DailyDataService;
-import com.grad.services.mail.FitbitHeartCheckPeakService;
+import com.grad.services.mail.HeartRateFilterService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
@@ -38,16 +38,16 @@ public class ButtonsBuilderService {
 	List<Map<String, String>> dates = new ArrayList<>();
 
 	@Autowired
-	private FitbitHeartCheckPeakService heartPeakService;
+	private HeartRateFilterService heartPeakService;
 
 	@Autowired
-	private CollectionsService collectionsService;
+	private CollectionService collectionsService;
 
 	@Autowired
 	private AuthCodeRequestService codeService;
 
 	@Autowired
-	private ClearAllService clearFieldsService;
+	private ClearAllBuilderService clearFieldsService;
 
 	@Autowired
 	DailyDataService dailyDataService;
@@ -109,7 +109,7 @@ public class ButtonsBuilderService {
 	 * @param content
 	 */
 	public void heartRateMailBuilder(Button heartRateMail, TextField mail, TextField heartRate,
-			ComboBox<HeartRateCategory> select, VerticalLayout content) {
+			ComboBox<HeartRateCategoryEnum> select, VerticalLayout content) {
 		heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
 		heartRateMail.setCaption("Submit");
 		heartRateMail.setWidth("150");

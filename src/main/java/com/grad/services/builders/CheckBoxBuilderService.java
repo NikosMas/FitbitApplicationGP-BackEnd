@@ -49,7 +49,7 @@ public class CheckBoxBuilderService {
 	private CalendarService calendarService;
 
 	@Autowired
-	private ClearAllService clearFieldsService;
+	private ClearAllBuilderService clearFieldsService;
 
 	/**
 	 * @param multiCheckBox

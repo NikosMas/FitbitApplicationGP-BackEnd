@@ -19,22 +19,22 @@ import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.grad.config.MailInfoProperties;
-import com.grad.controller.HeartRateFilterController;
-import com.grad.domain.HeartRateCategory;
+import com.grad.controller.HeartRateNotificationController;
+import com.grad.domain.HeartRateCategoryEnum;
 
 /**
- * Service about sending email information about user's heart rate according to info given at {@link HeartRateFilterController}
+ * Service about sending email information about user's heart rate according to info given at {@link HeartRateNotificationController}
  * 
  * @author nikos_mas, alex_kak
  */
 
 @Service
-public class FitbitHeartSendEmailService {
+public class HeartRateNotificationService {
 
 	@Autowired
 	private MailInfoProperties mailProp;
 
-	public void email(String mail, Long minutes, HeartRateCategory category, Long min, Long max)
+	public void email(String mail, Long minutes, HeartRateCategoryEnum category, Long min, Long max)
 			throws MessagingException {
 
 		final String subject = mailProp.getMailSubject();

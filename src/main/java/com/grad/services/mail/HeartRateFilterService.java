@@ -13,21 +13,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.grad.config.MailInfoProperties;
-import com.grad.controller.HeartRateFilterController;
-import com.grad.domain.FitbitHeartRate;
-import com.grad.domain.HeartRateCategory;
-import com.grad.heart.repository.FitbitHeartZoneRepo;
-import com.grad.services.builders.ClearAllService;
+import com.grad.controller.HeartRateNotificationController;
+import com.grad.domain.HeartRateValue;
+import com.grad.domain.HeartRateCategoryEnum;
+import com.grad.repository.HeartRateZoneRepository;
+import com.grad.services.builders.ClearAllBuilderService;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Service about filtering heart rate data from database according to info given at {@link HeartRateFilterController}
+ * Service about filtering heart rate data from database according to info given at {@link HeartRateNotificationController}
  * 
  * @author nikos_mas, alex_kak
  */
 
 @Service
-public class FitbitHeartCheckPeakService {
+public class HeartRateFilterService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
@@ -35,15 +35,15 @@ public class FitbitHeartCheckPeakService {
 	private MailInfoProperties properties;
 
 	@Autowired
-	private FitbitHeartZoneRepo heartRepository;
+	private HeartRateZoneRepository heartRepository;
 
 	@Autowired
-	private ClearAllService clearFieldsService;
+	private ClearAllBuilderService clearFieldsService;
 
 	@Autowired
-	private FitbitHeartSendEmailService sendMailService;
+	private HeartRateNotificationService sendMailService;
 
-	public void heartRateSelect(String mail, Long minutes, HeartRateCategory category, VerticalLayout content) {
+	public void heartRateSelect(String mail, Long minutes, HeartRateCategoryEnum category, VerticalLayout content) {
 		try {
 			File peaksfile = new File(properties.getFileName());
 			FileOutputStream stream;
@@ -65,7 +65,7 @@ public class FitbitHeartCheckPeakService {
 				}
 			});
 			
-			FitbitHeartRate heartRateZone = heartRepository.findDistinctByName(category.d());
+			HeartRateValue heartRateZone = heartRepository.findDistinctByName(category.d());
 			Long min = heartRateZone.getMin();
 			Long max = heartRateZone.getMax();
 			

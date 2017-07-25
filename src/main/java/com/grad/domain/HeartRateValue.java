@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author nikos_mas, alex_kak
  */
 
-@Document(collection = "heart_rate")
-public class FitbitHeartRate {
+@Document(collection = "heartRateValues")
+public class HeartRateValue {
 
 	private String date;
 	private String name;
@@ -18,11 +18,11 @@ public class FitbitHeartRate {
 	private Long max;
 	private Long min;
 
-	public FitbitHeartRate() {
+	public HeartRateValue() {
 		super();
 	}
 
-	public FitbitHeartRate(String date, String name, Long minutes, Long caloriesOut, Long max, Long min) {
+	public HeartRateValue(String date, String name, Long minutes, Long caloriesOut, Long max, Long min) {
 		super();
 		this.date = date;
 		this.name = name;
