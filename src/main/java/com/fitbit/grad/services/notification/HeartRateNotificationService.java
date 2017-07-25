@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.fitbit.grad.config.MailInfoProperties;
 import com.fitbit.grad.controller.HeartRateNotificationController;
-import com.fitbit.grad.domain.HeartRateCategoryEnum;
+import com.fitbit.grad.models.HeartRateCategoryEnum;
 
 /**
  * Service about sending email information about user's heart rate according to info given at {@link HeartRateNotificationController}

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.domain.CollectionEnum;
+import com.fitbit.grad.models.CollectionEnum;
 
 /**
  * Service about creating Mongo collections to 'fitbit' database

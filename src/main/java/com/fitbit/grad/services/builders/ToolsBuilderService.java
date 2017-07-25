@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.domain.HeartRateCategoryEnum;
+import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.vaadin.server.FileResource;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Image;

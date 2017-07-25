@@ -3,7 +3,7 @@ package com.fitbit.grad.repository;
 import java.util.stream.Stream;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.fitbit.grad.domain.HeartRateValue;
+import com.fitbit.grad.models.HeartRateValue;
 
 /**
  * Repository about {@link HeartRateValue}

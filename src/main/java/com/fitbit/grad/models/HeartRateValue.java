@@ -1,4 +1,4 @@
-package com.fitbit.grad.domain;
+package com.fitbit.grad.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 

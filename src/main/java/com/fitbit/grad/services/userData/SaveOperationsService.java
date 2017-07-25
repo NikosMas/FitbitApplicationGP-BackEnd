@@ -11,8 +11,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.domain.CollectionEnum;
-import com.fitbit.grad.domain.CommonDataSample;
+import com.fitbit.grad.models.CollectionEnum;
+import com.fitbit.grad.models.CommonDataSample;
 import com.fitbit.grad.services.authRequests.AccessTokenRequestService;
 import com.fitbit.grad.services.authRequests.RefreshTokenRequestService;
 import com.mongodb.BasicDBList;

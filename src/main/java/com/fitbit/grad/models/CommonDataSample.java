@@ -1,4 +1,4 @@
-package com.fitbit.grad.domain;
+package com.fitbit.grad.models;
 
 /**
  * model class required at saving service  

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.domain.HeartRateCategoryEnum;
+import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.fitbit.grad.services.authRequests.AuthCodeRequestService;
 import com.fitbit.grad.services.collections.CollectionService;
 import com.fitbit.grad.services.notification.HeartRateFilterService;

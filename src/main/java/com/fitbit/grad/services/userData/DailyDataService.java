@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fitbit.grad.config.FitbitApiUrlProperties;
-import com.fitbit.grad.domain.CollectionEnum;
+import com.fitbit.grad.models.CollectionEnum;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 

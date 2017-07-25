@@ -2,7 +2,7 @@ package com.fitbit.grad.services.builders;
 
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.domain.HeartRateCategoryEnum;
+import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.ComboBox;

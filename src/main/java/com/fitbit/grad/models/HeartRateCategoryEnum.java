@@ -1,4 +1,4 @@
-package com.fitbit.grad.domain;
+package com.fitbit.grad.models;
 
 /**
  * Enum class containing heart rate zone names 

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.fitbit.grad.config.MailInfoProperties;
 import com.fitbit.grad.controller.HeartRateNotificationController;
-import com.fitbit.grad.domain.HeartRateCategoryEnum;
-import com.fitbit.grad.domain.HeartRateValue;
+import com.fitbit.grad.models.HeartRateCategoryEnum;
+import com.fitbit.grad.models.HeartRateValue;
 import com.fitbit.grad.repository.HeartRateZoneRepository;
 import com.fitbit.grad.services.builders.ClearAllBuilderService;
 import com.vaadin.ui.VerticalLayout;
