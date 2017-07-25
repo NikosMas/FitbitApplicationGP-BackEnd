@@ -72,14 +72,14 @@ public class CheckBoxBuilderService {
 					switch (check) {
 					case "Sleep data":
 						if (sleepService.sleep(dates)) {
-							LOG.info("Sleep data recieved and stored to database");
+							LOG.info("Sleep data received and stored to database");
 						} else {
 							clearFieldsService.tryLater(content);
 						}
 						break;
 					case "Profile data":
 						if (otherService.profile()) {
-							LOG.info("Profile data recieved and stored to database");
+							LOG.info("Profile data received and stored to database");
 							Notification.show("User data stored successfully!");
 						} else {
 							clearFieldsService.tryLater(content);
@@ -87,7 +87,7 @@ public class CheckBoxBuilderService {
 						break;
 					case "Activities data":
 						if (activitiesService.activities(dates)) {
-							LOG.info("Activities data recieved and stored to database");
+							LOG.info("Activities data received and stored to database");
 							Notification.show("User data stored successfully!");
 						} else {
 							clearFieldsService.tryLater(content);
@@ -95,7 +95,7 @@ public class CheckBoxBuilderService {
 						break;
 					case "Lifetime activities data":
 						if (otherService.lifetime()) {
-							LOG.info("Lifetime data recieved and stored to database");
+							LOG.info("Lifetime data received and stored to database");
 							Notification.show("User data stored successfully!");
 						} else {
 							clearFieldsService.tryLater(content);
@@ -103,7 +103,7 @@ public class CheckBoxBuilderService {
 						break;
 					case "Frequent activities data":
 						if (otherService.frequence()) {
-							LOG.info("Frequence data recieved and stored to database");
+							LOG.info("Frequence data received and stored to database");
 							Notification.show("User data stored successfully!");
 						} else {
 							clearFieldsService.tryLater(content);
@@ -111,7 +111,7 @@ public class CheckBoxBuilderService {
 						break;
 					case "HeartRate data":
 						if (heartService.filterHeartRateValues(dates)) {
-							LOG.info("Heart rate data recieved and stored to database");
+							LOG.info("Heart rate data received and stored to database");
 							Notification.show("User data stored successfully!");
 						} else {
 							clearFieldsService.tryLater(content);

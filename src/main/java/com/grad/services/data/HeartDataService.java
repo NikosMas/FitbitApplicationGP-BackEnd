@@ -100,7 +100,7 @@ public class HeartDataService {
 		DBObject heartRateZonesValue = (DBObject) JSON.parse(heartRateZonesArray.getJSONObject(hrza).toString());
 		heartRateZonesValue.put("date", responseDataArray.getJSONObject(rda).getString("dateTime"));
 		heartRateZonesValue.put("month", responseDataArray.getJSONObject(rda).getString("dateTime").substring(0, 7));
-		mongoTemplate.insert(heartRateZonesValue, CollectionEnum.HEART_RATE.desc());
+		mongoTemplate.insert(heartRateZonesValue, CollectionEnum.FILTERD_A_HEART.d());
 	}
 
 	private JSONArray getValues(JSONArray responseDataArray, int i) throws JSONException {
@@ -119,10 +119,10 @@ public class HeartDataService {
 
 		if (heart.getStatusCodeValue() == 401) {
 			ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(true), String.class);
-			saveOperationsService.dataTypeInsert(heartWithRefreshToken, CollectionEnum.ACTIVITIES_HEART.desc(), HEART);
+			saveOperationsService.dataTypeInsert(heartWithRefreshToken, CollectionEnum.A_HEART.d(), HEART);
 			return new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(HEART);
 		} else if (heart.getStatusCodeValue() == 200) {
-			saveOperationsService.dataTypeInsert(heart, CollectionEnum.ACTIVITIES_HEART.desc(), HEART);
+			saveOperationsService.dataTypeInsert(heart, CollectionEnum.A_HEART.d(), HEART);
 			return new JSONObject(heart.getBody()).getJSONArray(HEART);
 		} else {
 			return null;

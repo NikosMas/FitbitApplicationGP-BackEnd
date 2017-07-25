@@ -54,7 +54,7 @@ public class FitbitHeartCheckPeakService {
 			Writer w = new BufferedWriter(peakswrite);
 
 			w.write("These are Heart-Rate data when the user's heart-rate was at " + category + " zone!" + '\n' + '\n');
-			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.desc()).forEach(d -> {
+			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.d()).forEach(d -> {
 
 				try {
 					w.write("In " + d.getDate() + " for : "
@@ -65,7 +65,7 @@ public class FitbitHeartCheckPeakService {
 				}
 			});
 			
-			FitbitHeartRate heartRateZone = heartRepository.findDistinctByName(category.desc());
+			FitbitHeartRate heartRateZone = heartRepository.findDistinctByName(category.d());
 			Long min = heartRateZone.getMin();
 			Long max = heartRateZone.getMax();
 			

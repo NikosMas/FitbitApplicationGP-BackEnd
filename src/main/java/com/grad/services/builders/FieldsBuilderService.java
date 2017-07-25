@@ -57,7 +57,7 @@ public class FieldsBuilderService {
 	 * @param clientId
 	 */
 	public void clientIdBuilder(TextField clientId) {
-		clientId.setCaption("Put the clientId of your application at -> dev.fitbit.com");
+		clientId.setCaption("Put the clientId of your application.");
 		clientId.setWidth("250");
 		clientId.setPlaceholder("client id");
 		clientId.setIcon(VaadinIcons.USER);
@@ -67,7 +67,7 @@ public class FieldsBuilderService {
 	 * @param clientSecret
 	 */
 	public void clientSecretBuilder(TextField clientSecret) {
-		clientSecret.setCaption("Put the clientSecret of your application at -> dev.fitbit.com");
+		clientSecret.setCaption("Put the clientSecret of your application.");
 		clientSecret.setWidth("250");
 		clientSecret.setPlaceholder("client secret");
 		clientSecret.setIcon(VaadinIcons.PASSWORD);

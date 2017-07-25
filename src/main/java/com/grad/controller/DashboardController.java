@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.grad.services.builders.ButtonsBuilderService;
 import com.grad.services.builders.ContentBuilderService;
 import com.grad.services.builders.FieldsBuilderService;
-import com.grad.services.builders.ToolsBuilderService;
+import com.grad.services.data.DailyDataService;
 import com.vaadin.annotations.Title;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
@@ -40,10 +40,10 @@ public class DashboardController {
 		private ButtonsBuilderService buttonsService;
 
 		@Autowired
-		private ToolsBuilderService imageService;
+		private ContentBuilderService contentService;
 
 		@Autowired
-		private ContentBuilderService contentService;
+		DailyDataService dailyDataService;
 
 		@Override
 		public void init(VaadinRequest request) {
@@ -54,23 +54,12 @@ public class DashboardController {
 			Image image = new Image();
 			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
 
-			Image clientIdImage = new Image();
-			imageService.imageBuilder(clientIdImage, new File("src/main/resources/images/clientid.gif"));
-
-			Image clientSecretImage = new Image();
-			imageService.imageBuilder(clientSecretImage, new File("src/main/resources/images/clientSecret.gif"));
-
 			TextField clientId = new TextField();
 			fieldsService.clientIdBuilder(clientId);
 
 			TextField clientSecret = new TextField();
 			fieldsService.clientSecretBuilder(clientSecret);
 
-			Button collections = new Button();
-			buttonsService.collectionsBuilder(collections);
-
-			Button authorizationCode = new Button();
-			buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, collections);
 
 			// business part with redirection is here because of private {@link
 			// Page} at {@link UI}
@@ -78,11 +67,15 @@ public class DashboardController {
 			exit.setIcon(VaadinIcons.ROTATE_LEFT);
 			exit.setCaption("Exit");
 			exit.setWidth("150");
+			exit.setEnabled(false);
 			exit.addClickListener(click -> {
 				getPage().setLocation("finalize");
 				getSession().close();
 			});
 
+			Button authorizationCode = new Button();
+			buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, exit);
+			
 			Button restart = new Button();
 			restart.setIcon(VaadinIcons.ROTATE_LEFT);
 			restart.setCaption("Restart");
@@ -91,17 +84,19 @@ public class DashboardController {
 				getPage().reload();
 			});
 
-			Button continueProcess = new Button();
-			continueProcess.setCaption("Continue to user data receiving process");
-			continueProcess.addClickListener(click -> {
-				if (buttonsService.continueBuilder(continueProcess, request, authorizationCode, null, null)) {
+			Button stepForward = new Button();
+			stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
+			stepForward.setCaption("Continue");
+			stepForward.addClickListener(click -> {
+				if (buttonsService.continueBuilder(stepForward, request, authorizationCode, null, null)
+						&& dailyDataService.storeIntradayData()) {
 					getPage().setLocation("userData");
 					getSession().close();
 				}
 			});
 
-			contentService.dashboardContentBuilder(content, image, clientIdImage, clientSecretImage, clientId,
-					clientSecret, collections, authorizationCode, exit, continueProcess, restart);
+			contentService.dashboardContentBuilder(content, image, clientId, clientSecret,
+					authorizationCode, exit, stepForward, restart);
 		}
 	}
 

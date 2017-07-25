@@ -29,8 +29,8 @@ import com.vaadin.ui.VerticalLayout;
 
 public class HeartRateFilterController {
 
-	@Title("Heart Rate Mail")
-	@SpringUI(path = "fitbitApp/heartRateFilter")
+	@Title("Heart Rate Notification")
+	@SpringUI(path = "fitbitApp/heartRateNotification")
 	public static class VaadinUI extends UI {
 
 		private static final long serialVersionUID = 1L;
@@ -79,17 +79,7 @@ public class HeartRateFilterController {
 				getSession().close();
 			});
 
-			Button restart = new Button();
-			restart.setIcon(VaadinIcons.ROTATE_LEFT);
-			restart.setCaption("Restart");
-			restart.setWidth("150");
-			restart.addClickListener(click -> {
-				getPage().setLocation("dashboard");
-				getSession().close();
-			});
-
-			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit,
-					restart);
+			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit);
 		}
 	}
 }

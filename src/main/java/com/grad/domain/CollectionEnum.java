@@ -1,48 +1,56 @@
 package com.grad.domain;
 
 /**
- * Enum class containing Mongo collection names 
+ * Enumeration class setting MongoDB collection names 
  * 
  * @author nikos_mas, alex_kak
  */
 
 public enum CollectionEnum {
 
+	// Collections for all time saved data
 	PROFILE("profile"),
-	ACTIVITIES_LIFETIME("activities_lifetime"),
-	ACTIVITIES_FREQUENCE("activities_frequence"),
-	ACTIVITIES_CALORIES("activities_calories"),
-	ACTIVITIES_DISTANCE("activities_distance"),
-	ACTIVITIES_FLOORS("activities_floors"),
-	ACTIVITIES_STEPS("activities_steps"),
-	ACTIVITIES_HEART("activities_heart"),
-	SLEEP_EFFICIENCY("sleep_efficiency"),
-	SLEEP_MINUTES_TO_FALL_ASLEEP("sleep_minutesToFallAsleep"),
-	SLEEP_MINUTES_AFTER_WAKE_UP("sleep_minutesAfterWakeUp"),
-	SLEEP_MINUTES_AWAKE("sleep_minutesAwake"),
-	SLEEP_MINUTES_ASLEEP("sleep_minutesAsleep"),
-	SLEEP_TIME_IN_BED("sleep_timeInBed"),
-	HEART_RATE("heart_rate"),
+	A_LIFETIME("a_lifetime"),
+	A_FREQUENCE("a_frequence"),
+	A_CALORIES("a_calories"),
+	A_DISTANCE("a_distance"),
+	A_FLOORS("a_floors"),
+	A_STEPS("a_steps"),
+	A_HEART("a_heart"),
+	S_EFFICIENCY("s_efficiency"),
+	S_MINUTES_TO_FALL_ASLEEP("s_minutesToFallAsleep"),
+	S_MINUTES_AFTER_WAKE_UP("s_minutesAfterWakeUp"),
+	S_MINUTES_AWAKE("s_minutesAwake"),
+	S_MINUTES_ASLEEP("s_minutesAsleep"),
+	S_TIME_IN_BED("s_timeInBed"),
+	FILTERD_A_HEART("heartRateValues"),
 	
-	STEPS_MONTHLY("steps_monthly"),
-	FLOORS_MONTHLY("floors_monthly"),
-	CALORIES_MONTHLY("calories_monthly"),
-	EFFICIENCY_MONTHLY("efficiency_monthly"),
-	MINUTES_TO_FALL_ASLEEP_MONTHLY("minutes_to_fall_asleep_monthly"),
-	MINUTES_AFTER_WAKE_UP_MONTHLY("minutes_after_wake_up_monthly"),
-	MINUTES_AWAKE_MONTHLY("minutes_awake_monthly"),
-	MINUTES_ASLEEP_MONTHLY("minutes_asleep_monthly"),
-	TIME_IN_BED_MONTHLY("time_in_bed_monthly");
+	// Collections for monthly saved data
+	A_STEPS_M("a_steps_monthly"),
+	A_DISTANCE_M("a_distance_monthly"),
+	A_FLOORS_M("a_floors_monthly"),
+	A_CALORIES_M("a_calories_monthly"),
+	S_EFFICIENCY_M("s_efficiency_monthly"),
+	S_MINUTES_TO_FALL_ASLEEP_M("s_minutesToFallAsleep_monthly"),
+	S_MINUTES_AFTER_WAKE_UP_M("s_minutesAfterWakeUp_monthly"),
+	S_MINUTES_AWAKE_M("s_minutesAwake_monthly"),
+	S_MINUTES_ASLEEP_M("s_minutesAsleep_monthly"),
+	S_TIME_IN_BED_M("s_timeInBed_monthly"),
 	
+	// Collections for daily saved data
+	A_FLOORS_D("a_floors_daily"),
+	A_STEPS_D("a_steps_daily"),
+	A_DISTANCE_D("a_distance_daily"),
+	A_HEART_D("a_heart_daily");
 	
-	private String desc;
+	private String d;
 
-	private CollectionEnum(String desc) {
-		this.desc = desc;
+	private CollectionEnum(String d) {
+		this.d = d;
 	}
 
-	public String desc() {
-		return desc;
+	public String d() {
+		return d;
 	}
 
 }

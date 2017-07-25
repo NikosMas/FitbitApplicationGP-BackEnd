@@ -85,11 +85,11 @@ public class UserDataController {
 				getSession().close();
 			});
 
-			Button restart = new Button();
-			restart.setIcon(VaadinIcons.ROTATE_LEFT);
-			restart.setCaption("Restart");
-			restart.setWidth("150");
-			restart.addClickListener(click -> {
+			Button stepBackward = new Button();
+			stepBackward.setIcon(VaadinIcons.ARROW_BACKWARD);
+			stepBackward.setCaption("Back");
+			stepBackward.setWidth("150");
+			stepBackward.addClickListener(click -> {
 				getPage().setLocation("dashboard");
 				getSession().close();
 			});
@@ -98,18 +98,22 @@ public class UserDataController {
 			 * business part with redirection is here because of private {@link Page} at
 			 * {@link UI}
 			 */
-			Button continueProcess = new Button();
-			continueProcess.setCaption("Continue to user data receiving process");
-			continueProcess.addClickListener(click -> {
-				if (buttonsService.continueBuilder(continueProcess, request, null, submitCheckBoxButton,
+			Button stepForward = new Button();
+			stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
+			stepForward.setCaption("Continue");
+			stepForward.addClickListener(click -> {
+				if (buttonsService.continueBuilder(stepForward, request, null, submitCheckBoxButton,
 						multiCheckBox)) {
-					getPage().setLocation("heartRateFilter");
+					getPage().setLocation("heartRateNotification");
+					getSession().close();
+				}else {
+					getPage().setLocation("finalize");
 					getSession().close();
 				}
 			});
 
 			contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate, heartRate,
-					submitDates, submitCheckBoxButton, exit, continueProcess, restart);
+					submitDates, submitCheckBoxButton, exit, stepForward, stepBackward);
 		}
 	}
 }

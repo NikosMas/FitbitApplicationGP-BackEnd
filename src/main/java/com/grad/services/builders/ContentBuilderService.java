@@ -9,6 +9,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -22,45 +23,43 @@ import com.vaadin.ui.VerticalLayout;
 public class ContentBuilderService {
 
 	/**
+	 * @param restart 
+	 * @param stepForward 
+	 * @param exit 
+	 * @param authorizationCode 
+	 * @param clientSecret 
+	 * @param clientId 
+	 * @param image 
+	 * @param content 
 	 * @param continueProcess
 	 * @param exit
 	 * @param authorizationCode
 	 * @param collections
 	 * @param clientSecret
 	 * @param clientId
-	 * @param clientSecretImage
-	 * @param clientIdImage
 	 * @param image
 	 * @param content
 	 * @param image
-	 * @param restart 
 	 * @param file
 	 */
-	public void dashboardContentBuilder(VerticalLayout content, Image image, Image clientIdImage,
-			Image clientSecretImage, TextField clientId, TextField clientSecret, Button collections,
-			Button authorizationCode, Button exit, Button continueProcess, Button restart) {
+	public void dashboardContentBuilder(VerticalLayout content, Image image, TextField clientId, TextField clientSecret, Button authorizationCode, Button exit, Button stepForward, Button restart) {
 		content.addComponent(image);
-		content.addComponent(new Label("Push to start creating the collections into Mongo database"));
-		content.addComponent(collections);
 		content.addComponent(new Label("\n"));
-		content.addComponent(clientIdImage);
 		content.addComponent(clientId);
 		content.addComponent(new Label("\n"));
-		content.addComponent(clientSecretImage);
 		content.addComponent(clientSecret);
 		content.addComponent(new Label("\n"));
 		content.addComponent(new Label(
-				"Push to start connecting with Fitbit API for recieving the authorization code required to next calls to the API"));
+				"Click to complete the authorization."));
 		content.addComponent(authorizationCode);
 		content.addComponent(new Label("\n"));
-		content.addComponent(continueProcess);
+		content.addComponent(stepForward);
 		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to exit and stop all processes"));
-		content.addComponent(exit);
-		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to refresh"));
+		content.addComponent(new Label("Click to refresh"));
 		content.addComponent(restart);
+		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Click to exit the application"));
+		content.addComponent(exit);
 	}
 
 	/**
@@ -88,19 +87,20 @@ public class ContentBuilderService {
 		content.addComponent(new Label("\n"));
 		content.addComponent(submitDates);
 		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Pick the categories you want to retrieve data from fitbit API"));
+		content.addComponent(new Label("Choose the information you want to get."));
 		content.addComponent(multiCheckBox);
 		content.addComponent(new Label("\n"));
 		content.addComponent(submitCheckBoxButton);
 		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Go to heart rate notification tab if you checked heart rate data or exit if you didn't"));
 		content.addComponent(continueProcess);
 		content.addComponent(new Label("\n"));
 		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to exit and stop all processes"));
-		content.addComponent(exit);
-		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to restart the process"));
+		content.addComponent(new Label("Click to go back to authorization tab"));
 		content.addComponent(restart);
+		content.addComponent(new Label("\n"));
+		content.addComponent(new Label("Click to exit the application"));
+		content.addComponent(exit);
 	}
 
 	/**
@@ -111,13 +111,12 @@ public class ContentBuilderService {
 	 * @param mail
 	 * @param heartRateMail
 	 * @param exit
-	 * @param restart 
 	 */
 	public void heartRateFilterContentBuilder(VerticalLayout content, Image image, ComboBox<HeartRateCategory> select,
-			TextField heartRate, TextField mail, Button heartRateMail, Button exit, Button restart) {
+			TextField heartRate, TextField mail, Button heartRateMail, Button exit) {
 
 		content.addComponent(image);
-		content.addComponent(new Label("Complete the next 3 fields to continue with e-mail process"));
+		content.addComponent(new Label("Complete the next 3 fields to continue with e-mail notification."));
 		content.addComponent(mail);
 		content.addComponent(new Label("\n"));
 		content.addComponent(select);
@@ -127,17 +126,16 @@ public class ContentBuilderService {
 		content.addComponent(heartRateMail);
 		content.addComponent(new Label("\n"));
 		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to exit and stop all processes"));
+		content.addComponent(new Label("Click to exit the application"));
 		content.addComponent(exit);
 		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to restart the process"));
-		content.addComponent(restart);
 	}
 
-	public void finalizeContentBuilder(VerticalLayout content, Image image, Button restart) {
+	public void finalizeContentBuilder(VerticalLayout content, Image image, RadioButtonGroup<String> group, Button restart) {
 		content.addComponent(image);
 		content.addComponent(new Label("\n"));
-		content.addComponent(new Label("Push to restart the process"));
+		content.addComponent(group);
+		content.addComponent(new Label("Click to continue"));
 		content.addComponent(restart);
 		content.addComponent(new Label("\n"));
 	}

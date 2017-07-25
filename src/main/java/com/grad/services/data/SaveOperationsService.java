@@ -54,7 +54,7 @@ public class SaveOperationsService {
 		JsonNode responseDataBody = mapper.readTree(responseData.getBody());
 		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
 
-		if (collection.equals(CollectionEnum.ACTIVITIES_LIFETIME.desc())) {
+		if (collection.equals(CollectionEnum.A_LIFETIME.d())) {
 			mongoTemplate.insert(dataToInsert, collection);
 		} else if (filterCollectionName.equals("user")) {
 			DBObject filteredValue = (DBObject) dataToInsert.get(filterCollectionName);
@@ -64,32 +64,35 @@ public class SaveOperationsService {
 			mongoTemplate.insert(filteredValue, collection);
 
 			switch (collection) {
-			case "activities_floors":
-				saveByMonth(collection, CollectionEnum.FLOORS_MONTHLY.desc());
+			case "a_floors":
+				saveByMonth(collection, CollectionEnum.A_FLOORS_M.d());
 				break;
-			case "activities_steps":
-				saveByMonth(collection, CollectionEnum.STEPS_MONTHLY.desc());
+			case "a_distance":
+				saveByMonth(collection, CollectionEnum.A_DISTANCE_M.d());
 				break;
-			case "activities_calories":
-				saveByMonth(collection, CollectionEnum.CALORIES_MONTHLY.desc());
+			case "a_steps":
+				saveByMonth(collection, CollectionEnum.A_STEPS_M.d());
 				break;
-			case "sleep_efficiency":
-				saveByMonth(collection, CollectionEnum.EFFICIENCY_MONTHLY.desc());
+			case "a_calories":
+				saveByMonth(collection, CollectionEnum.A_CALORIES_M.d());
 				break;
-			case "sleep_minutesToFallAsleep":
-				saveByMonth(collection, CollectionEnum.MINUTES_TO_FALL_ASLEEP_MONTHLY.desc());
+			case "s_efficiency":
+				saveByMonth(collection, CollectionEnum.S_EFFICIENCY_M.d());
 				break;
-			case "sleep_minutesAfterWakeUp":
-				saveByMonth(collection, CollectionEnum.MINUTES_AFTER_WAKE_UP_MONTHLY.desc());
+			case "s_minutesToFallAsleep":
+				saveByMonth(collection, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP_M.d());
 				break;
-			case "sleep_minutesAwake":
-				saveByMonth(collection, CollectionEnum.MINUTES_AWAKE_MONTHLY.desc());
+			case "s_minutesAfterWakeUp":
+				saveByMonth(collection, CollectionEnum.S_MINUTES_AFTER_WAKE_UP_M.d());
 				break;
-			case "sleep_minutesAsleep":
-				saveByMonth(collection, CollectionEnum.MINUTES_ASLEEP_MONTHLY.desc());
+			case "s_minutesAwake":
+				saveByMonth(collection, CollectionEnum.S_MINUTES_AWAKE_M.d());
 				break;
-			case "sleep_timeInBed":
-				saveByMonth(collection, CollectionEnum.TIME_IN_BED_MONTHLY.desc());
+			case "s_minutesAsleep":
+				saveByMonth(collection, CollectionEnum.S_MINUTES_ASLEEP_M.d());
+				break;
+			case "s_timeInBed":
+				saveByMonth(collection, CollectionEnum.S_TIME_IN_BED_M.d());
 				break;
 			default:
 				break;

@@ -13,14 +13,14 @@ public enum HeartRateCategory {
 	CARDIO("Cardio"),
 	PEAK("Peak");
 	
-	private String desc;
+	private String d;
 
-	private HeartRateCategory(String desc) {
-		this.desc = desc;
+	private HeartRateCategory(String d) {
+		this.d = d;
 	}
 
-	public String desc() {
-		return desc;
+	public String d() {
+		return d;
 	}
 
 }

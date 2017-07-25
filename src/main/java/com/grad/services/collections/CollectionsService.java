@@ -16,7 +16,7 @@ import com.grad.domain.CollectionEnum;
  */
 
 @Service
-public class CreateCollectionsService {
+public class CollectionsService {
 
 	private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values());
 
@@ -27,11 +27,11 @@ public class CreateCollectionsService {
 		
 			collections.stream().forEach(collectionName -> {
 
-				if (mongoTemplate.collectionExists(collectionName.desc())) {
-					mongoTemplate.dropCollection(collectionName.desc());
-					mongoTemplate.createCollection(collectionName.desc());
+				if (mongoTemplate.collectionExists(collectionName.d())) {
+					mongoTemplate.dropCollection(collectionName.d());
+					mongoTemplate.createCollection(collectionName.d());
 				} else {
-					mongoTemplate.createCollection(collectionName.desc());
+					mongoTemplate.createCollection(collectionName.d());
 				}
 			});
 	}

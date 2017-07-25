@@ -28,7 +28,7 @@ public class ActivitiesDataService {
 	
 	// response data filter name
 	private static final String CALORIES = "activities-calories";
-	private static final String DISTANCE = "categories";
+	private static final String DISTANCE = "activities-distance";
 	private static final String FLOORS = "activities-floors";
 	private static final String STEPS = "activities-steps";
 
@@ -73,10 +73,10 @@ public class ActivitiesDataService {
 
 			if (steps.getStatusCodeValue() == 401) {
 				ResponseEntity<String> stepsWithRefreshToken = restTemplateGet.exchange(urlsProp.getStepsUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(stepsWithRefreshToken,	CollectionEnum.ACTIVITIES_STEPS.desc(), STEPS);
+				saveOperationsService.dataTypeInsert(stepsWithRefreshToken,	CollectionEnum.A_STEPS.d(), STEPS);
 				success = true;
 			} else if (steps.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(steps, CollectionEnum.ACTIVITIES_STEPS.desc(), STEPS);
+				saveOperationsService.dataTypeInsert(steps, CollectionEnum.A_STEPS.d(), STEPS);
 				success = true;
 			} else {
 				return false;
@@ -84,10 +84,10 @@ public class ActivitiesDataService {
 
 			if (floors.getStatusCodeValue() == 401) {
 				ResponseEntity<String> floorsWithRefreshToken = restTemplateGet.exchange(urlsProp.getFloorsUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(floorsWithRefreshToken, CollectionEnum.ACTIVITIES_FLOORS.desc(), FLOORS);
+				saveOperationsService.dataTypeInsert(floorsWithRefreshToken, CollectionEnum.A_FLOORS.d(), FLOORS);
 				success = true;
 			} else if (floors.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(floors, CollectionEnum.ACTIVITIES_FLOORS.desc(), FLOORS);
+				saveOperationsService.dataTypeInsert(floors, CollectionEnum.A_FLOORS.d(), FLOORS);
 				success = true;
 			} else {
 				return false;
@@ -95,10 +95,10 @@ public class ActivitiesDataService {
 
 			if (distance.getStatusCodeValue() == 401) {
 				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(urlsProp.getDistanceUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(distanceWithRefreshToken, CollectionEnum.ACTIVITIES_DISTANCE.desc(), DISTANCE);
+				saveOperationsService.dataTypeInsert(distanceWithRefreshToken, CollectionEnum.A_DISTANCE.d(), DISTANCE);
 				success = true;
 			} else if (distance.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(distance, CollectionEnum.ACTIVITIES_DISTANCE.desc(), DISTANCE);
+				saveOperationsService.dataTypeInsert(distance, CollectionEnum.A_DISTANCE.d(), DISTANCE);
 				success = true;
 			} else {
 				return false;
@@ -106,10 +106,10 @@ public class ActivitiesDataService {
 
 			if (calories.getStatusCodeValue() == 401) {
 				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(urlsProp.getCaloriesUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(caloriesWithRefreshToken,CollectionEnum.ACTIVITIES_CALORIES.desc(), CALORIES);
+				saveOperationsService.dataTypeInsert(caloriesWithRefreshToken,CollectionEnum.A_CALORIES.d(), CALORIES);
 				success = true;
 			} else if (calories.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(calories, CollectionEnum.ACTIVITIES_CALORIES.desc(),CALORIES);
+				saveOperationsService.dataTypeInsert(calories, CollectionEnum.A_CALORIES.d(),CALORIES);
 				success = true;
 			} else {
 				return false;

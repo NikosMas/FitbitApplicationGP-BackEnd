@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
 import com.grad.domain.HeartRateCategory;
 import com.grad.services.auth.AuthCodeRequestService;
-import com.grad.services.collections.CreateCollectionsService;
+import com.grad.services.collections.CollectionsService;
+import com.grad.services.data.DailyDataService;
 import com.grad.services.mail.FitbitHeartCheckPeakService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
@@ -24,7 +26,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Service about Vaadin buttons building 
+ * Service about Vaadin buttons building
  * 
  * @author nikos_mas, alex_kak
  */
@@ -39,13 +41,16 @@ public class ButtonsBuilderService {
 	private FitbitHeartCheckPeakService heartPeakService;
 
 	@Autowired
-	private CreateCollectionsService collectionsService;
+	private CollectionsService collectionsService;
 
 	@Autowired
 	private AuthCodeRequestService codeService;
 
 	@Autowired
 	private ClearAllService clearFieldsService;
+
+	@Autowired
+	DailyDataService dailyDataService;
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
@@ -70,22 +75,23 @@ public class ButtonsBuilderService {
 	 * @param authorizationCode
 	 * @param clientId
 	 * @param clientSecret
-	 * @param collections
+	 * @param exit 
 	 * @return
 	 */
-	public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret,
-			Button collections) {
+	public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret, Button exit) {
 		authorizationCode.setIcon(VaadinIcons.CHECK_CIRCLE);
 		authorizationCode.setCaption("Submit");
 		authorizationCode.setWidth("150");
 		authorizationCode.addClickListener(click -> {
-			if (!(clientId.isEmpty() || clientSecret.isEmpty()) && !collections.isEnabled()) {
+			if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
 				redisTemplate.opsForValue().set("Client-id", clientId.getValue());
 				redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
 				authorizationCode.setEnabled(false);
 				clientId.setEnabled(false);
 				clientSecret.setEnabled(false);
 				codeService.codeRequest();
+				collectionsService.collectionsCreate();
+				exit.setEnabled(true);
 				Notification.show("Authorization code saved into Redis database and it's ready for use!");
 			} else {
 				Notification.show(
@@ -145,7 +151,6 @@ public class ButtonsBuilderService {
 
 		switch (endpoint) {
 		case "/fitbitApp/dashboard":
-			continueProcess.setCaption("Continue to user data receiving process");
 			if (authorizationCode.isEnabled()) {
 				Notification.show(
 						"Complete with a valid clientId & clientSecret and receive the authorization code required",
@@ -154,7 +159,6 @@ public class ButtonsBuilderService {
 			}
 			break;
 		case "/fitbitApp/userData":
-			continueProcess.setCaption("Continue heart-rate filtering and mail process");
 			if (submitCheckBoxButton.isEnabled()) {
 				Notification.show("Complete the required steps before", Type.ERROR_MESSAGE);
 				return false;
@@ -184,4 +188,5 @@ public class ButtonsBuilderService {
 			clearFieldsService.removeAll(content);
 		});
 	}
+
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.grad.controller.UserDataController;
 
 /**
- * Service about dates given from the user at {@link UserDataController}. Devides them by 90 days if required
+ * Service about dates given from the user at {@link UserDataController}.
  * 
  * @author nikos_mas, alex_kak
  */
@@ -22,6 +22,9 @@ import com.grad.controller.UserDataController;
 public class CalendarService {
 
 	/**
+	 * Takes the starting & the ending date and split the range of them to 90-days partitions
+	 * if it's possible
+	 * 
 	 * @param startDate
 	 * @param endDate
 	 * @return
@@ -56,6 +59,8 @@ public class CalendarService {
 	}
 
 	/**
+	 * Convert a list of maps with dates to a list of dates
+	 * 
 	 * @param dates
 	 * @return
 	 */

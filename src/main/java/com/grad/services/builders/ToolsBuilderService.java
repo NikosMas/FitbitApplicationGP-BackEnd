@@ -43,7 +43,7 @@ public class ToolsBuilderService {
 
 		select.setCaption("Select Heart rate category");
 		select.setItems(planets);
-		select.setItemCaptionGenerator(HeartRateCategory::desc);
+		select.setItemCaptionGenerator(HeartRateCategory::d);
 		select.setPlaceholder("heart-rate category");
 		select.setWidth("250");
 		select.setEmptySelectionAllowed(false);
