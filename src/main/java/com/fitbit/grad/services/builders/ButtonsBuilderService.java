@@ -79,7 +79,7 @@ public class ButtonsBuilderService {
 		authorizationCode.setCaption("Submit");
 		authorizationCode.setWidth("150");
 		authorizationCode.addClickListener(click -> {
-			if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
+			if (!clientId.isEmpty() && !clientSecret.isEmpty()) {
 				redisTemplate.opsForValue().set("Client-id", clientId.getValue());
 				redisTemplate.opsForValue().set("Client-secret", clientSecret.getValue());
 				authorizationCode.setEnabled(false);

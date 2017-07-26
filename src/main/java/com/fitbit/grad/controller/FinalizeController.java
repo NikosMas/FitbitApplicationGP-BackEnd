@@ -2,6 +2,7 @@ package com.fitbit.grad.controller;
 
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import com.fitbit.grad.services.builders.ContentBuilderService;
 import com.fitbit.grad.services.collections.CollectionService;
@@ -35,6 +36,9 @@ public class FinalizeController {
 		
 		@Autowired
 		private CollectionService collectionsService;
+		
+		@Autowired
+		private RedisTemplate<String, String> redisTemplate;
 
 		@Override
 		public void init(VaadinRequest request) {
@@ -49,27 +53,17 @@ public class FinalizeController {
 			group.setItems("Same user", "Another user");
 			group.setCaption("Choose the user you want");
 			
-//			Button restartTheSame = new Button();
-//			restartTheSame.setIcon(VaadinIcons.ROTATE_LEFT);
-//			restartTheSame.setCaption("Restart");
-//			restartTheSame.setWidth("150");
-//			restartTheSame.addClickListener(click -> {
-//				collectionsService.collectionsCreate();
-//				getPage().setLocation("userData");
-//				getSession().close();
-//			});
-//			
 			Button restart = new Button();
 			restart.setIcon(VaadinIcons.ROTATE_LEFT);
 			restart.setCaption("Restart");
 			restart.setWidth("150");
 			restart.addClickListener(click -> {
-				
 				if (group.getValue().equals("Same user")) {
 					collectionsService.collectionsCreate();
 					getPage().setLocation("userData");
 					getSession().close();
 				}else {
+					redisTemplate.delete("AuthorizationCode");
 					getPage().setLocation("dashboard");
 					getSession().close();
 				}

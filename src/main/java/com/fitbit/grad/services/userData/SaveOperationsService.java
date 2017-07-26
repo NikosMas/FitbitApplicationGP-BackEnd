@@ -45,23 +45,24 @@ public class SaveOperationsService {
 	/**
 	 * method that stores the data from API
 	 * 
-	 * @param responseData
+	 * @param response
 	 * @param collection
-	 * @param filterCollectionName
+	 * @param fcollection
 	 * @throws IOException
 	 * @throws JsonProcessingException
 	 */
-	public void dataTypeInsert(ResponseEntity<String> responseData, String collection, String filterCollectionName) throws JsonProcessingException, IOException {
-		JsonNode responseDataBody = mapper.readTree(responseData.getBody());
+	public void dataTypeInsert(ResponseEntity<String> response, String collection, String fcollection)
+			throws JsonProcessingException, IOException {
+		JsonNode responseDataBody = mapper.readTree(response.getBody());
 		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
 
 		if (collection.equals(CollectionEnum.A_LIFETIME.d())) {
 			mongoTemplate.insert(dataToInsert, collection);
-		} else if (filterCollectionName.equals("user")) {
-			DBObject filteredValue = (DBObject) dataToInsert.get(filterCollectionName);
+		} else if (fcollection.equals("user")) {
+			DBObject filteredValue = (DBObject) dataToInsert.get(fcollection);
 			mongoTemplate.insert(filteredValue, collection);
 		} else {
-			BasicDBList filteredValue = (BasicDBList) dataToInsert.get(filterCollectionName);
+			BasicDBList filteredValue = (BasicDBList) dataToInsert.get(fcollection);
 			mongoTemplate.insert(filteredValue, collection);
 
 			switch (collection) {
@@ -104,8 +105,10 @@ public class SaveOperationsService {
 	/**
 	 * finds all data and update the dateTime value to "yyyy-mm" date format
 	 * 
-	 * @param collection inserted the data
-	 * @param newCollection where will be stored the new data
+	 * @param collection
+	 *            inserted the data
+	 * @param newCollection
+	 *            where will be stored the new data
 	 */
 	private void saveByMonth(String collection, String newCollection) {
 		mongoTemplate.findAll(CommonDataSample.class, collection).forEach(v -> {
@@ -115,7 +118,8 @@ public class SaveOperationsService {
 	}
 
 	/**
-	 * @param unauthorized that declares if refresh token should be used 
+	 * @param unauthorized
+	 *            that declares if refresh token should be used
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws IOException
@@ -123,10 +127,10 @@ public class SaveOperationsService {
 	public HttpEntity<String> getEntity(boolean unauthorized) throws JsonProcessingException, IOException {
 		HttpHeaders headers = new HttpHeaders();
 
-		if (unauthorized == false) {
-			headers.set("Authorization", "Bearer " + getAccessToken());
-		} else if (unauthorized == true) {
+		if (unauthorized) {
 			headers.set("Authorization", "Bearer " + refreshTokenService.refreshToken());
+		} else {
+			headers.set("Authorization", "Bearer " + getAccessToken());
 		}
 
 		return new HttpEntity<String>(headers);

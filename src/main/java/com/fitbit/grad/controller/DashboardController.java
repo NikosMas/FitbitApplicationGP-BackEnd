@@ -2,6 +2,7 @@ package com.fitbit.grad.controller;
 
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
 import com.fitbit.grad.services.builders.ContentBuilderService;
@@ -14,6 +15,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -45,6 +48,9 @@ public class DashboardController {
 		@Autowired
 		private DailyDataService dailyDataService;
 
+		@Autowired
+		private RedisTemplate<String, String> redisTemplate;
+
 		@Override
 		public void init(VaadinRequest request) {
 			VerticalLayout content = new VerticalLayout();
@@ -60,7 +66,6 @@ public class DashboardController {
 			TextField clientSecret = new TextField();
 			fieldsService.clientSecretBuilder(clientSecret);
 
-
 			// business part with redirection is here because of private {@link
 			// Page} at {@link UI}
 			Button exit = new Button();
@@ -75,7 +80,7 @@ public class DashboardController {
 
 			Button authorizationCode = new Button();
 			buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, exit);
-			
+
 			Button restart = new Button();
 			restart.setIcon(VaadinIcons.ROTATE_LEFT);
 			restart.setCaption("Restart");
@@ -88,15 +93,19 @@ public class DashboardController {
 			stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
 			stepForward.setCaption("Continue");
 			stepForward.addClickListener(click -> {
-				if (buttonsService.continueBuilder(stepForward, request, authorizationCode, null, null)
-						&& dailyDataService.storeIntradayData()) {
-					getPage().setLocation("userData");
-					getSession().close();
+				if (redisTemplate.hasKey("AuthorizationCode")) {
+					if (buttonsService.continueBuilder(stepForward, request, authorizationCode, null, null)
+							&& dailyDataService.storeIntradayData()) {
+						getPage().setLocation("userData");
+						getSession().close();
+					}
+				} else {
+					Notification.show("Complete the authorization before continue", Type.ERROR_MESSAGE);
 				}
 			});
 
-			contentService.dashboardContentBuilder(content, image, clientId, clientSecret,
-					authorizationCode, exit, stepForward, restart);
+			contentService.dashboardContentBuilder(content, image, clientId, clientSecret, authorizationCode, exit,
+					stepForward, restart);
 		}
 	}
 

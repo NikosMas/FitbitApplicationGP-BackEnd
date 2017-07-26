@@ -2,6 +2,7 @@ package com.fitbit.grad.controller;
 
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
 import com.fitbit.grad.services.builders.CheckBoxBuilderService;
@@ -46,6 +47,9 @@ public class UserDataController {
 
 		@Autowired
 		private ContentBuilderService contentService;
+		
+		@Autowired
+		private RedisTemplate<String, String> redisTemplate;
 
 		@Override
 		public void init(VaadinRequest request) {
@@ -90,6 +94,7 @@ public class UserDataController {
 			stepBackward.setCaption("Back");
 			stepBackward.setWidth("150");
 			stepBackward.addClickListener(click -> {
+				redisTemplate.delete("AuthorizationCode");
 				getPage().setLocation("dashboard");
 				getSession().close();
 			});

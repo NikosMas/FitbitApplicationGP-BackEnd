@@ -18,7 +18,7 @@ import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.calendar.CalendarService;
 
 /**
- * Service about requesting to fitbit api for activity data
+ * Service about requesting to Fitbit api for activity data
  * 
  * @author nikos_mas, alex_kak
  */
@@ -65,60 +65,43 @@ public class ActivitiesDataService {
 	 */
 	private boolean dataRetriever(String month) {
 		boolean success = false;
+		
+		requests(success, urlsProp.getStepsUrl(), month, CollectionEnum.A_STEPS.d(), STEPS);
+		requests(success, urlsProp.getFloorsUrl(), month, CollectionEnum.A_FLOORS.d(), FLOORS);
+		requests(success, urlsProp.getDistanceUrl(), month, CollectionEnum.A_DISTANCE.d(), DISTANCE);
+		requests(success, urlsProp.getCaloriesUrl(), month, CollectionEnum.A_CALORIES.d(), CALORIES);
+		
+		return success;
+	}
+	
+	/**
+	 * sends a call to the given url & if response is unauthorized -> refresh token and resends
+	 * 
+	 * @param success
+	 * @param url
+	 * @param month
+	 * @param collection
+	 * @param fcollection
+	 * @return
+	 */
+	private void requests(boolean success, String url, String month, String collection, String fcollection) {
 		try {
-			ResponseEntity<String> steps = restTemplateGet.exchange(urlsProp.getStepsUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> floors = restTemplateGet.exchange(urlsProp.getFloorsUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> calories = restTemplateGet.exchange(urlsProp.getCaloriesUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> distance = restTemplateGet.exchange(urlsProp.getDistanceUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-
-			if (steps.getStatusCodeValue() == 401) {
-				ResponseEntity<String> stepsWithRefreshToken = restTemplateGet.exchange(urlsProp.getStepsUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(stepsWithRefreshToken,	CollectionEnum.A_STEPS.d(), STEPS);
+			ResponseEntity<String> response = restTemplateGet.exchange(url + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			
+			if (response.getStatusCodeValue() == 401) {
+				ResponseEntity<String> responseWithRefreshToken = restTemplateGet.exchange(url + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(responseWithRefreshToken,	collection, fcollection);
 				success = true;
-			} else if (steps.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(steps, CollectionEnum.A_STEPS.d(), STEPS);
+			} else if (response.getStatusCodeValue() == 200) {
+				saveOperationsService.dataTypeInsert(response, collection, fcollection);
 				success = true;
 			} else {
-				return false;
+				success = false;
 			}
-
-			if (floors.getStatusCodeValue() == 401) {
-				ResponseEntity<String> floorsWithRefreshToken = restTemplateGet.exchange(urlsProp.getFloorsUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(floorsWithRefreshToken, CollectionEnum.A_FLOORS.d(), FLOORS);
-				success = true;
-			} else if (floors.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(floors, CollectionEnum.A_FLOORS.d(), FLOORS);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (distance.getStatusCodeValue() == 401) {
-				ResponseEntity<String> distanceWithRefreshToken = restTemplateGet.exchange(urlsProp.getDistanceUrl() + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(distanceWithRefreshToken, CollectionEnum.A_DISTANCE.d(), DISTANCE);
-				success = true;
-			} else if (distance.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(distance, CollectionEnum.A_DISTANCE.d(), DISTANCE);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (calories.getStatusCodeValue() == 401) {
-				ResponseEntity<String> caloriesWithRefreshToken = restTemplateGet.exchange(urlsProp.getCaloriesUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(caloriesWithRefreshToken,CollectionEnum.A_CALORIES.d(), CALORIES);
-				success = true;
-			} else if (calories.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(calories, CollectionEnum.A_CALORIES.d(),CALORIES);
-				success = true;
-			} else {
-				return false;
-			}
-
+		
 		} catch (IOException | RestClientException e) {
 			LOG.error("Something went wrong: ", e);
-			return false;
+			success = false;
 		}
-		return success;
 	}
 }
