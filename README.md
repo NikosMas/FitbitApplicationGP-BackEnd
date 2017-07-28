@@ -13,18 +13,18 @@ Then you have to start mongo service and redis service required:
 on linux ("sudo systemctl start mongod", "sudo systemctl start redis")
 on windows just run the mongod and redis services.
    
-Then tou have to open the project to your IDE and go to "/gradFit/src/main/resources/application.yml" and put your information about mongo, mail and fitbit client properties. 
+Then you have to open the project to your IDE and go to "/gradFit/src/main/resources/application.yml" and put your information about mongo, mail and fitbit client properties. 
 
 Finally you run the application as Spring Boot Application from the IDE or by cmd with "./mvnw spring-boot:run" .
 
 ## Suggested moves
-As you ran the application it will open a browser to "fitbitApp/dashboard" and fill the credentials required taken from the "dev.fitbit.com/apps". After finish this click to go to the user data retreiving proccess.
+As you ran the application it will open a browser to "fitbitApp/dashboard" and you have to fill the credentials required taken from the "dev.fitbit.com/apps". After finishing this click to go to the user data retreiving proccess.
 
-You are redirected to "fitbitApp/userData" where you have to choose the start date & end date, the category of data you want to receive. The next step is clicking to redirect at "localhost:8080/fitbitApp/heartRateFilter" but this is possible only if you have selected for downloading heart rate data.
+You are redirected to "fitbitApp/userData" where you have to chose the start date & end date, the category of data you want to receive. The next step is clicking to redirect at "fitbitApp/heartRateFilter" but this is possible only if you have selected for downloading heart rate data.
 
 At "fitbitApp/heartRateNotification" you have to fill the required fields for e-mail and heart rate details.
 
-After finishing all steps you can "exit" and go to the finalize tab to restart the process with the same user or not.
+As soon as you have finish all steps you can "exit" and go to the finalize tab to restart the process with the same user or not.
 
 The application is now completed.
 
