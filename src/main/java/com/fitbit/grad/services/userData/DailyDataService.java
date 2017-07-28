@@ -49,7 +49,7 @@ public class DailyDataService {
 			callExecution(urlsProp.getDistanceUrl(), CollectionEnum.A_DISTANCE_D.d());
 			callExecution(urlsProp.getHeartUrl(), CollectionEnum.A_HEART_D.d());
 			
-		LOG.info("Today's data till now are successfully received!");	
+		LOG.info("Today's data til now are successfully received!");	
 			
 			return true;
 		} catch (IOException e) {
@@ -57,6 +57,12 @@ public class DailyDataService {
 		}
 	}
 
+	/**
+	 * @param url
+	 * @param collection
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
 	public void callExecution(String url, String collection) throws JsonProcessingException, IOException {
 		ResponseEntity<String> response = restTemplateGet.exchange(url + "today/1d/time/00:00/" + LocalTime.now()
 		.format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET, saveOperationsService.getEntity(false), String.class);

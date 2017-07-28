@@ -55,20 +55,21 @@ public class AccessTokenRequestService {
 				(redisTemplate.opsForValue().get("Client-id") + ":" + redisTemplate.opsForValue().get("Client-secret"))
 						.getBytes("utf-8"));
 
+		// request parameters
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
 		parameters.add("clientId", redisTemplate.opsForValue().get("Client-id"));
 		parameters.add("grant_type", authProp.getGrantType());
 		parameters.add("redirect_uri", authProp.getRedirectUri());
 		parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
 
+		// request headers
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.set("Authorization", "Basic " + headerAuth);
 		headers.set("Accept", authProp.getHeaderAccept());
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,
-				headers);
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,headers);
 		ResponseEntity<String> response = restTemplateToken.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
 
 		JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");

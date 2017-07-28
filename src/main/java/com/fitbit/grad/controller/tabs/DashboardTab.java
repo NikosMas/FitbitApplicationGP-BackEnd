@@ -1,4 +1,4 @@
-package com.fitbit.grad.controller;
+package com.fitbit.grad.controller.tabs;
 
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author nikos_mas, alex_kak
  */
 
-public class DashboardController {
+public class DashboardTab {
 
 	@Title("Home")
 	@SpringUI(path = "fitbitApp/dashboard")

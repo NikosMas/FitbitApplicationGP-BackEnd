@@ -25,8 +25,8 @@ import com.fitbit.grad.services.calendar.CalendarService;
 
 @Service
 public class ActivitiesDataService {
-	
-	// response data filter name
+
+	// filtered field from response
 	private static final String CALORIES = "activities-calories";
 	private static final String DISTANCE = "activities-distance";
 	private static final String FLOORS = "activities-floors";
@@ -36,7 +36,7 @@ public class ActivitiesDataService {
 
 	@Autowired
 	private RestTemplate restTemplateGet;
-	
+
 	@Autowired
 	private FitbitApiUrlProperties urlsProp;
 
@@ -46,11 +46,6 @@ public class ActivitiesDataService {
 	@Autowired
 	private CalendarService calendarService;
 
-	/**
-	 * @param dates
-	 * @return
-	 */
-	
 	public boolean activities(List<Map<String, String>> dates) {
 
 		String p = calendarService.months(dates).stream().filter(pack -> dataRetriever(pack) == false).findFirst()
@@ -59,23 +54,17 @@ public class ActivitiesDataService {
 		return (p == null) ? true : false;
 	}
 
-	/**
-	 * @param month
-	 * @return
-	 */
 	private boolean dataRetriever(String month) {
-		boolean success = false;
-		
-		requests(success, urlsProp.getStepsUrl(), month, CollectionEnum.A_STEPS.d(), STEPS);
-		requests(success, urlsProp.getFloorsUrl(), month, CollectionEnum.A_FLOORS.d(), FLOORS);
-		requests(success, urlsProp.getDistanceUrl(), month, CollectionEnum.A_DISTANCE.d(), DISTANCE);
-		requests(success, urlsProp.getCaloriesUrl(), month, CollectionEnum.A_CALORIES.d(), CALORIES);
-		
-		return success;
+
+		return (requests(urlsProp.getStepsUrl(), month, CollectionEnum.A_STEPS.d(), STEPS)
+				&& requests(urlsProp.getFloorsUrl(), month, CollectionEnum.A_FLOORS.d(), FLOORS)
+				&& requests(urlsProp.getDistanceUrl(), month, CollectionEnum.A_DISTANCE.d(), DISTANCE)
+				&& requests(urlsProp.getCaloriesUrl(), month, CollectionEnum.A_CALORIES.d(), CALORIES)) ? true : false;
 	}
-	
+
 	/**
-	 * sends a call to the given url & if response is unauthorized -> refresh token and resends
+	 * sends a call to the given url & if response is unauthorized -> refresh token
+	 * and resends
 	 * 
 	 * @param success
 	 * @param url
@@ -84,24 +73,24 @@ public class ActivitiesDataService {
 	 * @param fcollection
 	 * @return
 	 */
-	private void requests(boolean success, String url, String month, String collection, String fcollection) {
+	private boolean requests(String url, String month, String collection, String fcollection) {
 		try {
-			ResponseEntity<String> response = restTemplateGet.exchange(url + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			
+			ResponseEntity<String> response = restTemplateGet.exchange(url + month, HttpMethod.GET,	saveOperationsService.getEntity(false), String.class);
+
 			if (response.getStatusCodeValue() == 401) {
-				ResponseEntity<String> responseWithRefreshToken = restTemplateGet.exchange(url + month, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(responseWithRefreshToken,	collection, fcollection);
-				success = true;
+				ResponseEntity<String> responseWithRefreshToken = restTemplateGet.exchange(url + month, HttpMethod.GET,	saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
+				return true;
 			} else if (response.getStatusCodeValue() == 200) {
 				saveOperationsService.dataTypeInsert(response, collection, fcollection);
-				success = true;
+				return true;
 			} else {
-				success = false;
+				return false;
 			}
-		
+
 		} catch (IOException | RestClientException e) {
 			LOG.error("Something went wrong: ", e);
-			success = false;
+			return false;
 		}
 	}
 }

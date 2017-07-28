@@ -23,89 +23,61 @@ import com.fitbit.grad.models.CollectionEnum;
 @Service
 public class OtherDataService {
 
+	// filtered field from response
 	private static final String PROFILE_USER = "user";
 	private static final String FREQUENCE_CATEGORIES = "categories";
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
 	@Autowired
-	private SaveOperationsService dataService;
+	private SaveOperationsService saveOperationsService;
 
 	@Autowired
-	private RestTemplate restTemplateGet;
+	private RestTemplate restTemplate;
 	
 	@Autowired
 	private FitbitApiUrlProperties urlsProp;
 
-	/**
-	 * @return
-	 */
-	
 	public boolean profile() {
-		try {
-			ResponseEntity<String> profile;
-			profile = restTemplateGet.exchange(urlsProp.getProfileUrl(), HttpMethod.GET, dataService.getEntity(false), String.class);
-
-			if (profile.getStatusCodeValue() == 401) {
-				ResponseEntity<String> profileWithRefreshToken = restTemplateGet.exchange(urlsProp.getProfileUrl(), HttpMethod.GET,dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(profileWithRefreshToken, CollectionEnum.PROFILE.d(),PROFILE_USER);
-				return true;
-			} else if (profile.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(profile, CollectionEnum.PROFILE.d(), PROFILE_USER);
-				return true;
-			}
-			return false;
-
-		} catch (RestClientException | IOException e) {
-			LOG.error("Something went wrong: ", e);
-			return false;
-		}
+		 
+		return requests(urlsProp.getProfileUrl(), CollectionEnum.PROFILE.d(), PROFILE_USER);
 	}
-
-	/**
-	 * @return
-	 */
 	
 	public boolean lifetime() {
-		try {
-			ResponseEntity<String> lifetime;
-			lifetime = restTemplateGet.exchange(urlsProp.getLifetimeUrl(), HttpMethod.GET, dataService.getEntity(false),	String.class);
-			if (lifetime.getStatusCodeValue() == 401) {
-				ResponseEntity<String> lifetimeWithRefreshToken = restTemplateGet.exchange(urlsProp.getLifetimeUrl(), HttpMethod.GET,dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(lifetimeWithRefreshToken,CollectionEnum.A_LIFETIME.d(), null);
-				return true;
-			} else if (lifetime.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(lifetime, CollectionEnum.A_LIFETIME.d(), null);
-				return true;
-			}
-			return false;
-
-		} catch (RestClientException | IOException e) {
-			LOG.error("Something went wrong: ", e);
-			return false;
-		}
+		
+		return requests(urlsProp.getLifetimeUrl(), CollectionEnum.A_LIFETIME.d(), null);
 	}
-
-	/**
-	 * @return
-	 */
 	
 	public boolean frequence() {
+		
+		return requests(urlsProp.getFrequenceUrl(), CollectionEnum.A_FREQUENCE.d(), FREQUENCE_CATEGORIES);
+	}
+	
+	/**
+	 * sends a call to the given url & if response is unauthorized -> refresh token
+	 * and resends
+	 * 
+	 * @param url
+	 * @param collection
+	 * @param fcollection
+	 * @return
+	 */
+	private boolean requests(String url, String collection, String fcollection) {
 		try {
-			ResponseEntity<String> frequence;
-			frequence = restTemplateGet.exchange(urlsProp.getFrequenceUrl(), HttpMethod.GET, dataService.getEntity(false),String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, saveOperationsService.getEntity(false), String.class);
 
-			if (frequence.getStatusCodeValue() == 401) {
-				ResponseEntity<String> frequenceWithRefreshToken = restTemplateGet.exchange(urlsProp.getFrequenceUrl(),HttpMethod.GET, dataService.getEntity(true), String.class);
-				dataService.dataTypeInsert(frequenceWithRefreshToken,CollectionEnum.A_FREQUENCE.d(), FREQUENCE_CATEGORIES);
+			if (response.getStatusCodeValue() == 401) {
+				ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
 				return true;
-			} else if (frequence.getStatusCodeValue() == 200) {
-				dataService.dataTypeInsert(frequence, CollectionEnum.A_FREQUENCE.d(),FREQUENCE_CATEGORIES);
+			} else if (response.getStatusCodeValue() == 200) {
+				saveOperationsService.dataTypeInsert(response, collection, fcollection);
 				return true;
+			} else {
+				return false;
 			}
-			return false;
 
-		} catch (RestClientException | IOException e) {
+		} catch (IOException | RestClientException e) {
 			LOG.error("Something went wrong: ", e);
 			return false;
 		}

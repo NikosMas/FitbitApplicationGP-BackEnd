@@ -48,11 +48,6 @@ public class SleepDataService {
 	@Autowired
 	private FitbitApiUrlProperties urlsProp;
 
-	/**
-	 * @param dates
-	 * @return
-	 */
-	
 	public boolean sleep(List<Map<String, String>> dates) {
 
 		String p = calendarService.months(dates).stream().filter(month -> dataRetriever(month) == false).findFirst()
@@ -60,83 +55,38 @@ public class SleepDataService {
 
 		return (p == null) ? true : false;
 	}
+	
+	private boolean dataRetriever(String month) {
+
+		return (requests(urlsProp.getTimeInBedUrl(), month, CollectionEnum.S_TIME_IN_BED.d(), TIME_IN_BED)
+				&& requests(urlsProp.getMinutesAsleepUrl(), month, CollectionEnum.S_MINUTES_ASLEEP.d(), MINUTES_ASLEEP)
+				&& requests(urlsProp.getMinutesAwakeUrl(), month, CollectionEnum.S_MINUTES_AWAKE.d(), MINUTES_AWAKE)
+				&& requests(urlsProp.getAfterWakeUpUrl(), month, CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d(), MINUTES_AFTER_WAKE_UP)
+				&& requests(urlsProp.getEfficiencyUrl(), month, CollectionEnum.S_EFFICIENCY.d(), EFFICIENCY)
+				&& requests(urlsProp.getToFallAsleepUrl(), month, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP)) ? true : false;
+	}
 
 	/**
+	 * sends a call to the given url & if response is unauthorized -> refresh token
+	 * and resends
+	 * 
+	 * @param url
 	 * @param month
+	 * @param collection
+	 * @param fcollection
 	 * @return
 	 */
-	private boolean dataRetriever(String month) {
-		boolean success;
+	private boolean requests(String url, String month, String collection, String fcollection) {
 		try {
-			ResponseEntity<String> timeInBed = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> minutesAsleep = restTemplateGet.exchange(urlsProp.getMinutesAsleepUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> minutesAwake = restTemplateGet.exchange(urlsProp.getMinutesAwakeUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> afterWakeup = restTemplateGet.exchange(urlsProp.getAfterWakeUpUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> toFallAsleep = restTemplateGet.exchange(urlsProp.getToFallAsleepUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
-			ResponseEntity<String> efficiency = restTemplateGet.exchange(urlsProp.getEfficiencyUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> response = restTemplateGet.exchange(url + month, HttpMethod.GET,	saveOperationsService.getEntity(false), String.class);
 
-			if (timeInBed.getStatusCodeValue() == 401) {
-				ResponseEntity<String> timeInBedWithRefreshToken = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(timeInBedWithRefreshToken,CollectionEnum.S_TIME_IN_BED.d(), TIME_IN_BED);
-				success = true;
-			} else if (timeInBed.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(timeInBed, CollectionEnum.S_TIME_IN_BED.d(),TIME_IN_BED);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (minutesAsleep.getStatusCodeValue() == 401) {
-				ResponseEntity<String> minutesAsleepWithRefreshToken = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(minutesAsleepWithRefreshToken,CollectionEnum.S_MINUTES_ASLEEP.d(), MINUTES_ASLEEP);
-				success = true;
-			} else if (minutesAsleep.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(minutesAsleep,CollectionEnum.S_MINUTES_ASLEEP.d(), MINUTES_ASLEEP);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (minutesAwake.getStatusCodeValue() == 401) {
-				ResponseEntity<String> minutesAwakeWithRefreshToken = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(minutesAwakeWithRefreshToken,CollectionEnum.S_MINUTES_AWAKE.d(), MINUTES_AWAKE);
-				success = true;
-			} else if (minutesAwake.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(minutesAwake, CollectionEnum.S_MINUTES_AWAKE.d(),MINUTES_AWAKE);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (afterWakeup.getStatusCodeValue() == 401) {
-				ResponseEntity<String> afterWakeupWithRefreshToken = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(afterWakeupWithRefreshToken,CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d(), MINUTES_AFTER_WAKE_UP);
-				success = true;
-			} else if (afterWakeup.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(afterWakeup,CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d(), MINUTES_AFTER_WAKE_UP);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (toFallAsleep.getStatusCodeValue() == 401) {
-				ResponseEntity<String> toFallAsleepWithRefreshToken = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(toFallAsleepWithRefreshToken,CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP);
-				success = true;
-			} else if (toFallAsleep.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(toFallAsleep,CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP);
-				success = true;
-			} else {
-				return false;
-			}
-
-			if (efficiency.getStatusCodeValue() == 401) {
-				ResponseEntity<String> efficiencyWithRefreshToken = restTemplateGet.exchange(urlsProp.getTimeInBedUrl() + month,HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
-				saveOperationsService.dataTypeInsert(efficiencyWithRefreshToken,CollectionEnum.S_EFFICIENCY.d(), EFFICIENCY);
-				success = true;
-			} else if (efficiency.getStatusCodeValue() == 200) {
-				saveOperationsService.dataTypeInsert(efficiency, CollectionEnum.S_EFFICIENCY.d(),EFFICIENCY);
-				success = true;
+			if (response.getStatusCodeValue() == 401) {
+				ResponseEntity<String> responseWithRefreshToken = restTemplateGet.exchange(url + month, HttpMethod.GET,	saveOperationsService.getEntity(true), String.class);
+				saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
+				return true;
+			} else if (response.getStatusCodeValue() == 200) {
+				saveOperationsService.dataTypeInsert(response, collection, fcollection);
+				return true;
 			} else {
 				return false;
 			}
@@ -145,6 +95,5 @@ public class SleepDataService {
 			LOG.error("Something went wrong: ", e);
 			return false;
 		}
-		return success;
 	}
 }

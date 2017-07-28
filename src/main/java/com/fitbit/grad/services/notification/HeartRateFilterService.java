@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitbit.grad.config.MailInfoProperties;
-import com.fitbit.grad.controller.HeartRateNotificationController;
+import com.fitbit.grad.controller.tabs.HeartRateNotificationTab;
 import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.fitbit.grad.models.HeartRateValue;
 import com.fitbit.grad.repository.HeartRateZoneRepository;
@@ -22,7 +22,7 @@ import com.fitbit.grad.services.builders.ClearAllBuilderService;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Service about filtering heart rate data from database according to info given at {@link HeartRateNotificationController}
+ * Service about filtering heart rate data from database according to info given at {@link HeartRateNotificationTab}
  * 
  * @author nikos_mas, alex_kak
  */

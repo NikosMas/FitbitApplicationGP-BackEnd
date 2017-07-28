@@ -20,11 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitbit.grad.config.MailInfoProperties;
-import com.fitbit.grad.controller.HeartRateNotificationController;
+import com.fitbit.grad.controller.tabs.HeartRateNotificationTab;
 import com.fitbit.grad.models.HeartRateCategoryEnum;
 
 /**
- * Service about sending email information about user's heart rate according to info given at {@link HeartRateNotificationController}
+ * Service about sending email information about user's heart rate according to info given at {@link HeartRateNotificationTab}
  * 
  * @author nikos_mas, alex_kak
  */
@@ -74,6 +74,7 @@ public class HeartRateNotificationService {
 		multipart.addBodyPart(messageBodyPart);
 		message.setContent(multipart);
 
+		// sends the notification mail
 		Transport.send(message);
 	}
 }

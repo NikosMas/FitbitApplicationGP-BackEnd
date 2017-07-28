@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.controller.UserDataController;
+import com.fitbit.grad.controller.tabs.UserDataTab;
 
 /**
- * Service about dates given from the user at {@link UserDataController}.
+ * Service about dates given from the user at {@link UserDataTab}.
  * 
  * @author nikos_mas, alex_kak
  */

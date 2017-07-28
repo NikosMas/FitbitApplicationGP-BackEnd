@@ -1,4 +1,4 @@
-package com.fitbit.grad.controller;
+package com.fitbit.grad.controller.tabs;
 
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author nikos_mas, alex_kak
  */
 
-public class HeartRateNotificationController {
+public class HeartRateNotificationTab {
 
 	@Title("Heart Rate Notification")
 	@SpringUI(path = "fitbitApp/heartRateNotification")
