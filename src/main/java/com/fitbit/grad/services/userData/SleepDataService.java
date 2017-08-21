@@ -3,11 +3,9 @@ package com.fitbit.grad.services.userData;
 import com.fitbit.grad.config.FitbitApiUrlProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.calendar.CalendarService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fitbit.grad.services.operations.RequestsOperationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;

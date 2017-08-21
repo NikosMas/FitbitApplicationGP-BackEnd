@@ -1,16 +1,16 @@
-package com.fitbit.grad.services.userData;
+package com.fitbit.grad.services.operations;
 
+import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.authRequests.AccessTokenRequestService;
 import com.fitbit.grad.services.authRequests.RefreshTokenRequestService;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-import org.codehaus.jackson.JsonNode;
+import javaslang.control.Option;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -36,13 +36,7 @@ public class RequestsOperationsService {
     private SaveOperationsService saveOperationsService;
 
     @Autowired
-    private ObjectMapper mapper;
-
-    @Autowired
     private RestTemplate restTemplate;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     private static String accessToken;
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
@@ -92,19 +86,17 @@ public class RequestsOperationsService {
      */
     public boolean requests(String url, String month, String collection, String fcollection) {
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url + month, HttpMethod.GET,	getEntity(false), String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url + month, HttpMethod.GET, getEntity(false), String.class);
 
             if (response.getStatusCodeValue() == 401) {
-                ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url + month, HttpMethod.GET,	getEntity(true), String.class);
+                ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url + month, HttpMethod.GET, getEntity(true), String.class);
                 saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
                 return true;
             } else if (response.getStatusCodeValue() == 200) {
                 saveOperationsService.dataTypeInsert(response, collection, fcollection);
                 return true;
-            } else {
-                return false;
             }
-
+            return false;
         } catch (IOException | RestClientException e) {
             LOG.error("Something went wrong: ", e);
             return false;
@@ -114,25 +106,74 @@ public class RequestsOperationsService {
     /**
      * @param url
      * @param collection
-     * @throws JsonProcessingException
      * @throws IOException
      */
-    public void dailyRequests(String url, String collection) throws IOException {
+    public boolean dailyRequests(String url, String collection) throws IOException {
         ResponseEntity<String> response = restTemplate.exchange(url + "today/1d/time/00:00/" + LocalTime.now()
                 .format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET, getEntity(false), String.class);
 
         if (response.getStatusCodeValue() == 401) {
             ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url + "today/1d/time/00:00/" +
-                    LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET,getEntity(true), String.class);
-
-            JsonNode responseDataBody = mapper.readTree(responseWithRefreshToken.getBody());
-            DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
-            mongoTemplate.insert(dataToInsert, collection);
-
+                    LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET, getEntity(true), String.class);
+            saveOperationsService.dailySave(responseWithRefreshToken.getBody(), collection);
+            return true;
         } else if (response.getStatusCodeValue() == 200) {
-            JsonNode responseDataBody = mapper.readTree(response.getBody());
-            DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
-            mongoTemplate.insert(dataToInsert, collection);
+            saveOperationsService.dailySave(response.getBody(), collection);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * sends a call to the given url & if response is unauthorized -> refresh token
+     * and resends
+     *
+     * @param month
+     * @param heartUrl
+     * @param filter
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     */
+    public Option<JSONArray> heartRequests(String month, String heartUrl, String filter) throws IOException, JSONException {
+        ResponseEntity<String> heart = restTemplate.exchange(heartUrl + month, HttpMethod.GET, getEntity(false), String.class);
+
+        if (heart.getStatusCodeValue() == 401) {
+            ResponseEntity<String> heartWithRefreshToken = restTemplate.exchange(heartUrl + month, HttpMethod.GET, getEntity(true), String.class);
+            saveOperationsService.dataTypeInsert(heartWithRefreshToken, CollectionEnum.A_HEART.d(), filter);
+            return Option.of(new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(filter));
+        } else if (heart.getStatusCodeValue() == 200) {
+            saveOperationsService.dataTypeInsert(heart, CollectionEnum.A_HEART.d(), filter);
+            return Option.of(new JSONObject(heart.getBody()).getJSONArray(filter));
+        }
+        return Option.none();
+    }
+
+    /**
+     * sends a call to the given url & if response is unauthorized -> refresh token
+     * and resends
+     *
+     * @param url
+     * @param collection
+     * @param fcollection
+     * @return
+     */
+    public boolean otherRequests(String url, String collection, String fcollection) {
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getEntity(false), String.class);
+
+            if (response.getStatusCodeValue() == 401) {
+                ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url, HttpMethod.GET, getEntity(true), String.class);
+                saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
+                return true;
+            } else if (response.getStatusCodeValue() == 200) {
+                saveOperationsService.dataTypeInsert(response, collection, fcollection);
+                return true;
+            }
+            return false;
+        } catch (IOException | RestClientException e) {
+            LOG.error("Something went wrong: ", e);
+            return false;
         }
     }
 }

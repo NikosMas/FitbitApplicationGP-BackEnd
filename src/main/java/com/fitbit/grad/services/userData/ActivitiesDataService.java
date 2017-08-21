@@ -3,6 +3,7 @@ package com.fitbit.grad.services.userData;
 import java.util.List;
 import java.util.Map;
 
+import com.fitbit.grad.services.operations.RequestsOperationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fitbit.grad.config.FitbitApiUrlProperties;

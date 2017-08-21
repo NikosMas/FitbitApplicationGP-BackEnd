@@ -1,4 +1,4 @@
-package com.fitbit.grad.services.userData;
+package com.fitbit.grad.services.operations;
 
 import java.io.IOException;
 import org.codehaus.jackson.JsonNode;
@@ -105,5 +105,19 @@ public class SaveOperationsService {
 			v.setDateTime(v.getDateTime().substring(0, 7));
 			mongoTemplate.insert(v, newCollection);
 		});
+	}
+
+	/**
+	 * @param body
+	 * @param collection
+	 */
+	public void dailySave(String body, String collection){
+		try {
+			JsonNode responseDataBody = mapper.readTree(body);
+			DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
+			mongoTemplate.insert(dataToInsert, collection);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
