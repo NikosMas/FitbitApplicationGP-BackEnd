@@ -73,7 +73,6 @@ public class DashboardTab {
             exit.setIcon(VaadinIcons.ROTATE_LEFT);
             exit.setCaption("Exit");
             exit.setWidth("150");
-            exit.setEnabled(false);
             exit.addClickListener(click -> {
                 getPage().setLocation("finalize");
                 getSession().close();
@@ -81,30 +80,7 @@ public class DashboardTab {
 
             Button authorizationCode = new Button();
             buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, exit);
-
-            Button restart = new Button();
-            restart.setIcon(VaadinIcons.ROTATE_LEFT);
-            restart.setCaption("Restart");
-            restart.setWidth("150");
-            restart.addClickListener(click -> {
-                getPage().reload();
-            });
-
-            Button stepForward = new Button();
-            stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
-            stepForward.setCaption("Continue");
-            stepForward.addClickListener(click -> {
-                if (!redisTemplate.hasKey("AuthorizationCode") || !buttonsService.continueBuilder(request, authorizationCode, null, null)) {
-                    Notification.show("Complete the authorization before continue", Type.ERROR_MESSAGE);
-                } else {
-                    dailyDataService.storeIntradayData();
-                    getPage().setLocation("userData");
-                    getSession().close();
-                }
-            });
-
-            contentService.dashboardContentBuilder(content, image, clientId, clientSecret, authorizationCode, exit,
-                    stepForward, restart);
+            contentService.dashboardContentBuilder(content, image, clientId, clientSecret, authorizationCode, exit);
         }
     }
 

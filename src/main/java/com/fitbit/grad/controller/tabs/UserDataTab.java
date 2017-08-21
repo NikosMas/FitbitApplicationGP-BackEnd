@@ -108,7 +108,7 @@ public class UserDataTab {
             stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
             stepForward.setCaption("Continue");
             stepForward.addClickListener(click -> {
-                if (buttonsService.continueBuilder(request, null, submitCheckBoxButton, multiCheckBox)) {
+                if (buttonsService.continueBuilder(submitCheckBoxButton, multiCheckBox)) {
                     getPage().setLocation("heartRateNotification");
                     getSession().close();
                 } else {
