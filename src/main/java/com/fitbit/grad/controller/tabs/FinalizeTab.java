@@ -60,7 +60,9 @@ public class FinalizeTab {
 			restart.setCaption("Restart");
 			restart.setWidth("150");
 			restart.addClickListener(click -> {
-				if (!group.isEmpty()) {
+				if (group.isEmpty()) {
+					Notification.show("Chose one of the options to continue", Type.ERROR_MESSAGE);
+				} else {
 					if (group.getValue().equals("Same user")) {
 						collectionsService.collectionsCreate();
 						getPage().setLocation("userData");
@@ -70,8 +72,6 @@ public class FinalizeTab {
 						getPage().setLocation("dashboard");
 						getSession().close();
 					}
-				} else {
-					Notification.show("Chose one of the options to continue", Type.ERROR_MESSAGE);
 				}
 			});
 

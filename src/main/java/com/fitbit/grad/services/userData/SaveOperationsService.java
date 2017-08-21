@@ -34,17 +34,9 @@ public class SaveOperationsService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@Autowired
-	private AccessTokenRequestService fitbitTokenService;
-
-	@Autowired
-	private RefreshTokenRequestService refreshTokenService;
-
-	private static String accessToken;
-
 	/**
 	 * method that stores the data from API
-	 * 
+	 *
 	 * @param response
 	 * @param collection
 	 * @param fcollection
@@ -52,7 +44,7 @@ public class SaveOperationsService {
 	 * @throws JsonProcessingException
 	 */
 	public void dataTypeInsert(ResponseEntity<String> response, String collection, String fcollection)
-			throws JsonProcessingException, IOException {
+			throws IOException {
 		JsonNode responseDataBody = mapper.readTree(response.getBody());
 		DBObject dataToInsert = (DBObject) JSON.parse(responseDataBody.toString());
 
@@ -66,88 +58,52 @@ public class SaveOperationsService {
 			mongoTemplate.insert(filteredValue, collection);
 
 			switch (collection) {
-			case "a_floors":
-				saveByMonth(collection, CollectionEnum.A_FLOORS_M.d());
-				break;
-			case "a_distance":
-				saveByMonth(collection, CollectionEnum.A_DISTANCE_M.d());
-				break;
-			case "a_steps":
-				saveByMonth(collection, CollectionEnum.A_STEPS_M.d());
-				break;
-			case "a_calories":
-				saveByMonth(collection, CollectionEnum.A_CALORIES_M.d());
-				break;
-			case "s_efficiency":
-				saveByMonth(collection, CollectionEnum.S_EFFICIENCY_M.d());
-				break;
-			case "s_minutesToFallAsleep":
-				saveByMonth(collection, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP_M.d());
-				break;
-			case "s_minutesAfterWakeUp":
-				saveByMonth(collection, CollectionEnum.S_MINUTES_AFTER_WAKE_UP_M.d());
-				break;
-			case "s_minutesAwake":
-				saveByMonth(collection, CollectionEnum.S_MINUTES_AWAKE_M.d());
-				break;
-			case "s_minutesAsleep":
-				saveByMonth(collection, CollectionEnum.S_MINUTES_ASLEEP_M.d());
-				break;
-			case "s_timeInBed":
-				saveByMonth(collection, CollectionEnum.S_TIME_IN_BED_M.d());
-				break;
-			default:
-				break;
+				case "a_floors":
+					saveByMonth(collection, CollectionEnum.A_FLOORS_M.d());
+					break;
+				case "a_distance":
+					saveByMonth(collection, CollectionEnum.A_DISTANCE_M.d());
+					break;
+				case "a_steps":
+					saveByMonth(collection, CollectionEnum.A_STEPS_M.d());
+					break;
+				case "a_calories":
+					saveByMonth(collection, CollectionEnum.A_CALORIES_M.d());
+					break;
+				case "s_efficiency":
+					saveByMonth(collection, CollectionEnum.S_EFFICIENCY_M.d());
+					break;
+				case "s_minutesToFallAsleep":
+					saveByMonth(collection, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP_M.d());
+					break;
+				case "s_minutesAfterWakeUp":
+					saveByMonth(collection, CollectionEnum.S_MINUTES_AFTER_WAKE_UP_M.d());
+					break;
+				case "s_minutesAwake":
+					saveByMonth(collection, CollectionEnum.S_MINUTES_AWAKE_M.d());
+					break;
+				case "s_minutesAsleep":
+					saveByMonth(collection, CollectionEnum.S_MINUTES_ASLEEP_M.d());
+					break;
+				case "s_timeInBed":
+					saveByMonth(collection, CollectionEnum.S_TIME_IN_BED_M.d());
+					break;
+				default:
+					break;
 			}
 		}
 	}
 
 	/**
 	 * finds all data and update the dateTime value to "YYYY-MM" date format
-	 * 
-	 * @param collection
-	 *            inserted the data
-	 * @param newCollection
-	 *            where will be stored the new data
+	 *
+	 * @param collection    inserted the data
+	 * @param newCollection where will be stored the new data
 	 */
 	private void saveByMonth(String collection, String newCollection) {
 		mongoTemplate.findAll(CommonDataSample.class, collection).forEach(v -> {
 			v.setDateTime(v.getDateTime().substring(0, 7));
 			mongoTemplate.insert(v, newCollection);
 		});
-	}
-
-	/**
-	 * @param unauthorized
-	 *            that declares if refresh token should be used
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public HttpEntity<String> getEntity(boolean unauthorized) throws JsonProcessingException, IOException {
-		HttpHeaders headers = new HttpHeaders();
-
-		if (unauthorized) {
-			headers.set("Authorization", "Bearer " + refreshTokenService.refreshToken());
-		} else {
-			headers.set("Authorization", "Bearer " + getAccessToken());
-		}
-
-		return new HttpEntity<String>(headers);
-	}
-
-	/**
-	 * if accessToken is null the service for new is called
-	 * 
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	protected String getAccessToken() throws JsonProcessingException, IOException {
-
-		if (accessToken == null)
-			accessToken = fitbitTokenService.token();
-
-		return accessToken;
 	}
 }

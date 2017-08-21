@@ -10,16 +10,6 @@ public class CommonDataSample {
 
 	private String dateTime;
 	private String value;
-	
-	public CommonDataSample() {
-		super();
-	}
-	
-	public CommonDataSample(String dateTime, String value) {
-		super();
-		this.dateTime = dateTime;
-		this.value = value;
-	}
 
 	public String getDateTime() {
 		return dateTime;

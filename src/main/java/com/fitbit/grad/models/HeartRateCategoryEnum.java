@@ -15,7 +15,7 @@ public enum HeartRateCategoryEnum {
 	
 	private String d;
 
-	private HeartRateCategoryEnum(String d) {
+	HeartRateCategoryEnum(String d) {
 		this.d = d;
 	}
 

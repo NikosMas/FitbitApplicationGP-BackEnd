@@ -22,7 +22,7 @@ import com.fitbit.grad.controller.tabs.UserDataTab;
 public class CalendarService {
 
 	/**
-	 * Takes the starting & the ending date and split the range of them to 90-days partitions
+	 * Takes the starting & the ending date and split the range of them to 300-days partitions
 	 * if it's possible
 	 * 
 	 * @param startDate
@@ -35,15 +35,15 @@ public class CalendarService {
 		long between = ChronoUnit.DAYS.between(startDate, endDate);
 		List<Map<String, String>> dates = new ArrayList<Map<String, String>>();
 
-		while (between > 90) {
+		while (between > 300) {
 
-			endDate = startDate.plusDays(90);
+			endDate = startDate.plusDays(300);
 
 			Map<String, String> date = new HashMap<>();
 			date.put("StartDate", startDate.toString());
 			date.put("EndDate", endDate.toString());
 			dates.add(date);
-			between -= 90;
+			between -= 300;
 
 			startDate = endDate.plusDays(1);
 			addedDays += 1;

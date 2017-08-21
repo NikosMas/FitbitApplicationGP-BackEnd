@@ -1,6 +1,7 @@
 package com.fitbit.grad.controller.tabs;
 
 import java.io.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -24,101 +25,100 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * controller at /fitbitApp/userData waiting the user to fill the form about
  * user data
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 public class UserDataTab {
 
-	@Title("User Data")
-	@SpringUI(path = "fitbitApp/userData")
-	public static class VaadinUI extends UI {
+    @Title("User Data")
+    @SpringUI(path = "fitbitApp/userData")
+    public static class VaadinUI extends UI {
 
-		private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-		@Autowired
-		private FieldsBuilderService fieldsService;
+        @Autowired
+        private FieldsBuilderService fieldsService;
 
-		@Autowired
-		private ButtonsBuilderService buttonsService;
+        @Autowired
+        private ButtonsBuilderService buttonsService;
 
-		@Autowired
-		private CheckBoxBuilderService checkBoxService;
+        @Autowired
+        private CheckBoxBuilderService checkBoxService;
 
-		@Autowired
-		private ContentBuilderService contentService;
-		
-		@Autowired
-		private RedisTemplate<String, String> redisTemplate;
+        @Autowired
+        private ContentBuilderService contentService;
 
-		@Override
-		public void init(VaadinRequest request) {
-			VerticalLayout content = new VerticalLayout();
-			setContent(content);
-			setResponsive(true);
+        @Autowired
+        private RedisTemplate<String, String> redisTemplate;
 
-			Image image = new Image();
-			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
+        @Override
+        public void init(VaadinRequest request) {
+            VerticalLayout content = new VerticalLayout();
+            setContent(content);
+            setResponsive(true);
 
-			CheckBoxGroup<String> multiCheckBox = new CheckBoxGroup<>();
-			checkBoxService.checkBoxBuilder(multiCheckBox);
+            Image image = new Image();
+            image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
 
-			DateField startDate = new DateField();
-			fieldsService.dateBuilder(startDate);
+            CheckBoxGroup<String> multiCheckBox = new CheckBoxGroup<>();
+            checkBoxService.checkBoxBuilder(multiCheckBox);
 
-			DateField endDate = new DateField();
-			fieldsService.dateBuilder(endDate);
+            DateField startDate = new DateField();
+            fieldsService.dateBuilder(startDate);
 
-			TextField heartRate = new TextField();
-			fieldsService.heartRateBuilder(heartRate);
+            DateField endDate = new DateField();
+            fieldsService.dateBuilder(endDate);
 
-			Button submitDates = new Button();
-			checkBoxService.submitDates(submitDates, startDate, endDate, multiCheckBox);
+            TextField heartRate = new TextField();
+            fieldsService.heartRateBuilder(heartRate);
 
-			Button submitCheckBoxButton = new Button();
-			checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, startDate, endDate, content);
+            Button submitDates = new Button();
+            checkBoxService.submitDates(submitDates, startDate, endDate, multiCheckBox);
 
-			// business part with redirection is here because of private {@link
-			// Page} at {@link UI}
-			Button exit = new Button();
-			exit.setIcon(VaadinIcons.ROTATE_LEFT);
-			exit.setCaption("Exit");
-			exit.setWidth("150");
-			exit.addClickListener(click -> {
-				getPage().setLocation("finalize");
-				getSession().close();
-			});
+            Button submitCheckBoxButton = new Button();
+            checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, content);
 
-			Button stepBackward = new Button();
-			stepBackward.setIcon(VaadinIcons.ARROW_BACKWARD);
-			stepBackward.setCaption("Back");
-			stepBackward.setWidth("150");
-			stepBackward.addClickListener(click -> {
-				redisTemplate.delete("AuthorizationCode");
-				getPage().setLocation("dashboard");
-				getSession().close();
-			});
+            // business part with redirection is here because of private {@link
+            // Page} at {@link UI}
+            Button exit = new Button();
+            exit.setIcon(VaadinIcons.ROTATE_LEFT);
+            exit.setCaption("Exit");
+            exit.setWidth("150");
+            exit.addClickListener(click -> {
+                getPage().setLocation("finalize");
+                getSession().close();
+            });
 
-			/**
-			 * business part with redirection is here because of private {@link Page} at
-			 * {@link UI}
-			 */
-			Button stepForward = new Button();
-			stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
-			stepForward.setCaption("Continue");
-			stepForward.addClickListener(click -> {
-				if (buttonsService.continueBuilder(stepForward, request, null, submitCheckBoxButton,
-						multiCheckBox)) {
-					getPage().setLocation("heartRateNotification");
-					getSession().close();
-				}else {
-					getPage().setLocation("finalize");
-					getSession().close();
-				}
-			});
+            Button stepBackward = new Button();
+            stepBackward.setIcon(VaadinIcons.ARROW_BACKWARD);
+            stepBackward.setCaption("Back");
+            stepBackward.setWidth("150");
+            stepBackward.addClickListener(click -> {
+                redisTemplate.delete("AuthorizationCode");
+                getPage().setLocation("dashboard");
+                getSession().close();
+            });
 
-			contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate, heartRate,
-					submitDates, submitCheckBoxButton, exit, stepForward, stepBackward);
-		}
-	}
+            /**
+             * business part with redirection is here because of private {@link Page} at
+             * {@link UI}
+             */
+            Button stepForward = new Button();
+            stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
+            stepForward.setCaption("Continue");
+            stepForward.addClickListener(click -> {
+                if (buttonsService.continueBuilder(request, null, submitCheckBoxButton, multiCheckBox)) {
+                    getPage().setLocation("heartRateNotification");
+                    getSession().close();
+                } else {
+                    getPage().setLocation("finalize");
+                    getSession().close();
+                }
+            });
+
+            contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate, heartRate,
+                    submitDates, submitCheckBoxButton, exit, stepForward, stepBackward);
+        }
+    }
 }

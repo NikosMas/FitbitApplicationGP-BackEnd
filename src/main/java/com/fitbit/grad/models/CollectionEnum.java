@@ -45,7 +45,7 @@ public enum CollectionEnum {
 	
 	private String d;
 
-	private CollectionEnum(String d) {
+	CollectionEnum(String d) {
 		this.d = d;
 	}
 

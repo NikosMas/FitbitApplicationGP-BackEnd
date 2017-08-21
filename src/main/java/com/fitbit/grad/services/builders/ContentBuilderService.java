@@ -31,16 +31,13 @@ public class ContentBuilderService {
 	 * @param clientId 
 	 * @param image 
 	 * @param content 
-	 * @param continueProcess
 	 * @param exit
 	 * @param authorizationCode
-	 * @param collections
 	 * @param clientSecret
 	 * @param clientId
 	 * @param image
 	 * @param content
 	 * @param image
-	 * @param file
 	 */
 	public void dashboardContentBuilder(VerticalLayout content, Image image, TextField clientId, TextField clientSecret, Button authorizationCode, Button exit, Button stepForward, Button restart) {
 		content.addComponent(image);

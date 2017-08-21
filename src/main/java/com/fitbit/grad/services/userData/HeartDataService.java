@@ -3,8 +3,8 @@ package com.fitbit.grad.services.userData;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import javaslang.control.Option;
 import org.codehaus.jackson.JsonProcessingException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,10 +42,13 @@ public class HeartDataService {
 	private SaveOperationsService saveOperationsService;
 
 	@Autowired
+	private RequestsOperationsService requestsOperationsService;
+
+	@Autowired
 	private CalendarService calendarService;
 
 	@Autowired
-	private RestTemplate restTemplateGet;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -73,18 +76,15 @@ public class HeartDataService {
 	 */
 	private boolean getFilterHeartRate(String month) {
 		try {
-
-			JSONArray responseDataArray = heartCallResponse(month).orElseThrow(() -> new IOException("Something went wrong with the requests"));
-			if (responseDataArray != null) {
-				for (int rda = 0; rda < responseDataArray.length(); rda++) {
-					JSONArray heartRateZonesArray = responseDataArray.getJSONObject(rda).getJSONObject("value").getJSONArray("heartRateZones");
-					for (int hrza = 0; hrza < heartRateZonesArray.length(); hrza++) {
-						insertHeartRateValues(responseDataArray, rda, heartRateZonesArray, hrza);
-					}
-				}
-				return true;
-			}
-			return false;
+			JSONArray responseDataArray = heartCallResponse(month).getOrElse(() -> null);
+			if (responseDataArray == null) return false;
+			for (int rda = 0; rda < responseDataArray.length(); rda++) {
+                JSONArray heartRateZonesArray = responseDataArray.getJSONObject(rda).getJSONObject("value").getJSONArray("heartRateZones");
+                for (int hrza = 0; hrza < heartRateZonesArray.length(); hrza++) {
+                    insertHeartRateValues(responseDataArray, rda, heartRateZonesArray, hrza);
+                }
+            }
+			return true;
 		} catch (IOException | JSONException e) {
 			LOG.error("Something went wrong: ", e);
 			return false;
@@ -116,19 +116,18 @@ public class HeartDataService {
 	 * @throws JsonProcessingException
 	 * @throws JSONException 
 	 */
-	private Optional<JSONArray> heartCallResponse(String month) throws JsonProcessingException, IOException, JSONException {
-		ResponseEntity<String> heart = restTemplateGet.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(false), String.class);
+	private Option<JSONArray> heartCallResponse(String month) throws IOException, JSONException {
+		ResponseEntity<String> heart = restTemplate.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,requestsOperationsService.getEntity(false), String.class);
 
 		if (heart.getStatusCodeValue() == 401) {
-			ResponseEntity<String> heartWithRefreshToken = restTemplateGet.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,saveOperationsService.getEntity(true), String.class);
+			ResponseEntity<String> heartWithRefreshToken = restTemplate.exchange(urlsProp.getHeartUrl() + month, HttpMethod.GET,requestsOperationsService.getEntity(true), String.class);
 			saveOperationsService.dataTypeInsert(heartWithRefreshToken, CollectionEnum.A_HEART.d(), HEART);
-			return Optional.of(new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(HEART));
+			return Option.of(new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(HEART));
 		} else if (heart.getStatusCodeValue() == 200) {
 			saveOperationsService.dataTypeInsert(heart, CollectionEnum.A_HEART.d(), HEART);
-			return Optional.of(new JSONObject(heart.getBody()).getJSONArray(HEART));
+			return Option.of(new JSONObject(heart.getBody()).getJSONArray(HEART));
 		} else {
-			return Optional.empty();
-
+			return Option.none();
 		}
 	}
 }

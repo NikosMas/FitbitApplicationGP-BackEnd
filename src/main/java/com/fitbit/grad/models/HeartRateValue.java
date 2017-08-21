@@ -18,20 +18,6 @@ public class HeartRateValue {
 	private Long max;
 	private Long min;
 
-	public HeartRateValue() {
-		super();
-	}
-
-	public HeartRateValue(String date, String name, Long minutes, Long caloriesOut, Long max, Long min) {
-		super();
-		this.date = date;
-		this.name = name;
-		this.minutes = minutes;
-		this.caloriesOut = caloriesOut;
-		this.max = max;
-		this.min = min;
-	}
-
 	public String getDate() {
 		return date;
 	}

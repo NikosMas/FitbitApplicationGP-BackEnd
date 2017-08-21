@@ -1,9 +1,5 @@
 package com.fitbit.grad.services.builders;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +30,6 @@ import com.vaadin.ui.VerticalLayout;
 public class ButtonsBuilderService {
 
 	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-	List<Map<String, String>> dates = new ArrayList<>();
 
 	@Autowired
 	private HeartRateFilterService heartPeakService;
@@ -88,7 +83,6 @@ public class ButtonsBuilderService {
 				codeService.codeRequest();
 				collectionsService.collectionsCreate();
 				exit.setEnabled(true);
-				Notification.show("Authorization code saved into Redis database and it's ready for use!");
 			} else {
 				Notification.show(
 						"Complete with valid client id and client secret given from to your account at Fitbit",
@@ -133,19 +127,18 @@ public class ButtonsBuilderService {
 	}
 
 	/**
-	 * @param continueProcess
+	 *
+	 * @param stepForward
 	 * @param request
 	 * @param authorizationCode
 	 * @param submitCheckBoxButton
 	 * @param multiCheckBox
 	 * @return
 	 */
-	public boolean continueBuilder(Button continueProcess, VaadinRequest request, Button authorizationCode,
-			Button submitCheckBoxButton, CheckBoxGroup<String> multiCheckBox) {
+	public boolean continueBuilder(VaadinRequest request, Button authorizationCode,
+								   Button submitCheckBoxButton, CheckBoxGroup<String> multiCheckBox) {
 
-		String endpoint = request.getPathInfo();
-
-		switch (endpoint) {
+		switch (request.getPathInfo()) {
 		case "/fitbitApp/dashboard":
 			if (authorizationCode.isEnabled()) {
 				Notification.show(

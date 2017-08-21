@@ -33,6 +33,9 @@ public class OtherDataService {
 	private SaveOperationsService saveOperationsService;
 
 	@Autowired
+	private RequestsOperationsService requestsOperationsService;
+
+	@Autowired
 	private RestTemplate restTemplate;
 	
 	@Autowired
@@ -64,10 +67,10 @@ public class OtherDataService {
 	 */
 	private boolean requests(String url, String collection, String fcollection) {
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, saveOperationsService.getEntity(false), String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, requestsOperationsService.getEntity(false), String.class);
 
 			if (response.getStatusCodeValue() == 401) {
-				ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url, HttpMethod.GET, saveOperationsService.getEntity(true), String.class);
+				ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url, HttpMethod.GET, requestsOperationsService.getEntity(true), String.class);
 				saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
 				return true;
 			} else if (response.getStatusCodeValue() == 200) {

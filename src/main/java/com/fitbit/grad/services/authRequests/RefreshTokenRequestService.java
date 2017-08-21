@@ -38,10 +38,10 @@ public class RefreshTokenRequestService {
 	private AuthorizationProperties authProp;
 
 	@Autowired
-	private ObjectMapper mapperToken;
+	private ObjectMapper mapper;
 
 	@Autowired
-	private RestTemplate restTemplateToken;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
@@ -51,7 +51,7 @@ public class RefreshTokenRequestService {
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public String refreshToken() throws JsonProcessingException, IOException {
+	public String refreshToken() throws IOException {
 
 		String headerAuth = Base64.getEncoder().encodeToString(
 				(redisTemplate.opsForValue().get("Client-id") + ":" + redisTemplate.opsForValue().get("Client-secret"))
@@ -70,9 +70,9 @@ public class RefreshTokenRequestService {
 		headers.set("Accept", refreshProp.getHeaderAccept());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,headers);
-		ResponseEntity<String> response = restTemplateToken.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
 
-		JsonNode jsonResponse = mapperToken.readTree(response.getBody()).path("access_token");
+		JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
 		String accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
 
 		return accessToken;
