@@ -70,16 +70,27 @@ public class HeartRateNotificationTab {
 
 			// business part with redirection is here because of private {@link
 			// Page} at {@link UI}
+			Button skip = new Button();
+			skip.setIcon(VaadinIcons.ARROW_FORWARD);
+			skip.setCaption("skip");
+			skip.setWidth("150");
+			skip.addClickListener(click -> {
+				getPage().setLocation("finalize");
+				getSession().close();
+			});
+
+			// business part with redirection is here because of private {@link
+			// Page} at {@link UI}
 			Button exit = new Button();
-			exit.setIcon(VaadinIcons.ROTATE_LEFT);
-			exit.setCaption("Exit");
+			exit.setIcon(VaadinIcons.ARROW_FORWARD);
+			exit.setCaption("skip");
 			exit.setWidth("150");
 			exit.addClickListener(click -> {
 				getPage().setLocation("finalize");
 				getSession().close();
 			});
 
-			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit);
+			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit, skip);
 		}
 	}
 }

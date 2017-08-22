@@ -2,21 +2,17 @@ package com.fitbit.grad;
 
 import java.io.IOException;
 
+import com.fitbit.grad.config.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import com.fitbit.grad.config.AuthorizationProperties;
-import com.fitbit.grad.config.FitbitApiUrlProperties;
-import com.fitbit.grad.config.MailInfoProperties;
-import com.fitbit.grad.config.RefreshTokenProperties;
 
 /**
  * @author nikos_mas, alex_kak
  */
 
 @EnableConfigurationProperties({ AuthorizationProperties.class, MailInfoProperties.class, RefreshTokenProperties.class,
-		FitbitApiUrlProperties.class })
+		FitbitApiUrlProperties.class, DownloadingProperties.class})
 @SpringBootApplication
 public class FitbitApplication {
 

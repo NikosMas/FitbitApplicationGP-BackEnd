@@ -1,8 +1,18 @@
 package com.fitbit.grad.controller.tabs;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import com.fitbit.grad.config.DownloadingProperties;
+import com.fitbit.grad.models.CollectionEnum;
+import com.fitbit.grad.models.CommonDataSample;
+import com.fitbit.grad.models.HeartRateValue;
+import com.fitbit.grad.services.builders.ButtonsBuilderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.fitbit.grad.services.builders.ContentBuilderService;
@@ -38,6 +48,9 @@ public class FinalizeTab {
         private ContentBuilderService contentService;
 
         @Autowired
+        private ButtonsBuilderService buttonsBuilderService;
+
+        @Autowired
         private CollectionService collectionsService;
 
         @Autowired
@@ -61,6 +74,22 @@ public class FinalizeTab {
             group.setItems("Same user", "Another user");
             group.setCaption("Choose the user you want");
 
+            Button download = new Button();
+            buttonsBuilderService.downloadBuilder(download);
+
+            // business part with redirection is here because of private {@link
+            // Page} at {@link UI}
+            Button platform = new Button();
+            platform.setIcon(VaadinIcons.ARROW_FORWARD);
+            platform.setCaption("Go To Platform");
+            platform.setWidth("150");
+            platform.addClickListener(click -> {
+                getPage().setLocation("");
+                getSession().close();
+            });
+
+            // business part with redirection is here because of private {@link
+            // Page} at {@link UI}
             Button restart = new Button();
             restart.setIcon(VaadinIcons.ROTATE_LEFT);
             restart.setCaption("Restart");
@@ -86,7 +115,7 @@ public class FinalizeTab {
                 }
             });
 
-            contentService.finalizeContentBuilder(content, image, group, restart);
+            contentService.finalizeContentBuilder(content, image, group, restart, download, platform);
         }
     }
 }

@@ -1,8 +1,13 @@
 package com.fitbit.grad.services.builders;
 
+import com.fitbit.grad.config.DownloadingProperties;
+import com.fitbit.grad.models.CollectionEnum;
+import com.fitbit.grad.models.CommonDataSample;
+import com.fitbit.grad.models.HeartRateValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +24,8 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import java.io.IOException;
+
 /**
  * Service about Vaadin buttons building
  *
@@ -28,7 +35,12 @@ import com.vaadin.ui.VerticalLayout;
 @Service
 public class ButtonsBuilderService {
 
-    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private DownloadingProperties downloadingProperties;
 
     @Autowired
     private HeartRateFilterService heartRateFilterService;
@@ -45,21 +57,8 @@ public class ButtonsBuilderService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    /**
-     * @param collections
-     * @return
-     */
-    public void collectionsBuilder(Button collections) {
-        collections.setIcon(VaadinIcons.PLAY);
-        collections.setCaption("Start");
-        collections.setWidth("150");
-        collections.addClickListener(click -> {
-            collections.setEnabled(false);
-            collectionsService.collectionsCreate();
-            LOG.info("Collections created successfully into Mongo database");
-            Notification.show("Collections created successfully!");
-        });
-    }
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+    private static String OS = System.getProperty("os.name");
 
     /**
      * @param authorizationCode
@@ -136,25 +135,35 @@ public class ButtonsBuilderService {
             //return false;
         } else if (!multiCheckBox.getValue().contains("HeartRate data")) {
             Notification.show(
-                    "Heart Rate data aren't exist into database so you can't continue to email process. Thank you!");
+                    "Heart Rate data aren't exist into database so you can't continue to email process");
             return false;
         }
         return true;
-
     }
 
     /**
-     * @param exit
-     * @param content
-     * @return
+     * @param download
      */
-    public void exitBuilder(Button exit, VerticalLayout content) {
-        exit.setIcon(VaadinIcons.EXIT);
-        exit.setCaption("Exit");
-        exit.setWidth("150");
-        exit.addClickListener(click -> {
-            clearFieldsService.removeAll(content);
+    public void downloadBuilder(Button download) {
+        download.setIcon(VaadinIcons.DOWNLOAD);
+        download.setCaption("Download");
+        download.setWidth("150");
+        download.addClickListener(click -> {
+            if (mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_STEPS.d()).isEmpty()
+                    && mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AWAKE.d()).isEmpty()
+                    && mongoTemplate.findAll(HeartRateValue.class, CollectionEnum.FILTERD_A_HEART.d()).isEmpty()) {
+                Notification.show("No user data available for downloading", Type.ERROR_MESSAGE);
+            } else {
+                try {
+                    if (OS.equalsIgnoreCase("linux")) {
+                        Runtime.getRuntime().exec("xdg-open " + downloadingProperties.getExportUrl());
+                    } else {
+                        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + downloadingProperties.getExportUrl());
+                    }
+                } catch (IOException e) {
+                    LOG.error("Something went wrong: ", e);
+                }
+            }
         });
     }
-
 }

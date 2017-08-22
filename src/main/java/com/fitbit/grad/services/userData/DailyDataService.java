@@ -27,10 +27,11 @@ public class DailyDataService {
             if (requestsOperationsService.dailyRequests(urlsProp.getDistanceUrl(), CollectionEnum.A_DISTANCE_D.d()) &&
                     requestsOperationsService.dailyRequests(urlsProp.getStepsUrl(), CollectionEnum.A_STEPS_D.d()) &&
                     requestsOperationsService.dailyRequests(urlsProp.getFloorsUrl(), CollectionEnum.A_FLOORS_D.d()) &&
-                    requestsOperationsService.dailyRequests(urlsProp.getHeartUrl(), CollectionEnum.A_HEART_D.d()))
+                    requestsOperationsService.dailyRequests(urlsProp.getHeartUrl(), CollectionEnum.A_HEART_D.d())) {
                 LOG.info("Today's data til now are successfully received!");
-
-            LOG.error("Something went wrong so daily data operations are not completed");
+            } else {
+                LOG.error("Something went wrong so daily data operations are not completed");
+            }
         } catch (IOException e) {
             LOG.error("Something went wrong: ", e);
         }

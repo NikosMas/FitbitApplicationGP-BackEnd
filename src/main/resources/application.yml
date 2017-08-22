@@ -23,8 +23,8 @@ refreshtoken:
 # e-mail credentials 
 mailInfo:
   username: nickma72@gmail.com
-  password: 
-  fileName: heartData.txt
+  password:
+  fileName: heartData.pdf
   sendFrom: nickma72@gmail.com
   mailSmtpStartEnable: true
   mailSmtpAuth: true
@@ -35,7 +35,7 @@ mailInfo:
 # urls
 fitbitApiUrls:
   
-  #sleep
+  # sleep
   timeInBedUrl: https://api.fitbit.com/1/user/-/sleep/timeInBed/date/
   minutesAsleepUrl: https://api.fitbit.com/1/user/-/sleep/minutesAsleep/date/
   minutesAwakeUrl: https://api.fitbit.com/1/user/-/sleep/minutesAwake/date/
@@ -43,7 +43,7 @@ fitbitApiUrls:
   afterWakeUpUrl: https://api.fitbit.com/1/user/-/sleep/minutesAfterWakeup/date/
   efficiencyUrl: https://api.fitbit.com/1/user/-/sleep/efficiency/date/
   
-  #activity
+  # activity
   stepsUrl: https://api.fitbit.com/1/user/-/activities/steps/date/
   floorsUrl: https://api.fitbit.com/1/user/-/activities/floors/date/
   distanceUrl: https://api.fitbit.com/1/user/-/activities/distance/date/
@@ -52,4 +52,8 @@ fitbitApiUrls:
   profileUrl: https://api.fitbit.com/1/user/-/profile.json
   frequenceUrl: https://api.fitbit.com/1/user/-/activities/frequence.json
   lifetimeUrl: https://api.fitbit.com/1/user/-/activities.json 
-  
+
+# download
+downloadProps:
+  exportUrl: http://localhost:8080/fitbitApp/export
+  exportFileName: User-Data.pdf

@@ -90,6 +90,8 @@ public class UserDataTab {
                 getSession().close();
             });
 
+            // business part with redirection is here because of private {@link
+            // Page} at {@link UI}
             Button stepBackward = new Button();
             stepBackward.setIcon(VaadinIcons.ARROW_BACKWARD);
             stepBackward.setCaption("Back");
@@ -100,10 +102,8 @@ public class UserDataTab {
                 getSession().close();
             });
 
-            /**
-             * business part with redirection is here because of private {@link Page} at
-             * {@link UI}
-             */
+            // business part with redirection is here because of private {@link
+            // Page} at {@link UI}
             Button stepForward = new Button();
             stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
             stepForward.setCaption("Continue");

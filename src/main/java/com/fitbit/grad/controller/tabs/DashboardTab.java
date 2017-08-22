@@ -1,26 +1,17 @@
 package com.fitbit.grad.controller.tabs;
 
-import java.io.File;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
 import com.fitbit.grad.services.builders.ContentBuilderService;
 import com.fitbit.grad.services.builders.FieldsBuilderService;
-import com.fitbit.grad.services.userData.DailyDataService;
 import com.vaadin.annotations.Title;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
 
 /**
  * controller at /fitbitApp/dashboard waiting the user to fill the form about
@@ -45,12 +36,6 @@ public class DashboardTab {
 
         @Autowired
         private ContentBuilderService contentService;
-
-        @Autowired
-        private DailyDataService dailyDataService;
-
-        @Autowired
-        private RedisTemplate<String, String> redisTemplate;
 
         @Override
         public void init(VaadinRequest request) {
@@ -80,6 +65,7 @@ public class DashboardTab {
 
             Button authorizationCode = new Button();
             buttonsService.authorizationBuilder(authorizationCode, clientId, clientSecret, exit);
+
             contentService.dashboardContentBuilder(content, image, clientId, clientSecret, authorizationCode, exit);
         }
     }

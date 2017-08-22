@@ -39,10 +39,10 @@ public class HeartRateNotificationService {
 			throws MessagingException {
 
 		final String subject = mailProp.getMailSubject();
-		final String text = "Goodmorning, " + '\n' + '\n' + "These dates declared in this file describe "
-				+ "the Heart-Rate of the user which was at its " + category.d() + " which means between "
-				+ min + " and " + max + " " + "for more than " + minutes + " minutes during these days per day." + '\n'
-				+ "Check it out please as soon as possible and take care." + '\n' + '\n' + "Hope we've helped. Keep on";
+		final String text = "Hello \n\nThese dates declared in this file describe "
+				+ "the Heart-Rate of the user that was at its " + category.d() + " which means between "
+				+ min + " and " + max + " " + "for more than " + minutes + " minutes during these days per day. " +
+				"\n\nHope we've helped. Keep on \nSincerely, \nFitbit Application";
 
 		Properties properties = new Properties();
 		properties.put("mail.smtp.starttls.enable", mailProp.getMailSmtpStartEnable());

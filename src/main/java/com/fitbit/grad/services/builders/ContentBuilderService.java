@@ -90,16 +90,17 @@ public class ContentBuilderService {
     }
 
     /**
+     * @param exit
      * @param content
      * @param image
      * @param select
      * @param heartRate
      * @param mail
      * @param heartRateMail
-     * @param exit
+     * @param skip
      */
     public void heartRateFilterContentBuilder(VerticalLayout content, Image image, ComboBox<HeartRateCategoryEnum> select,
-                                              TextField heartRate, TextField mail, Button heartRateMail, Button exit) {
+                                              TextField heartRate, TextField mail, Button heartRateMail, Button exit, Button skip) {
 
         content.addComponent(image);
         content.addComponent(new Label("Complete the next 3 fields to continue with e-mail notification."));
@@ -111,19 +112,29 @@ public class ContentBuilderService {
         content.addComponent(new Label("\n"));
         content.addComponent(heartRateMail);
         content.addComponent(new Label("\n"));
+        content.addComponent(new Label("Click to skip mail process"));
+        content.addComponent(skip);
+        content.addComponent(new Label("\n"));
         content.addComponent(new Label("\n"));
         content.addComponent(new Label("Click to exit the application"));
         content.addComponent(exit);
-        content.addComponent(new Label("\n"));
+
     }
 
-    public void finalizeContentBuilder(VerticalLayout content, Image image, RadioButtonGroup<String> group, Button restart) {
+    public void finalizeContentBuilder(VerticalLayout content, Image image, RadioButtonGroup<String> group, Button restart, Button download, Button platform) {
 
         content.addComponent(image);
         content.addComponent(new Label("Click to continue"));
         content.addComponent(group);
         content.addComponent(restart);
         content.addComponent(new Label("\n"));
+        content.addComponent(new Label("\n"));
+        content.addComponent(new Label("Click to download pdf file containing user data or move to the Platform"));
+        content.addComponent(download);
+        content.addComponent(new Label("\n"));
+        content.addComponent(platform);
+        content.addComponent(new Label("\n"));
+
     }
 
 }

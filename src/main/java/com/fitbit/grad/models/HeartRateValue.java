@@ -66,9 +66,4 @@ public class HeartRateValue {
 		this.min = min;
 	}
 
-	@Override
-	public String toString() {
-		return "FitbitHeartRate [date=" + date + ", name=" + name + ", minutes=" + minutes + ", caloriesOut="
-				+ caloriesOut + ", max=" + max + ", min=" + min + "]";
-	}
 }

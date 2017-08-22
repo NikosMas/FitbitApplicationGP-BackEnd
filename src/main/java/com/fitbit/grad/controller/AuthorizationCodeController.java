@@ -12,28 +12,28 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * rest controller on localhost waiting get request from fitbit api
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 @RestController
 public class AuthorizationCodeController {
 
-	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-	@Autowired
+    @Autowired
     private DailyDataService dailyDataService;
 
-	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
-	@RequestMapping("fitbitApp/authCode")
-	public RedirectView authorization(@RequestParam(value = "code") String code){
+    @RequestMapping("fitbitApp/authCode")
+    public RedirectView authorization(@RequestParam(value = "code") String code) {
 
-		redisTemplate.opsForValue().set("AuthorizationCode", code);
-		LOG.info("Authorization code saved into Redis database and it's ready for use");
-		dailyDataService.storeIntradayData();
-		return new RedirectView("userData", true);
-	}
+        redisTemplate.opsForValue().set("AuthorizationCode", code);
+        LOG.info("Authorization code saved into Redis database and it's ready for use");
+        dailyDataService.storeIntradayData();
+        return new RedirectView("userData");
+    }
 
 }

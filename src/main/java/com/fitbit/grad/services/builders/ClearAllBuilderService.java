@@ -26,19 +26,6 @@ public class ClearAllBuilderService {
 	/**
 	 * @param content
 	 */
-	public void removeAll(VerticalLayout content) {
-		content.removeAllComponents();
-
-		Image image = new Image();
-		image.setSource(new FileResource(new File("src/main/resources/images/ThankYou.png")));
-
-		content.addComponent(image);
-		LOG.info("Exit application. Thank you!!");
-	}
-	
-	/**
-	 * @param content
-	 */
 	public void tryLater(VerticalLayout content) {
 		content.removeAllComponents();
 

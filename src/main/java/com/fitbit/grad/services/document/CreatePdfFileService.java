@@ -1,0 +1,215 @@
+package com.fitbit.grad.services.document;
+
+import com.fitbit.grad.config.DownloadingProperties;
+import com.fitbit.grad.models.CollectionEnum;
+import com.fitbit.grad.models.CommonDataSample;
+import com.fitbit.grad.models.HeartRateValue;
+import com.fitbit.grad.repository.HeartRateZoneRepository;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Service;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
+
+@Service
+public class CreatePdfFileService {
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private HeartRateZoneRepository heartRateZoneRepository;
+
+    @Autowired
+    private DownloadingProperties downloadingProperties;
+
+    public void createDocumentWithUserData(List<String> parameters) {
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(downloadingProperties.getExportFileName()));
+            Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 14, BaseColor.BLACK);
+            document.open();
+
+            if (parameters.contains("activities")) {
+                List<CommonDataSample> stepsData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_STEPS.d());
+                List<CommonDataSample> floorsData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_FLOORS.d());
+                List<CommonDataSample> distanceData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_DISTANCE.d());
+                List<CommonDataSample> caloriesData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_CALORIES.d());
+
+                Chunk steps = new Chunk("Activity - Steps Table", font);
+                Chunk floors = new Chunk("Activity - Floors Table", font);
+                Chunk distance = new Chunk("Activity - Distance Table", font);
+                Chunk calories = new Chunk("Activity - Calories Table", font);
+
+                PdfPTable tableSteps = new PdfPTable(2);
+                tableSteps.setSpacingAfter(70);
+                tableSteps.setSpacingBefore(50);
+                addTableHeader(tableSteps);
+                addRows(tableSteps, stepsData);
+
+                PdfPTable tableFloors = new PdfPTable(2);
+                tableFloors.setSpacingAfter(70);
+                tableFloors.setSpacingBefore(50);
+                addTableHeader(tableFloors);
+                addRows(tableFloors, floorsData);
+
+                PdfPTable tableDistance = new PdfPTable(2);
+                addTableHeader(tableDistance);
+                tableDistance.setSpacingAfter(70);
+                tableDistance.setSpacingBefore(50);
+                addRows(tableDistance, distanceData);
+
+                PdfPTable tableCalories = new PdfPTable(2);
+                addTableHeader(tableCalories);
+                tableCalories.setSpacingAfter(70);
+                tableCalories.setSpacingBefore(50);
+                addRows(tableCalories, caloriesData);
+
+                document.add(steps);
+                document.add(tableSteps);
+                document.add(floors);
+                document.add(tableFloors);
+                document.add(distance);
+                document.add(tableDistance);
+                document.add(calories);
+                document.add(tableCalories);
+            }
+
+            if (parameters.contains("sleep")){
+                List<CommonDataSample> efficiencyData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_EFFICIENCY.d());
+                List<CommonDataSample> afterWakeUpData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d());
+                List<CommonDataSample> asleepData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_ASLEEP.d());
+                List<CommonDataSample> awakeData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AWAKE.d());
+                List<CommonDataSample> toFallAsleepData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d());
+                List<CommonDataSample> inBedData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_TIME_IN_BED.d());
+
+                Chunk efficiency = new Chunk("Sleep - Efficiency Table", font);
+                Chunk wakeUp = new Chunk("Sleep - Minutes wakeUp Table", font);
+                Chunk asleep = new Chunk("Sleep - Minutes asleep Table", font);
+                Chunk awake = new Chunk("Sleep - Minutes awake Table", font);
+                Chunk toFallAsleep = new Chunk("Sleep - Minutes to fall asleep Table", font);
+                Chunk inBed = new Chunk("Sleep - Minutes in bed Table", font);
+
+                PdfPTable tableEfficiency = new PdfPTable(2);
+                addTableHeader(tableEfficiency);
+                tableEfficiency.setSpacingAfter(70);
+                tableEfficiency.setSpacingBefore(50);
+                addRows(tableEfficiency, efficiencyData);
+
+                PdfPTable tableWakeUp = new PdfPTable(2);
+                addTableHeader(tableWakeUp);
+                tableWakeUp.setSpacingAfter(70);
+                tableWakeUp.setSpacingBefore(50);
+                addRows(tableWakeUp, afterWakeUpData);
+
+                PdfPTable tableAsleep = new PdfPTable(2);
+                addTableHeader(tableAsleep);
+                tableAsleep.setSpacingAfter(70);
+                tableAsleep.setSpacingBefore(50);
+                addRows(tableAsleep, asleepData);
+
+                PdfPTable tableAwake = new PdfPTable(2);
+                addTableHeader(tableAwake);
+                tableAwake.setSpacingAfter(70);
+                tableAwake.setSpacingBefore(50);
+                addRows(tableAwake, awakeData);
+
+                PdfPTable tableToFallAsleep = new PdfPTable(2);
+                addTableHeader(tableToFallAsleep);
+                tableToFallAsleep.setSpacingAfter(70);
+                tableToFallAsleep.setSpacingBefore(50);
+                addRows(tableToFallAsleep, toFallAsleepData);
+
+                PdfPTable tableInBed = new PdfPTable(2);
+                addTableHeader(tableInBed);
+                tableInBed.setSpacingAfter(70);
+                tableInBed.setSpacingBefore(50);
+                addRows(tableInBed, inBedData);
+
+                document.add(efficiency);
+                document.add(tableEfficiency);
+                document.add(asleep);
+                document.add(tableAsleep);
+                document.add(awake);
+                document.add(tableAwake);
+                document.add(toFallAsleep);
+                document.add(tableToFallAsleep);
+                document.add(inBed);
+                document.add(tableInBed);
+                document.add(wakeUp);
+                document.add(tableWakeUp);
+            }
+
+            if (parameters.contains("heart")){
+                List<HeartRateValue> heartRateValues = heartRateZoneRepository.findAll();
+
+                Chunk heart = new Chunk("Heart rate information Table", font);
+
+                PdfPTable tableHeartRate = new PdfPTable(6);
+                addTableHeaderHeartRate(tableHeartRate);
+                tableHeartRate.setSpacingAfter(70);
+                tableHeartRate.setSpacingBefore(50);
+                addRowsHeartRate(tableHeartRate, heartRateValues);
+
+                document.add(heart);
+                document.add(tableHeartRate);
+            }
+
+            document.addAuthor("Fitbit Application");
+            document.addTitle("User-data information document");
+
+            document.close();
+
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addTableHeaderHeartRate(PdfPTable table) {
+        Stream.of("Date", "Heart-Rate category", "Minutes", "Minimum heart-rate", "Maximum heart-rate", "Calories out")
+                .forEach(columnTitle -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setBorderWidth(2);
+                    header.setPhrase(new Phrase(columnTitle));
+                    table.addCell(header);
+                });
+    }
+
+    private void addRowsHeartRate(PdfPTable table, List<HeartRateValue> data) {
+        data.forEach(d -> {
+            table.addCell(d.getDate());
+            table.addCell(d.getName());
+            table.addCell(String.valueOf(d.getMinutes()));
+            table.addCell(String.valueOf(d.getMin()));
+            table.addCell(String.valueOf(d.getMax()));
+            table.addCell(String.valueOf(d.getCaloriesOut()));
+        });
+    }
+
+    private void addTableHeader(PdfPTable table) {
+        Stream.of("Date", "Values")
+                .forEach(columnTitle -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setBorderWidth(2);
+                    header.setPhrase(new Phrase(columnTitle));
+                    table.addCell(header);
+                });
+    }
+
+    private void addRows(PdfPTable table, List<CommonDataSample> data) {
+        data.forEach(d -> {
+            table.addCell(d.getDateTime());
+            table.addCell(d.getValue());
+        });
+    }
+
+}

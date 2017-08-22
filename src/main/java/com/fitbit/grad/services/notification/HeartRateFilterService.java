@@ -1,13 +1,14 @@
 package com.fitbit.grad.services.notification;
 
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.util.stream.Stream;
 import javax.mail.MessagingException;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,59 +24,73 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Service about filtering heart rate data from database according to info given at {@link HeartRateNotificationTab}
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 @Service
 public class HeartRateFilterService {
 
-	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
-	@Autowired
-	private MailInfoProperties properties;
+    @Autowired
+    private MailInfoProperties properties;
 
-	@Autowired
-	private HeartRateZoneRepository heartRepository;
+    @Autowired
+    private HeartRateZoneRepository heartRepository;
 
-	@Autowired
-	private ClearAllBuilderService clearFieldsService;
+    @Autowired
+    private ClearAllBuilderService clearFieldsService;
 
-	@Autowired
-	private HeartRateNotificationService sendMailService;
+    @Autowired
+    private HeartRateNotificationService sendMailService;
 
-	public void heartRateSelect(String mail, Long minutes, HeartRateCategoryEnum category, VerticalLayout content) {
-		try {
-			File peaksfile = new File(properties.getFileName());
-			FileOutputStream stream;
+    public void heartRateSelect(String mail, Long minutes, HeartRateCategoryEnum category, VerticalLayout content) {
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(properties.getFileName()));
+            Font font = FontFactory.getFont(FontFactory.COURIER, 14, BaseColor.BLACK);
+            document.open();
 
-			stream = new FileOutputStream(peaksfile);
+            if (heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.d()).count() == 0) {
+                Chunk doc = new Chunk("There are not exist heart-rate data with that parameters.\n Thank you!!", font);
+                document.add(doc);
+            } else {
+                PdfPTable tableHeartRate = new PdfPTable(6);
+                tableHeartRate.setSpacingAfter(70);
+                tableHeartRate.setSpacingBefore(50);
 
-			OutputStreamWriter peakswrite = new OutputStreamWriter(stream);
-			Writer w = new BufferedWriter(peakswrite);
+                Stream.of("Date", "Heart-Rate category", "Minutes", "Minimum heart-rate", "Maximum heart-rate", "Calories out")
+                        .forEach(columnTitle -> {
+                            PdfPCell header = new PdfPCell();
+                            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                            header.setBorderWidth(2);
+                            header.setPhrase(new Phrase(columnTitle));
+                            tableHeartRate.addCell(header);
+                        });
 
-			w.write("These are Heart-Rate data when the user's heart-rate was at " + category + " zone!" + '\n' + '\n');
-			heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.d()).forEach(d -> {
+                heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.d()).forEach(d -> {
+                    tableHeartRate.addCell(d.getDate());
+                    tableHeartRate.addCell(d.getName());
+                    tableHeartRate.addCell(String.valueOf(d.getMinutes()));
+                    tableHeartRate.addCell(String.valueOf(d.getMin()));
+                    tableHeartRate.addCell(String.valueOf(d.getMax()));
+                    tableHeartRate.addCell(String.valueOf(d.getCaloriesOut()));
+                });
+                document.add(tableHeartRate);
+            }
+            document.addTitle("Heart-rate data");
+            document.addAuthor("Fitbit Application");
+            document.close();
 
-				try {
-					w.write("In " + d.getDate() + " for : "
-							+ d.getMinutes() + " minutes" + '\n');
-				} catch (IOException e) {
-					LOG.error("Something went wrong: ", e);
-					clearFieldsService.removeAll(content);
-				}
-			});
-			
-			HeartRateValue heartRateZone = heartRepository.findDistinctByName(category.d());
-			Long min = heartRateZone.getMin();
-			Long max = heartRateZone.getMax();
-			
-			w.close();
-			sendMailService.email(mail, minutes, category, min, max);
+            HeartRateValue heartRateZone = heartRepository.findDistinctByName(category.d());
+            Long min = heartRateZone.getMin();
+            Long max = heartRateZone.getMax();
+            sendMailService.email(mail, minutes, category, min, max);
 
-		} catch (MessagingException | IOException e) {
-			LOG.error("Something went wrong: ", e);
-			clearFieldsService.tryLater(content);
-		}
-	}
+        } catch (MessagingException | IOException | DocumentException e) {
+            LOG.error("Something went wrong: ", e);
+            clearFieldsService.tryLater(content);
+        }
+    }
 }
