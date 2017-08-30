@@ -6,17 +6,24 @@ import com.fitbit.grad.models.CommonDataSample;
 import com.fitbit.grad.models.HeartRateValue;
 import com.fitbit.grad.repository.HeartRateZoneRepository;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.print.attribute.DateTimeSyntax;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
+
+/**
+ * @author nikos_mas, alex_kak
+ */
 
 @Service
 public class CreatePdfFileService {
@@ -30,6 +37,16 @@ public class CreatePdfFileService {
     @Autowired
     private DownloadingProperties downloadingProperties;
 
+    @Autowired
+    private CreatePdfToolsService createPdfToolsService;
+
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+
+    /**
+     * Check if data exist in database and add them to the pdf document
+     *
+     * @param parameters
+     */
     public void createDocumentWithUserData(List<String> parameters) {
         Document document = new Document();
         try {
@@ -49,28 +66,28 @@ public class CreatePdfFileService {
                 Chunk calories = new Chunk("Activity - Calories Table", font);
 
                 PdfPTable tableSteps = new PdfPTable(2);
+                createPdfToolsService.addTable(tableSteps, Stream.of("Date", "Values"));
                 tableSteps.setSpacingAfter(70);
                 tableSteps.setSpacingBefore(50);
-                addTableHeader(tableSteps);
-                addRows(tableSteps, stepsData);
+                createPdfToolsService.addRows(tableSteps, stepsData);
 
                 PdfPTable tableFloors = new PdfPTable(2);
+                createPdfToolsService.addTable(tableFloors, Stream.of("Date", "Values"));
                 tableFloors.setSpacingAfter(70);
                 tableFloors.setSpacingBefore(50);
-                addTableHeader(tableFloors);
-                addRows(tableFloors, floorsData);
+                createPdfToolsService.addRows(tableFloors, floorsData);
 
                 PdfPTable tableDistance = new PdfPTable(2);
-                addTableHeader(tableDistance);
+                createPdfToolsService.addTable(tableDistance, Stream.of("Date", "Values"));
                 tableDistance.setSpacingAfter(70);
                 tableDistance.setSpacingBefore(50);
-                addRows(tableDistance, distanceData);
+                createPdfToolsService.addRows(tableDistance, distanceData);
 
                 PdfPTable tableCalories = new PdfPTable(2);
-                addTableHeader(tableCalories);
+                createPdfToolsService.addTable(tableCalories, Stream.of("Date", "Values"));
                 tableCalories.setSpacingAfter(70);
                 tableCalories.setSpacingBefore(50);
-                addRows(tableCalories, caloriesData);
+                createPdfToolsService.addRows(tableCalories, caloriesData);
 
                 document.add(steps);
                 document.add(tableSteps);
@@ -98,40 +115,40 @@ public class CreatePdfFileService {
                 Chunk inBed = new Chunk("Sleep - Minutes in bed Table", font);
 
                 PdfPTable tableEfficiency = new PdfPTable(2);
-                addTableHeader(tableEfficiency);
+                createPdfToolsService.addTable(tableEfficiency, Stream.of("Date", "Values"));
                 tableEfficiency.setSpacingAfter(70);
                 tableEfficiency.setSpacingBefore(50);
-                addRows(tableEfficiency, efficiencyData);
+                createPdfToolsService.addRows(tableEfficiency, efficiencyData);
 
                 PdfPTable tableWakeUp = new PdfPTable(2);
-                addTableHeader(tableWakeUp);
+                createPdfToolsService.addTable(tableWakeUp, Stream.of("Date", "Values"));
                 tableWakeUp.setSpacingAfter(70);
                 tableWakeUp.setSpacingBefore(50);
-                addRows(tableWakeUp, afterWakeUpData);
+                createPdfToolsService.addRows(tableWakeUp, afterWakeUpData);
 
                 PdfPTable tableAsleep = new PdfPTable(2);
-                addTableHeader(tableAsleep);
+                createPdfToolsService.addTable(tableAsleep, Stream.of("Date", "Values"));
                 tableAsleep.setSpacingAfter(70);
                 tableAsleep.setSpacingBefore(50);
-                addRows(tableAsleep, asleepData);
+                createPdfToolsService.addRows(tableAsleep, asleepData);
 
                 PdfPTable tableAwake = new PdfPTable(2);
-                addTableHeader(tableAwake);
+                createPdfToolsService.addTable(tableAwake, Stream.of("Date", "Values"));
                 tableAwake.setSpacingAfter(70);
                 tableAwake.setSpacingBefore(50);
-                addRows(tableAwake, awakeData);
+                createPdfToolsService.addRows(tableAwake, awakeData);
 
                 PdfPTable tableToFallAsleep = new PdfPTable(2);
-                addTableHeader(tableToFallAsleep);
+                createPdfToolsService.addTable(tableToFallAsleep, Stream.of("Date", "Values"));
                 tableToFallAsleep.setSpacingAfter(70);
                 tableToFallAsleep.setSpacingBefore(50);
-                addRows(tableToFallAsleep, toFallAsleepData);
+                createPdfToolsService.addRows(tableToFallAsleep, toFallAsleepData);
 
                 PdfPTable tableInBed = new PdfPTable(2);
-                addTableHeader(tableInBed);
+                createPdfToolsService.addTable(tableInBed, Stream.of("Date", "Values"));
                 tableInBed.setSpacingAfter(70);
                 tableInBed.setSpacingBefore(50);
-                addRows(tableInBed, inBedData);
+                createPdfToolsService.addRows(tableInBed, inBedData);
 
                 document.add(efficiency);
                 document.add(tableEfficiency);
@@ -152,11 +169,13 @@ public class CreatePdfFileService {
 
                 Chunk heart = new Chunk("Heart rate information Table", font);
 
+                Stream categories = Stream.of("Date", "Heart-Rate category", "Minutes", "Minimum heart-rate", "Maximum heart-rate", "Calories out");
+
                 PdfPTable tableHeartRate = new PdfPTable(6);
-                addTableHeaderHeartRate(tableHeartRate);
+                createPdfToolsService.addTable(tableHeartRate, categories);
                 tableHeartRate.setSpacingAfter(70);
                 tableHeartRate.setSpacingBefore(50);
-                addRowsHeartRate(tableHeartRate, heartRateValues);
+                createPdfToolsService.addRowsHeartRate(tableHeartRate, heartRateValues);
 
                 document.add(heart);
                 document.add(tableHeartRate);
@@ -164,52 +183,13 @@ public class CreatePdfFileService {
 
             document.addAuthor("Fitbit Application");
             document.addTitle("User-data information document");
+            document.addCreationDate();
 
             document.close();
 
         } catch (DocumentException | IOException e) {
-            e.printStackTrace();
+            LOG.error("Something went wrong: ", e);
         }
-    }
-
-    private void addTableHeaderHeartRate(PdfPTable table) {
-        Stream.of("Date", "Heart-Rate category", "Minutes", "Minimum heart-rate", "Maximum heart-rate", "Calories out")
-                .forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(2);
-                    header.setPhrase(new Phrase(columnTitle));
-                    table.addCell(header);
-                });
-    }
-
-    private void addRowsHeartRate(PdfPTable table, List<HeartRateValue> data) {
-        data.forEach(d -> {
-            table.addCell(d.getDate());
-            table.addCell(d.getName());
-            table.addCell(String.valueOf(d.getMinutes()));
-            table.addCell(String.valueOf(d.getMin()));
-            table.addCell(String.valueOf(d.getMax()));
-            table.addCell(String.valueOf(d.getCaloriesOut()));
-        });
-    }
-
-    private void addTableHeader(PdfPTable table) {
-        Stream.of("Date", "Values")
-                .forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(2);
-                    header.setPhrase(new Phrase(columnTitle));
-                    table.addCell(header);
-                });
-    }
-
-    private void addRows(PdfPTable table, List<CommonDataSample> data) {
-        data.forEach(d -> {
-            table.addCell(d.getDateTime());
-            table.addCell(d.getValue());
-        });
     }
 
 }

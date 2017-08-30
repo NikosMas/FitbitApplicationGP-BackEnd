@@ -1,26 +1,27 @@
 package com.fitbit.grad.services.notification;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.stream.Stream;
-import javax.mail.MessagingException;
-
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fitbit.grad.config.MailInfoProperties;
 import com.fitbit.grad.controller.tabs.HeartRateNotificationTab;
 import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.fitbit.grad.models.HeartRateValue;
 import com.fitbit.grad.repository.HeartRateZoneRepository;
 import com.fitbit.grad.services.builders.ClearAllBuilderService;
+import com.fitbit.grad.services.document.CreatePdfToolsService;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Service about filtering heart rate data from database according to info given at {@link HeartRateNotificationTab}
@@ -40,6 +41,9 @@ public class HeartRateFilterService {
     private HeartRateZoneRepository heartRepository;
 
     @Autowired
+    private CreatePdfToolsService createPdfToolsService;
+
+    @Autowired
     private ClearAllBuilderService clearFieldsService;
 
     @Autowired
@@ -56,29 +60,16 @@ public class HeartRateFilterService {
                 Chunk doc = new Chunk("There are not exist heart-rate data with that parameters.\n Thank you!!", font);
                 document.add(doc);
             } else {
+                Stream categories = Stream.of("Date", "Heart-Rate category", "Minutes", "Minimum heart-rate", "Maximum heart-rate", "Calories out");
                 PdfPTable tableHeartRate = new PdfPTable(6);
                 tableHeartRate.setSpacingAfter(70);
                 tableHeartRate.setSpacingBefore(50);
-
-                Stream.of("Date", "Heart-Rate category", "Minutes", "Minimum heart-rate", "Maximum heart-rate", "Calories out")
-                        .forEach(columnTitle -> {
-                            PdfPCell header = new PdfPCell();
-                            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                            header.setBorderWidth(2);
-                            header.setPhrase(new Phrase(columnTitle));
-                            tableHeartRate.addCell(header);
-                        });
-
-                heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.d()).forEach(d -> {
-                    tableHeartRate.addCell(d.getDate());
-                    tableHeartRate.addCell(d.getName());
-                    tableHeartRate.addCell(String.valueOf(d.getMinutes()));
-                    tableHeartRate.addCell(String.valueOf(d.getMin()));
-                    tableHeartRate.addCell(String.valueOf(d.getMax()));
-                    tableHeartRate.addCell(String.valueOf(d.getCaloriesOut()));
-                });
+                createPdfToolsService.addTable(tableHeartRate, categories);
+                List<HeartRateValue> heartRateValueList = heartRepository.findByMinutesGreaterThanAndNameIs(minutes, category.d()).collect(Collectors.toList());
+                createPdfToolsService.addRowsHeartRate(tableHeartRate, heartRateValueList);
                 document.add(tableHeartRate);
             }
+
             document.addTitle("Heart-rate data");
             document.addAuthor("Fitbit Application");
             document.close();

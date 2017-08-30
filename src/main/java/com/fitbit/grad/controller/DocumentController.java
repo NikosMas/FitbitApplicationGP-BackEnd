@@ -22,6 +22,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * rest controller on localhost to download pdf document
+ *
+ * @author nikos_mas, alex_kak
+ */
+
 @RestController
 public class DocumentController {
 

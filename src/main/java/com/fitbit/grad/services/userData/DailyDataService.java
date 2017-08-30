@@ -10,6 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+/**
+ * Service about requesting to Fitbit api for daily data (steps, floors, heart-rate, distance)
+ *
+ * @author nikos_mas, alex_kak
+ */
+
 @Service
 public class DailyDataService {
 

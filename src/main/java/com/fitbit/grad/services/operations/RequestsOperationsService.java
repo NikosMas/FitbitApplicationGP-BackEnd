@@ -23,6 +23,13 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Service containing tool methods for the requests to fitbit api
+ *
+ * @author nikos_mas, alex_kak
+ */
+
+
 @Service
 public class RequestsOperationsService {
 
