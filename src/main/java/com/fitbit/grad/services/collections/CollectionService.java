@@ -12,30 +12,36 @@ import com.fitbit.grad.models.CollectionEnum;
 
 /**
  * Service about creating Mongo collections to 'fitbit' database
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 @Service
 public class CollectionService {
 
-	private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values());
+    private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values());
 
-	@Autowired
-	private MongoTemplate mongoTemplate;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-	@Async
-	public void collectionsCreate() {
+    @Async
+    public void collectionsCreate() {
 
-			collections.stream().forEach(collectionName -> {
+        for (CollectionEnum collectionName : collections) {
+            if (mongoTemplate.collectionExists(collectionName.d())) {
+                mongoTemplate.dropCollection(collectionName.d());
+                mongoTemplate.createCollection(collectionName.d());
+            } else {
+                mongoTemplate.createCollection(collectionName.d());
+            }
+        }
+    }
 
-				if (mongoTemplate.collectionExists(collectionName.d())) {
-					mongoTemplate.dropCollection(collectionName.d());
-					mongoTemplate.createCollection(collectionName.d());
-				} else {
-					mongoTemplate.createCollection(collectionName.d());
-				}
-			});
-	}
+    @Async
+    public void clearDatabase() {
+        collections.stream()
+                .filter(collectionName -> mongoTemplate.collectionExists(collectionName.d()))
+                .forEach(collectionName -> mongoTemplate.dropCollection(collectionName.d()));
 
+    }
 }

@@ -39,16 +39,13 @@ public class ActivitiesDataService {
         String p = calendarService.months(dates).stream().filter(pack -> dataRetriever(pack) == false).findFirst()
                 .orElse(null);
 
-        return (p == null) ? true : false;
+        return p == null;
     }
 
     private boolean dataRetriever(String month) {
-
-        return (requestsOperationsService.requests(urlsProp.getStepsUrl(), month, CollectionEnum.A_STEPS.d(), STEPS)
+        return requestsOperationsService.requests(urlsProp.getStepsUrl(), month, CollectionEnum.A_STEPS.d(), STEPS)
                 && requestsOperationsService.requests(urlsProp.getFloorsUrl(), month, CollectionEnum.A_FLOORS.d(), FLOORS)
                 && requestsOperationsService.requests(urlsProp.getDistanceUrl(), month, CollectionEnum.A_DISTANCE.d(), DISTANCE)
-                && requestsOperationsService.requests(urlsProp.getCaloriesUrl(), month, CollectionEnum.A_CALORIES.d(), CALORIES))
-                ? true
-                : false;
+                && requestsOperationsService.requests(urlsProp.getCaloriesUrl(), month, CollectionEnum.A_CALORIES.d(), CALORIES);
     }
 }

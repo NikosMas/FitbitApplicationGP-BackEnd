@@ -3,6 +3,7 @@ package com.fitbit.grad.controller.tabs;
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
 import com.fitbit.grad.services.builders.ContentBuilderService;
 import com.fitbit.grad.services.builders.FieldsBuilderService;
+import com.fitbit.grad.services.collections.CollectionService;
 import com.vaadin.annotations.Title;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
@@ -37,6 +38,9 @@ public class DashboardTab {
         @Autowired
         private ContentBuilderService contentService;
 
+        @Autowired
+        private CollectionService collectionService;
+
         @Override
         public void init(VaadinRequest request) {
             VerticalLayout content = new VerticalLayout();
@@ -61,6 +65,7 @@ public class DashboardTab {
             exit.addClickListener(click -> {
                 getPage().setLocation("finalize");
                 getSession().close();
+                collectionService.clearDatabase();
             });
 
             Button authorizationCode = new Button();

@@ -37,14 +37,14 @@ public class CreatePdfToolsService {
      * @param data
      */
     public void addRowsHeartRate(PdfPTable table, List<HeartRateValue> data) {
-        data.forEach(d -> {
+        for (HeartRateValue d : data) {
             table.addCell(d.getDate());
             table.addCell(d.getName());
             table.addCell(String.valueOf(d.getMinutes()));
             table.addCell(String.valueOf(d.getMin()));
             table.addCell(String.valueOf(d.getMax()));
             table.addCell(String.valueOf(d.getCaloriesOut()));
-        });
+        }
     }
 
     /**
@@ -52,9 +52,9 @@ public class CreatePdfToolsService {
      * @param data
      */
     public void addRows(PdfPTable table, List<CommonDataSample> data) {
-        data.forEach(d -> {
+        for (CommonDataSample d : data) {
             table.addCell(d.getDateTime());
             table.addCell(d.getValue());
-        });
+        }
     }
 }

@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static javaslang.control.Option.*;
+
 /**
  * Service containing tool methods for the requests to fitbit api
  *
@@ -75,7 +77,7 @@ public class RequestsOperationsService {
      */
     protected String getAccessToken() throws IOException {
 
-        if (accessToken == null)
+        if (null == accessToken)
             accessToken = tokenService.token();
 
         return accessToken;
@@ -95,11 +97,11 @@ public class RequestsOperationsService {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url + month, HttpMethod.GET, getEntity(false), String.class);
 
-            if (response.getStatusCodeValue() == 401) {
+            if (401 == response.getStatusCodeValue()) {
                 ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url + month, HttpMethod.GET, getEntity(true), String.class);
                 saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
                 return true;
-            } else if (response.getStatusCodeValue() == 200) {
+            } else if (200 == response.getStatusCodeValue()) {
                 saveOperationsService.dataTypeInsert(response, collection, fcollection);
                 return true;
             }
@@ -119,12 +121,12 @@ public class RequestsOperationsService {
         ResponseEntity<String> response = restTemplate.exchange(url + "today/1d/time/00:00/" + LocalTime.now()
                 .format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET, getEntity(false), String.class);
 
-        if (response.getStatusCodeValue() == 401) {
+        if (401 == response.getStatusCodeValue()) {
             ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url + "today/1d/time/00:00/" +
                     LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET, getEntity(true), String.class);
             saveOperationsService.dailySave(responseWithRefreshToken.getBody(), collection);
             return true;
-        } else if (response.getStatusCodeValue() == 200) {
+        } else if (200 == response.getStatusCodeValue()) {
             saveOperationsService.dailySave(response.getBody(), collection);
             return true;
         }
@@ -145,15 +147,15 @@ public class RequestsOperationsService {
     public Option<JSONArray> heartRequests(String month, String heartUrl, String filter) throws IOException, JSONException {
         ResponseEntity<String> heart = restTemplate.exchange(heartUrl + month, HttpMethod.GET, getEntity(false), String.class);
 
-        if (heart.getStatusCodeValue() == 401) {
+        if (401 == heart.getStatusCodeValue()) {
             ResponseEntity<String> heartWithRefreshToken = restTemplate.exchange(heartUrl + month, HttpMethod.GET, getEntity(true), String.class);
             saveOperationsService.dataTypeInsert(heartWithRefreshToken, CollectionEnum.A_HEART.d(), filter);
-            return Option.of(new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(filter));
-        } else if (heart.getStatusCodeValue() == 200) {
+            return of(new JSONObject(heartWithRefreshToken.getBody()).getJSONArray(filter));
+        } else if (200 == heart.getStatusCodeValue()) {
             saveOperationsService.dataTypeInsert(heart, CollectionEnum.A_HEART.d(), filter);
-            return Option.of(new JSONObject(heart.getBody()).getJSONArray(filter));
+            return of(new JSONObject(heart.getBody()).getJSONArray(filter));
         }
-        return Option.none();
+        return none();
     }
 
     /**
@@ -169,11 +171,11 @@ public class RequestsOperationsService {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getEntity(false), String.class);
 
-            if (response.getStatusCodeValue() == 401) {
+            if (401 == response.getStatusCodeValue()) {
                 ResponseEntity<String> responseWithRefreshToken = restTemplate.exchange(url, HttpMethod.GET, getEntity(true), String.class);
                 saveOperationsService.dataTypeInsert(responseWithRefreshToken, collection, fcollection);
                 return true;
-            } else if (response.getStatusCodeValue() == 200) {
+            } else if (200 == response.getStatusCodeValue()) {
                 saveOperationsService.dataTypeInsert(response, collection, fcollection);
                 return true;
             }

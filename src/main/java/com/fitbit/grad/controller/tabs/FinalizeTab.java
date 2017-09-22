@@ -30,6 +30,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
 
+import static com.vaadin.ui.Notification.*;
+
 /**
  * controller at /fitbitApp/finalize where user can restart the process
  *
@@ -100,7 +102,7 @@ public class FinalizeTab {
                     getSession().close();
                 } else {
                     if (group.isEmpty()) {
-                        Notification.show("Chose one of the options to continue", Type.ERROR_MESSAGE);
+                        show("Chose one of the options to continue", Type.ERROR_MESSAGE);
                     } else {
                         if (group.getValue().equals("Same user")) {
                             collectionsService.collectionsCreate();

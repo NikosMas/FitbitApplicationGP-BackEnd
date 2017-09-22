@@ -14,7 +14,7 @@ import com.fitbit.grad.controller.tabs.UserDataTab;
 
 /**
  * Service about dates given from the user at {@link UserDataTab}.
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
@@ -24,7 +24,7 @@ public class CalendarService {
 	/**
 	 * Takes the starting & the ending date and split the range of them to 300-days partitions
 	 * if it's possible
-	 * 
+	 *
 	 * @param startDate
 	 * @param endDate
 	 * @return
@@ -60,7 +60,7 @@ public class CalendarService {
 
 	/**
 	 * Convert a list of maps with dates to a list of dates
-	 * 
+	 *
 	 * @param dates
 	 * @return
 	 */

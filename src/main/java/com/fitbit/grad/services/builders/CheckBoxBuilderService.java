@@ -22,6 +22,8 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
 
+import static com.vaadin.ui.Notification.*;
+
 /**
  * Service about Vaadin checkbox building
  *
@@ -65,8 +67,7 @@ public class CheckBoxBuilderService {
         submitCheckBoxButton.addClickListener(click -> {
             if (!multiCheckBox.isEmpty()) {
                 submitCheckBoxButton.setEnabled(false);
-                multiCheckBox.getSelectedItems().stream().forEach(check -> {
-
+                for (String check : multiCheckBox.getSelectedItems()) {
                     switch (check) {
                         case "Sleep data":
                             if (sleepService.sleep(dates)) {
@@ -78,7 +79,7 @@ public class CheckBoxBuilderService {
                         case "Profile data":
                             if (otherService.profile()) {
                                 LOG.info("Profile data received and stored to database");
-                                Notification.show("User data stored successfully!");
+                                show("User data stored successfully!");
                             } else {
                                 clearFieldsService.tryLater(content);
                             }
@@ -86,7 +87,7 @@ public class CheckBoxBuilderService {
                         case "Activities data":
                             if (activitiesService.activities(dates)) {
                                 LOG.info("Activities data received and stored to database");
-                                Notification.show("User data stored successfully!");
+                                show("User data stored successfully!");
                             } else {
                                 clearFieldsService.tryLater(content);
                             }
@@ -94,7 +95,7 @@ public class CheckBoxBuilderService {
                         case "Lifetime activities data":
                             if (otherService.lifetime()) {
                                 LOG.info("Lifetime data received and stored to database");
-                                Notification.show("User data stored successfully!");
+                                show("User data stored successfully!");
                             } else {
                                 clearFieldsService.tryLater(content);
                             }
@@ -102,7 +103,7 @@ public class CheckBoxBuilderService {
                         case "Frequent activities data":
                             if (otherService.frequence()) {
                                 LOG.info("Frequence data received and stored to database");
-                                Notification.show("User data stored successfully!");
+                                show("User data stored successfully!");
                             } else {
                                 clearFieldsService.tryLater(content);
                             }
@@ -110,7 +111,7 @@ public class CheckBoxBuilderService {
                         case "HeartRate data":
                             if (heartService.filterHeartRateValues(dates)) {
                                 LOG.info("Heart rate data received and stored to database");
-                                Notification.show("User data stored successfully!");
+                                show("User data stored successfully!");
                             } else {
                                 clearFieldsService.tryLater(content);
                             }
@@ -118,10 +119,10 @@ public class CheckBoxBuilderService {
                         default:
                             break;
                     }
-                });
+                }
 
             } else {
-                Notification.show("You missed some steps before or you didn't select anything", Type.ERROR_MESSAGE);
+                show("You missed some steps before or you didn't select anything", Type.ERROR_MESSAGE);
             }
         });
     }
@@ -145,7 +146,7 @@ public class CheckBoxBuilderService {
                 endDate.setEnabled(false);
                 multiCheckBox.setEnabled(true);
             } else {
-                Notification.show("You missed some steps before or dates given are invalid", Type.ERROR_MESSAGE);
+                show("You missed some steps before or dates given are invalid", Type.ERROR_MESSAGE);
             }
         });
     }

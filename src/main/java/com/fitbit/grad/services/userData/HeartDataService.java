@@ -53,7 +53,7 @@ public class HeartDataService {
 		String p = calendarService.months(dates).stream().filter(month -> getFilterHeartRate(month) == false)
 				.findFirst().orElse(null);
 
-		return (p == null) ? true : false;
+		return null == p;
 	}
 
 	/**
@@ -65,12 +65,11 @@ public class HeartDataService {
 	private boolean getFilterHeartRate(String month) {
 		try {
 			JSONArray responseDataArray = requestsOperationsService.heartRequests(month, urlsProp.getHeartUrl(), HEART).getOrElse(() -> null);
-			if (responseDataArray == null) return false;
+			if (null == responseDataArray) return false;
 			for (int rda = 0; rda < responseDataArray.length(); rda++) {
                 JSONArray heartRateZonesArray = responseDataArray.getJSONObject(rda).getJSONObject("value").getJSONArray("heartRateZones");
-                for (int hrza = 0; hrza < heartRateZonesArray.length(); hrza++) {
-                    insertHeartRateValues(responseDataArray, rda, heartRateZonesArray, hrza);
-                }
+                for (int hrza = 0; hrza < heartRateZonesArray.length(); hrza++)
+					insertHeartRateValues(responseDataArray, rda, heartRateZonesArray, hrza);
             }
 			return true;
 		} catch (IOException | JSONException e) {

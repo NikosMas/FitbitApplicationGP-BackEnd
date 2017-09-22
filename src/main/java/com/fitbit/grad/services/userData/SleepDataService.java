@@ -41,19 +41,16 @@ public class SleepDataService {
         String p = calendarService.months(dates).stream().filter(month -> dataRetriever(month) == false).findFirst()
                 .orElse(null);
 
-        return (p == null) ? true : false;
+        return null == p;
     }
 
     private boolean dataRetriever(String month) {
-
-        return (requestsOperationsService.requests(urlsProp.getTimeInBedUrl(), month, CollectionEnum.S_TIME_IN_BED.d(), TIME_IN_BED)
+        return requestsOperationsService.requests(urlsProp.getTimeInBedUrl(), month, CollectionEnum.S_TIME_IN_BED.d(), TIME_IN_BED)
                 && requestsOperationsService.requests(urlsProp.getMinutesAsleepUrl(), month, CollectionEnum.S_MINUTES_ASLEEP.d(), MINUTES_ASLEEP)
                 && requestsOperationsService.requests(urlsProp.getMinutesAwakeUrl(), month, CollectionEnum.S_MINUTES_AWAKE.d(), MINUTES_AWAKE)
                 && requestsOperationsService.requests(urlsProp.getAfterWakeUpUrl(), month, CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d(), MINUTES_AFTER_WAKE_UP)
                 && requestsOperationsService.requests(urlsProp.getEfficiencyUrl(), month, CollectionEnum.S_EFFICIENCY.d(), EFFICIENCY)
-                && requestsOperationsService.requests(urlsProp.getToFallAsleepUrl(), month, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP))
-                ? true
-                : false;
+                && requestsOperationsService.requests(urlsProp.getToFallAsleepUrl(), month, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP);
     }
 
 }

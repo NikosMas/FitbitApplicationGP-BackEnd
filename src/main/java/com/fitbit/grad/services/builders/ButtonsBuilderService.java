@@ -26,6 +26,8 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.io.IOException;
 
+import static com.vaadin.ui.Notification.*;
+
 /**
  * Service about Vaadin buttons building
  *
@@ -81,7 +83,7 @@ public class ButtonsBuilderService {
                 codeService.codeRequest();
                 collectionsService.collectionsCreate();
             } else {
-                Notification.show(
+                show(
                         "Complete with valid client id and client secret given from to your account at Fitbit",
                         Type.ERROR_MESSAGE);
             }
@@ -112,12 +114,12 @@ public class ButtonsBuilderService {
                     heartRate.setEnabled(false);
                     skip.setEnabled(false);
                     LOG.info("Mail successfully sent to user with heart rate information");
-                    Notification.show("Mail successfully sent to user with heart rate information!");
+                    show("Mail successfully sent to user with heart rate information!");
                 } catch (NumberFormatException e) {
-                    Notification.show("Complete the minutes field with number", Type.ERROR_MESSAGE);
+                    show("Complete the minutes field with number", Type.ERROR_MESSAGE);
                 }
             } else {
-                Notification.show(
+                show(
                         "Complete the required fields with a valid e-mail & number of minutes and choose category",
                         Type.ERROR_MESSAGE);
             }
@@ -131,14 +133,12 @@ public class ButtonsBuilderService {
      */
     public boolean continueBuilder(Button submitCheckBoxButton, CheckBoxGroup<String> multiCheckBox) {
 
-        if (submitCheckBoxButton.isEnabled()) {
-            Notification.show("Complete the required steps before", Type.ERROR_MESSAGE);
-            //return false;
-        } else if (!multiCheckBox.getValue().contains("HeartRate data")) {
-            Notification.show(
-                    "Heart Rate data aren't exist into database so you can't continue to email process");
-            return false;
-        }
+        if (submitCheckBoxButton.isEnabled())
+            show("Complete the required steps before", Type.ERROR_MESSAGE);
+
+        if (!multiCheckBox.getValue().contains("HeartRate data"))
+            show("Heart Rate data aren't exist into database so you can't continue to email process");
+
         return true;
     }
 
@@ -150,21 +150,24 @@ public class ButtonsBuilderService {
         download.setCaption("Download");
         download.setWidth("150");
         download.addClickListener(click -> {
-            if (mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_STEPS.d()).isEmpty()
-                    && mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AWAKE.d()).isEmpty()
-                    && mongoTemplate.findAll(HeartRateValue.class, CollectionEnum.FILTERD_A_HEART.d()).isEmpty()) {
-                Notification.show("No user data available for downloading", Type.ERROR_MESSAGE);
-            } else {
-                try {
-                    if (OS.equalsIgnoreCase("linux")) {
-                        Runtime.getRuntime().exec("xdg-open " + downloadingProperties.getExportUrl());
-                    } else {
-                        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + downloadingProperties.getExportUrl());
+            if (mongoTemplate.collectionExists(CollectionEnum.A_STEPS.d())) {
+                if (mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_STEPS.d()).isEmpty()
+                        && mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AWAKE.d()).isEmpty()
+                        && mongoTemplate.findAll(HeartRateValue.class, CollectionEnum.FILTERD_A_HEART.d()).isEmpty())
+                    show("No user data available for downloading", Type.ERROR_MESSAGE);
+                else {
+                    try {
+                        if (OS.equalsIgnoreCase("linux")) {
+                            Runtime.getRuntime().exec("xdg-open " + downloadingProperties.getExportUrl());
+                        } else {
+                            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + downloadingProperties.getExportUrl());
+                        }
+                    } catch (IOException e) {
+                        LOG.error("Something went wrong: ", e);
                     }
-                } catch (IOException e) {
-                    LOG.error("Something went wrong: ", e);
                 }
             }
+            show("No user data available for downloading", Type.ERROR_MESSAGE);
         });
     }
 }
