@@ -33,7 +33,7 @@ public class CalendarService {
 
 		long addedDays = 0;
 		long between = ChronoUnit.DAYS.between(startDate, endDate);
-		List<Map<String, String>> dates = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> dates = new ArrayList<>();
 
 		while (between > 300) {
 

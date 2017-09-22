@@ -95,7 +95,7 @@ public class ButtonsBuilderService {
      * @param select
      * @param content
      */
-    public void heartRateMailBuilder(Button heartRateMail, TextField mail, TextField heartRate,
+    public void heartRateMailBuilder(Button skip, Button heartRateMail, TextField mail, TextField heartRate,
                                      ComboBox<HeartRateCategoryEnum> select, VerticalLayout content) {
         heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
         heartRateMail.setCaption("Submit");
@@ -110,6 +110,7 @@ public class ButtonsBuilderService {
                     select.setEnabled(false);
                     mail.setEnabled(false);
                     heartRate.setEnabled(false);
+                    skip.setEnabled(false);
                     LOG.info("Mail successfully sent to user with heart rate information");
                     Notification.show("Mail successfully sent to user with heart rate information!");
                 } catch (NumberFormatException e) {

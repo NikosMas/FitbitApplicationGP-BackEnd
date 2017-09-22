@@ -65,8 +65,6 @@ public class HeartRateNotificationTab {
 			TextField heartRate = new TextField();
 			fieldsService.heartRateBuilder(heartRate);
 
-			Button heartRateMail = new Button();
-			buttonsService.heartRateMailBuilder(heartRateMail, mail, heartRate, select, content);
 
 			// business part with redirection is here because of private {@link
 			// Page} at {@link UI}
@@ -79,11 +77,14 @@ public class HeartRateNotificationTab {
 				getSession().close();
 			});
 
+			Button heartRateMail = new Button();
+			buttonsService.heartRateMailBuilder(skip, heartRateMail, mail, heartRate, select, content);
+
 			// business part with redirection is here because of private {@link
 			// Page} at {@link UI}
 			Button exit = new Button();
 			exit.setIcon(VaadinIcons.ARROW_FORWARD);
-			exit.setCaption("skip");
+			exit.setCaption("exit");
 			exit.setWidth("150");
 			exit.addClickListener(click -> {
 				getPage().setLocation("finalize");
