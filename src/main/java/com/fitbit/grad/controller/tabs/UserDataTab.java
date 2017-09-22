@@ -2,7 +2,11 @@ package com.fitbit.grad.controller.tabs;
 
 import java.io.File;
 
+import com.fitbit.grad.models.CollectionEnum;
+import com.fitbit.grad.services.collections.CollectionService;
+import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
@@ -14,13 +18,8 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBoxGroup;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+
+import static com.vaadin.ui.Notification.*;
 
 /**
  * controller at /fitbitApp/userData waiting the user to fill the form about
@@ -51,6 +50,12 @@ public class UserDataTab {
 
         @Autowired
         private RedisTemplate<String, String> redisTemplate;
+
+        @Autowired
+        private MongoTemplate mongoTemplate;
+
+        @Autowired
+        private CollectionService collectionService;
 
         @Override
         public void init(VaadinRequest request) {
@@ -97,9 +102,10 @@ public class UserDataTab {
             stepBackward.setCaption("Back");
             stepBackward.setWidth("150");
             stepBackward.addClickListener(click -> {
-                redisTemplate.delete("AuthorizationCode");
                 getPage().setLocation("dashboard");
                 getSession().close();
+                redisTemplate.delete("AuthorizationCode");
+                collectionService.clearDatabase();
             });
 
             // business part with redirection is here because of private {@link
@@ -108,13 +114,16 @@ public class UserDataTab {
             stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
             stepForward.setCaption("Continue");
             stepForward.addClickListener(click -> {
-                if (buttonsService.continueBuilder(submitCheckBoxButton, multiCheckBox)) {
-                    getPage().setLocation("heartRateNotification");
-                    getSession().close();
-                } else {
-                    getPage().setLocation("finalize");
-                    getSession().close();
+                if (mongoTemplate.collectionExists(CollectionEnum.A_CALORIES.d())) {
+                    if (buttonsService.continueBuilder(submitCheckBoxButton, multiCheckBox)) {
+                        getPage().setLocation("heartRateNotification");
+                        getSession().close();
+                    } else {
+                        getPage().setLocation("finalize");
+                        getSession().close();
+                    }
                 }
+                show("Complete the required steps before", Type.ERROR_MESSAGE);
             });
 
             contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate, heartRate,

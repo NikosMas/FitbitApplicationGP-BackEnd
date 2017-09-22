@@ -81,11 +81,9 @@ public class ButtonsBuilderService {
                 clientId.setEnabled(false);
                 clientSecret.setEnabled(false);
                 codeService.codeRequest();
-                collectionsService.collectionsCreate();
+//                collectionsService.collectionsCreate();
             } else {
-                show(
-                        "Complete with valid client id and client secret given from to your account at Fitbit",
-                        Type.ERROR_MESSAGE);
+                show("Complete with valid client id and client secret given from to your account at Fitbit", Type.ERROR_MESSAGE);
             }
         });
     }
@@ -133,12 +131,12 @@ public class ButtonsBuilderService {
      */
     public boolean continueBuilder(Button submitCheckBoxButton, CheckBoxGroup<String> multiCheckBox) {
 
-        if (submitCheckBoxButton.isEnabled())
+        if (submitCheckBoxButton.isEnabled()) {
             show("Complete the required steps before", Type.ERROR_MESSAGE);
-
-        if (!multiCheckBox.getValue().contains("HeartRate data"))
-            show("Heart Rate data aren't exist into database so you can't continue to email process");
-
+//            return false;
+        } else if (!multiCheckBox.getValue().contains("HeartRate data")) {
+            return false;
+        }
         return true;
     }
 
@@ -166,8 +164,9 @@ public class ButtonsBuilderService {
                         LOG.error("Something went wrong: ", e);
                     }
                 }
+            } else {
+                show("No user data available for downloading", Type.ERROR_MESSAGE);
             }
-            show("No user data available for downloading", Type.ERROR_MESSAGE);
         });
     }
 }

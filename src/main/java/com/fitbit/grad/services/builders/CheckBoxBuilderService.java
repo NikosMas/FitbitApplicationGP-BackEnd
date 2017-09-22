@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fitbit.grad.services.collections.CollectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,9 @@ public class CheckBoxBuilderService {
     @Autowired
     private ClearAllBuilderService clearFieldsService;
 
+    @Autowired
+    private CollectionService collectionService;
+
     /**
      * @param multiCheckBox
      * @param submitCheckBoxButton
@@ -67,6 +71,7 @@ public class CheckBoxBuilderService {
         submitCheckBoxButton.addClickListener(click -> {
             if (!multiCheckBox.isEmpty()) {
                 submitCheckBoxButton.setEnabled(false);
+                collectionService.collectionsCreate();
                 for (String check : multiCheckBox.getSelectedItems()) {
                     switch (check) {
                         case "Sleep data":

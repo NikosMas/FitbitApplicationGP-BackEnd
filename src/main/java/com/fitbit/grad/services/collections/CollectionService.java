@@ -19,13 +19,14 @@ import com.fitbit.grad.models.CollectionEnum;
 @Service
 public class CollectionService {
 
-    private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values());
-
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Async
+    private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values()).subList(0, 24);
+
     public void collectionsCreate() {
+
+
 
         for (CollectionEnum collectionName : collections) {
             if (mongoTemplate.collectionExists(collectionName.d())) {
@@ -37,11 +38,9 @@ public class CollectionService {
         }
     }
 
-    @Async
     public void clearDatabase() {
         collections.stream()
                 .filter(collectionName -> mongoTemplate.collectionExists(collectionName.d()))
                 .forEach(collectionName -> mongoTemplate.dropCollection(collectionName.d()));
-
     }
 }

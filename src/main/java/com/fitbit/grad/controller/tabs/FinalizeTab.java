@@ -58,6 +58,9 @@ public class FinalizeTab {
         @Autowired
         private RedisTemplate<String, String> redisTemplate;
 
+        @Autowired
+        private MongoTemplate mongoTemplate;
+
         @Override
         public void init(VaadinRequest request) {
             VerticalLayout content = new VerticalLayout();
@@ -86,8 +89,11 @@ public class FinalizeTab {
             platform.setCaption("Go To Platform");
             platform.setWidth("150");
             platform.addClickListener(click -> {
-                getPage().setLocation("");
-                getSession().close();
+                if (mongoTemplate.collectionExists(CollectionEnum.A_DISTANCE.d())) {
+                    getPage().setLocation("");
+                    getSession().close();
+                }
+                show("No user data available for visualizing");
             });
 
             // business part with redirection is here because of private {@link
@@ -104,6 +110,7 @@ public class FinalizeTab {
                     if (group.isEmpty()) {
                         show("Chose one of the options to continue", Type.ERROR_MESSAGE);
                     } else {
+                        collectionsService.clearDatabase();
                         if (group.getValue().equals("Same user")) {
                             collectionsService.collectionsCreate();
                             getPage().setLocation("userData");
