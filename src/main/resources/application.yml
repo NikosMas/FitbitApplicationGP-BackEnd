@@ -23,7 +23,7 @@ refreshtoken:
 # e-mail credentials 
 mailInfo:
   username: nickma72@gmail.com
-  password:
+  password: mastronikos
   fileName: heartData.pdf
   sendFrom: nickma72@gmail.com
   mailSmtpStartEnable: true
@@ -57,3 +57,7 @@ fitbitApiUrls:
 downloadProps:
   exportUrl: http://localhost:8080/fitbitApp/export
   exportFileName: User-Data.pdf
+
+# platform
+platformProps:
+  goToPlatformUrl: http://localhost:59607/pages/MainPage.aspx

@@ -85,16 +85,7 @@ public class FinalizeTab {
             // business part with redirection is here because of private {@link
             // Page} at {@link UI}
             Button platform = new Button();
-            platform.setIcon(VaadinIcons.ARROW_FORWARD);
-            platform.setCaption("Go To Platform");
-            platform.setWidth("150");
-            platform.addClickListener(click -> {
-                if (mongoTemplate.collectionExists(CollectionEnum.A_DISTANCE.d())) {
-                    getPage().setLocation("");
-                    getSession().close();
-                }
-                show("No user data available for visualizing");
-            });
+            buttonsBuilderService.platformBuilder(platform);
 
             // business part with redirection is here because of private {@link
             // Page} at {@link UI}

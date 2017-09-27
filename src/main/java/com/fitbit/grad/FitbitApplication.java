@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 
 @EnableConfigurationProperties({ AuthorizationProperties.class, MailInfoProperties.class, RefreshTokenProperties.class,
-		FitbitApiUrlProperties.class, DownloadingProperties.class})
+		FitbitApiUrlProperties.class, DownloadingProperties.class, PlatformProperties.class})
 @SpringBootApplication
 public class FitbitApplication {
 
