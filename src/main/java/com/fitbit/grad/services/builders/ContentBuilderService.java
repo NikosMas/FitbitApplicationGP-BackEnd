@@ -121,7 +121,7 @@ public class ContentBuilderService {
 
     }
 
-    public void finalizeContentBuilder(VerticalLayout content, Image image, RadioButtonGroup<String> group, Button restart, Button download, Button platform) {
+    public void finalizeContentBuilder(VerticalLayout content, Image image, RadioButtonGroup<String> group, Button restart, Button download) {
 
         content.addComponent(image);
         content.addComponent(new Label("Click to continue"));
@@ -129,10 +129,8 @@ public class ContentBuilderService {
         content.addComponent(restart);
         content.addComponent(new Label("\n"));
         content.addComponent(new Label("\n"));
-        content.addComponent(new Label("Click to download pdf file containing user data or move to the Platform"));
+        content.addComponent(new Label("Click to download pdf file containing user data"));
         content.addComponent(download);
-        content.addComponent(new Label("\n"));
-        content.addComponent(platform);
         content.addComponent(new Label("\n"));
 
     }

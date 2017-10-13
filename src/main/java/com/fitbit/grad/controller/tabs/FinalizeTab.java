@@ -84,8 +84,8 @@ public class FinalizeTab {
 
             // business part with redirection is here because of private {@link
             // Page} at {@link UI}
-            Button platform = new Button();
-            buttonsBuilderService.platformBuilder(platform);
+//            Button platform = new Button();
+//            buttonsBuilderService.platformBuilder(platform);
 
             // business part with redirection is here because of private {@link
             // Page} at {@link UI}
@@ -115,7 +115,7 @@ public class FinalizeTab {
                 }
             });
 
-            contentService.finalizeContentBuilder(content, image, group, restart, download, platform);
+            contentService.finalizeContentBuilder(content, image, group, restart, download);
         }
     }
 }

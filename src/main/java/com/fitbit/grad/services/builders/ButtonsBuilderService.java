@@ -171,26 +171,26 @@ public class ButtonsBuilderService {
         });
     }
 
-    public void platformBuilder(Button platform) {
-        platform.setIcon(VaadinIcons.ARROW_FORWARD);
-        platform.setCaption("Go To Platform");
-        platform.setWidth("160");
-        platform.addClickListener(click -> {
-            if (mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_STEPS.d()).isEmpty()
-                    && mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AWAKE.d()).isEmpty()
-                    && mongoTemplate.findAll(HeartRateValue.class, CollectionEnum.FILTERD_A_HEART.d()).isEmpty()) {
-                show("No user data available for downloading", Type.ERROR_MESSAGE);
-            } else {
-                try {
-                    if (OS.equalsIgnoreCase("linux")) {
-                        Runtime.getRuntime().exec("xdg-open " + platformProperties.getGoToPlatformUrl());
-                    } else {
-                        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + platformProperties.getGoToPlatformUrl());
-                    }
-                } catch (IOException e) {
-                    LOG.error("Something went wrong: ", e);
-                }
-            }
-        });
-    }
+//    public void platformBuilder(Button platform) {
+//        platform.setIcon(VaadinIcons.ARROW_FORWARD);
+//        platform.setCaption("Go To Platform");
+//        platform.setWidth("160");
+//        platform.addClickListener(click -> {
+//            if (mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.A_STEPS.d()).isEmpty()
+//                    && mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AWAKE.d()).isEmpty()
+//                    && mongoTemplate.findAll(HeartRateValue.class, CollectionEnum.FILTERD_A_HEART.d()).isEmpty()) {
+//                show("No user data available for downloading", Type.ERROR_MESSAGE);
+//            } else {
+//                try {
+//                    if (OS.equalsIgnoreCase("linux")) {
+//                        Runtime.getRuntime().exec("xdg-open " + platformProperties.getGoToPlatformUrl());
+//                    } else {
+//                        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + platformProperties.getGoToPlatformUrl());
+//                    }
+//                } catch (IOException e) {
+//                    LOG.error("Something went wrong: ", e);
+//                }
+//            }
+//        });
+//    }
 }
