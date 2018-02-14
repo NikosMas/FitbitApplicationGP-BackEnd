@@ -1,10 +1,15 @@
 package com.fitbit.grad.services.builders;
 
 import com.fitbit.grad.config.DownloadingProperties;
-import com.fitbit.grad.config.PlatformProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.models.CommonDataSample;
+import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.fitbit.grad.models.HeartRateValue;
+import com.fitbit.grad.services.authRequests.AuthCodeRequestService;
+import com.fitbit.grad.services.notification.HeartRateFilterService;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Notification.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,22 +17,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.models.HeartRateCategoryEnum;
-import com.fitbit.grad.services.authRequests.AuthCodeRequestService;
-import com.fitbit.grad.services.collections.CollectionService;
-import com.fitbit.grad.services.notification.HeartRateFilterService;
-import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBoxGroup;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-
 import java.io.IOException;
 
-import static com.vaadin.ui.Notification.*;
+import static com.vaadin.ui.Notification.show;
 
 /**
  * Service about Vaadin buttons building
@@ -39,37 +31,24 @@ import static com.vaadin.ui.Notification.*;
 public class ButtonsBuilderService {
 
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private DownloadingProperties downloadingProperties;
-
-    @Autowired
-    private PlatformProperties platformProperties;
-
-    @Autowired
-    private HeartRateFilterService heartRateFilterService;
-
-    @Autowired
-    private CollectionService collectionsService;
-
-    @Autowired
-    private AuthCodeRequestService codeService;
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final MongoTemplate mongoTemplate;
+    private final DownloadingProperties downloadingProperties;
+    private final HeartRateFilterService heartRateFilterService;
+    private final AuthCodeRequestService codeService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
     private static String OS = System.getProperty("os.name");
 
-    /**
-     * @param authorizationCode
-     * @param clientId
-     * @param clientSecret
-     * @param exit
-     * @return
-     */
+    @Autowired
+    public ButtonsBuilderService(MongoTemplate mongoTemplate, DownloadingProperties downloadingProperties, HeartRateFilterService heartRateFilterService, AuthCodeRequestService codeService, RedisTemplate<String, String> redisTemplate) {
+        this.mongoTemplate = mongoTemplate;
+        this.downloadingProperties = downloadingProperties;
+        this.heartRateFilterService = heartRateFilterService;
+        this.codeService = codeService;
+        this.redisTemplate = redisTemplate;
+    }
+
     public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret, Button exit) {
         authorizationCode.setIcon(VaadinIcons.CHECK_CIRCLE);
         authorizationCode.setCaption("Submit");
@@ -89,13 +68,6 @@ public class ButtonsBuilderService {
         });
     }
 
-    /**
-     * @param heartRateMail
-     * @param mail
-     * @param heartRate
-     * @param select
-     * @param content
-     */
     public void heartRateMailBuilder(Button skip, Button heartRateMail, TextField mail, TextField heartRate,
                                      ComboBox<HeartRateCategoryEnum> select, VerticalLayout content) {
         heartRateMail.setIcon(VaadinIcons.CHECK_CIRCLE);
@@ -125,11 +97,6 @@ public class ButtonsBuilderService {
         });
     }
 
-    /**
-     * @param submitCheckBoxButton
-     * @param multiCheckBox
-     * @return
-     */
     public boolean continueBuilder(Button submitCheckBoxButton, CheckBoxGroup<String> multiCheckBox) {
 
         if (submitCheckBoxButton.isEnabled()) {
@@ -141,9 +108,6 @@ public class ButtonsBuilderService {
         return true;
     }
 
-    /**
-     * @param download
-     */
     public void downloadBuilder(Button download) {
         download.setIcon(VaadinIcons.DOWNLOAD);
         download.setCaption("Download");

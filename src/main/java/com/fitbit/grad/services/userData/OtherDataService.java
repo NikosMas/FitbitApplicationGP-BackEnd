@@ -19,11 +19,14 @@ public class OtherDataService {
     private static final String PROFILE_USER = "user";
     private static final String FREQUENCE_CATEGORIES = "categories";
 
-    @Autowired
-    private RequestsOperationsService requestsOperationsService;
+    private final RequestsOperationsService requestsOperationsService;
+    private final FitbitApiUrlProperties urlsProp;
 
     @Autowired
-    private FitbitApiUrlProperties urlsProp;
+    public OtherDataService(RequestsOperationsService requestsOperationsService, FitbitApiUrlProperties urlsProp) {
+        this.requestsOperationsService = requestsOperationsService;
+        this.urlsProp = urlsProp;
+    }
 
     public boolean profile() {
         return requestsOperationsService.otherRequests(urlsProp.getProfileUrl(), CollectionEnum.PROFILE.d(), PROFILE_USER);

@@ -1,25 +1,25 @@
 package com.fitbit.grad.controller.tabs;
 
-import java.io.File;
-
 import com.fitbit.grad.models.CollectionEnum;
-import com.fitbit.grad.services.collections.CollectionService;
-import com.vaadin.ui.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
-
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
 import com.fitbit.grad.services.builders.CheckBoxBuilderService;
 import com.fitbit.grad.services.builders.ContentBuilderService;
 import com.fitbit.grad.services.builders.FieldsBuilderService;
+import com.fitbit.grad.services.collections.CollectionService;
 import com.vaadin.annotations.Title;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 
-import static com.vaadin.ui.Notification.*;
+import java.io.File;
+
+import static com.vaadin.ui.Notification.Type;
+import static com.vaadin.ui.Notification.show;
 
 /**
  * controller at /fitbitApp/userData waiting the user to fill the form about
@@ -36,26 +36,24 @@ public class UserDataTab {
 
         private static final long serialVersionUID = 1L;
 
-        @Autowired
-        private FieldsBuilderService fieldsService;
+        private final FieldsBuilderService fieldsService;
+        private final ButtonsBuilderService buttonsService;
+        private final CheckBoxBuilderService checkBoxService;
+        private final ContentBuilderService contentService;
+        private final RedisTemplate<String, String> redisTemplate;
+        private final MongoTemplate mongoTemplate;
+        private final CollectionService collectionService;
 
         @Autowired
-        private ButtonsBuilderService buttonsService;
-
-        @Autowired
-        private CheckBoxBuilderService checkBoxService;
-
-        @Autowired
-        private ContentBuilderService contentService;
-
-        @Autowired
-        private RedisTemplate<String, String> redisTemplate;
-
-        @Autowired
-        private MongoTemplate mongoTemplate;
-
-        @Autowired
-        private CollectionService collectionService;
+        public VaadinUI(FieldsBuilderService fieldsService, ButtonsBuilderService buttonsService, CheckBoxBuilderService checkBoxService, ContentBuilderService contentService, RedisTemplate<String, String> redisTemplate, MongoTemplate mongoTemplate, CollectionService collectionService) {
+            this.fieldsService = fieldsService;
+            this.buttonsService = buttonsService;
+            this.checkBoxService = checkBoxService;
+            this.contentService = contentService;
+            this.redisTemplate = redisTemplate;
+            this.mongoTemplate = mongoTemplate;
+            this.collectionService = collectionService;
+        }
 
         @Override
         public void init(VaadinRequest request) {
@@ -84,8 +82,6 @@ public class UserDataTab {
             Button submitCheckBoxButton = new Button();
             checkBoxService.checkBoxButton(multiCheckBox, submitCheckBoxButton, content);
 
-            // business part with redirection is here because of private {@link
-            // Page} at {@link UI}
             Button exit = new Button();
             exit.setIcon(VaadinIcons.ROTATE_LEFT);
             exit.setCaption("Exit");
@@ -95,8 +91,6 @@ public class UserDataTab {
                 getSession().close();
             });
 
-            // business part with redirection is here because of private {@link
-            // Page} at {@link UI}
             Button stepBackward = new Button();
             stepBackward.setIcon(VaadinIcons.ARROW_BACKWARD);
             stepBackward.setCaption("Back");
@@ -108,8 +102,6 @@ public class UserDataTab {
                 collectionService.clearDatabase();
             });
 
-            // business part with redirection is here because of private {@link
-            // Page} at {@link UI}
             Button stepForward = new Button();
             stepForward.setIcon(VaadinIcons.ARROW_FORWARD);
             stepForward.setCaption("Continue");
@@ -126,7 +118,7 @@ public class UserDataTab {
                 show("Complete the required steps before", Type.ERROR_MESSAGE);
             });
 
-            contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate, heartRate,
+            contentService.userDataContentBuilder(content, image, multiCheckBox, startDate, endDate,
                     submitDates, submitCheckBoxButton, exit, stepForward, stepBackward);
         }
     }

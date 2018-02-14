@@ -27,18 +27,20 @@ public class SleepDataService {
     private static final String MINUTES_ASLEEP = "sleep-minutesAsleep";
     private static final String TIME_IN_BED = "sleep-timeInBed";
 
-    @Autowired
-    private RequestsOperationsService requestsOperationsService;
+    private final RequestsOperationsService requestsOperationsService;
+    private final CalendarService calendarService;
+    private final FitbitApiUrlProperties urlsProp;
 
     @Autowired
-    private CalendarService calendarService;
-
-    @Autowired
-    private FitbitApiUrlProperties urlsProp;
+    public SleepDataService(RequestsOperationsService requestsOperationsService, CalendarService calendarService, FitbitApiUrlProperties urlsProp) {
+        this.requestsOperationsService = requestsOperationsService;
+        this.calendarService = calendarService;
+        this.urlsProp = urlsProp;
+    }
 
     public boolean sleep(List<Map<String, String>> dates) {
 
-        String p = calendarService.months(dates).stream().filter(month -> dataRetriever(month) == false).findFirst()
+        String p = calendarService.months(dates).stream().filter(month -> !dataRetriever(month)).findFirst()
                 .orElse(null);
 
         return null == p;

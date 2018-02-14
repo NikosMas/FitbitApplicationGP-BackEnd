@@ -19,13 +19,16 @@ import java.io.IOException;
 @Service
 public class DailyDataService {
 
-    @Autowired
-    private FitbitApiUrlProperties urlsProp;
-
-    @Autowired
-    private RequestsOperationsService requestsOperationsService;
+    private final FitbitApiUrlProperties urlsProp;
+    private final RequestsOperationsService requestsOperationsService;
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+
+    @Autowired
+    public DailyDataService(FitbitApiUrlProperties urlsProp, RequestsOperationsService requestsOperationsService) {
+        this.urlsProp = urlsProp;
+        this.requestsOperationsService = requestsOperationsService;
+    }
 
     public void storeIntradayData() {
 

@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static javaslang.control.Option.*;
+import static javaslang.control.Option.none;
+import static javaslang.control.Option.of;
 
 /**
  * Service containing tool methods for the requests to fitbit api
@@ -35,28 +36,26 @@ import static javaslang.control.Option.*;
 @Service
 public class RequestsOperationsService {
 
-    @Autowired
-    private AccessTokenRequestService tokenService;
-
-    @Autowired
-    private RefreshTokenRequestService refreshTokenService;
-
-    @Autowired
-    private SaveOperationsService saveOperationsService;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    private final AccessTokenRequestService tokenService;
+    private final RefreshTokenRequestService refreshTokenService;
+    private final SaveOperationsService saveOperationsService;
+    private final RestTemplate restTemplate;
 
     private static String accessToken;
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
+    @Autowired
+    public RequestsOperationsService(AccessTokenRequestService tokenService, RefreshTokenRequestService refreshTokenService, SaveOperationsService saveOperationsService, RestTemplate restTemplate) {
+        this.tokenService = tokenService;
+        this.refreshTokenService = refreshTokenService;
+        this.saveOperationsService = saveOperationsService;
+        this.restTemplate = restTemplate;
+    }
+
     /**
      * @param unauthorized that declares if refresh token should be used
-     * @return
-     * @throws JsonProcessingException
-     * @throws IOException
      */
-    public HttpEntity<String> getEntity(boolean unauthorized) throws IOException {
+    private HttpEntity<String> getEntity(boolean unauthorized) throws IOException {
         HttpHeaders headers = new HttpHeaders();
 
         if (unauthorized) {
@@ -70,12 +69,8 @@ public class RequestsOperationsService {
 
     /**
      * if accessToken is null the service for new is called
-     *
-     * @return
-     * @throws JsonProcessingException
-     * @throws IOException
      */
-    protected String getAccessToken() throws IOException {
+    private String getAccessToken() throws IOException {
 
         if (null == accessToken)
             accessToken = tokenService.token();
@@ -86,12 +81,6 @@ public class RequestsOperationsService {
     /**
      * sends a call to the given url & if response is unauthorized -> refresh token
      * and resends
-     *
-     * @param url
-     * @param month
-     * @param collection
-     * @param fcollection
-     * @return
      */
     public boolean requests(String url, String month, String collection, String fcollection) {
         try {
@@ -112,11 +101,6 @@ public class RequestsOperationsService {
         }
     }
 
-    /**
-     * @param url
-     * @param collection
-     * @throws IOException
-     */
     public boolean dailyRequests(String url, String collection) throws IOException {
         ResponseEntity<String> response = restTemplate.exchange(url + "today/1d/time/00:00/" + LocalTime.now()
                 .format(DateTimeFormatter.ofPattern("HH:mm")) + ".json", HttpMethod.GET, getEntity(false), String.class);
@@ -136,13 +120,6 @@ public class RequestsOperationsService {
     /**
      * sends a call to the given url & if response is unauthorized -> refresh token
      * and resends
-     *
-     * @param month
-     * @param heartUrl
-     * @param filter
-     * @return
-     * @throws IOException
-     * @throws JSONException
      */
     public Option<JSONArray> heartRequests(String month, String heartUrl, String filter) throws IOException, JSONException {
         ResponseEntity<String> heart = restTemplate.exchange(heartUrl + month, HttpMethod.GET, getEntity(false), String.class);
@@ -161,11 +138,6 @@ public class RequestsOperationsService {
     /**
      * sends a call to the given url & if response is unauthorized -> refresh token
      * and resends
-     *
-     * @param url
-     * @param collection
-     * @param fcollection
-     * @return
      */
     public boolean otherRequests(String url, String collection, String fcollection) {
         try {

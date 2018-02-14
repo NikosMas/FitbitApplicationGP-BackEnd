@@ -29,17 +29,18 @@ public class DashboardTab {
 
         private static final long serialVersionUID = 1L;
 
-        @Autowired
-        private FieldsBuilderService fieldsService;
+        private final FieldsBuilderService fieldsService;
+        private final ButtonsBuilderService buttonsService;
+        private final ContentBuilderService contentService;
+        private final CollectionService collectionService;
 
         @Autowired
-        private ButtonsBuilderService buttonsService;
-
-        @Autowired
-        private ContentBuilderService contentService;
-
-        @Autowired
-        private CollectionService collectionService;
+        public VaadinUI(FieldsBuilderService fieldsService, ButtonsBuilderService buttonsService, ContentBuilderService contentService, CollectionService collectionService) {
+            this.fieldsService = fieldsService;
+            this.buttonsService = buttonsService;
+            this.contentService = contentService;
+            this.collectionService = collectionService;
+        }
 
         @Override
         public void init(VaadinRequest request) {
@@ -56,8 +57,6 @@ public class DashboardTab {
             TextField clientSecret = new TextField();
             fieldsService.clientSecretBuilder(clientSecret);
 
-            // business part with redirection is here because of private {@link
-            // Page} at {@link UI}
             Button exit = new Button();
             exit.setIcon(VaadinIcons.ROTATE_LEFT);
             exit.setCaption("Exit");

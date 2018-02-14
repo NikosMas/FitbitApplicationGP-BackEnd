@@ -34,20 +34,20 @@ public class HeartRateFilterService {
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
-    @Autowired
-    private MailInfoProperties properties;
+    private final MailInfoProperties properties;
+    private final HeartRateZoneRepository heartRepository;
+    private final CreatePdfToolsService createPdfToolsService;
+    private final ClearAllBuilderService clearFieldsService;
+    private final HeartRateNotificationService sendMailService;
 
     @Autowired
-    private HeartRateZoneRepository heartRepository;
-
-    @Autowired
-    private CreatePdfToolsService createPdfToolsService;
-
-    @Autowired
-    private ClearAllBuilderService clearFieldsService;
-
-    @Autowired
-    private HeartRateNotificationService sendMailService;
+    public HeartRateFilterService(MailInfoProperties properties, HeartRateZoneRepository heartRepository, CreatePdfToolsService createPdfToolsService, ClearAllBuilderService clearFieldsService, HeartRateNotificationService sendMailService) {
+        this.properties = properties;
+        this.heartRepository = heartRepository;
+        this.createPdfToolsService = createPdfToolsService;
+        this.clearFieldsService = clearFieldsService;
+        this.sendMailService = sendMailService;
+    }
 
     public void heartRateSelect(String mail, Long minutes, HeartRateCategoryEnum category, VerticalLayout content) {
         try {

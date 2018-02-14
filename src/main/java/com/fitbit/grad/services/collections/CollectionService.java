@@ -1,14 +1,12 @@
 package com.fitbit.grad.services.collections;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.fitbit.grad.models.CollectionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.models.CollectionEnum;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Service about creating Mongo collections to 'fitbit' database
@@ -19,23 +17,25 @@ import com.fitbit.grad.models.CollectionEnum;
 @Service
 public class CollectionService {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
+    private final MongoTemplate mongoTemplate;
     private static final List<CollectionEnum> collections = Arrays.asList(CollectionEnum.values()).subList(0, 24);
+
+    @Autowired
+    public CollectionService(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public void collectionsCreate() {
 
 
-
-        for (CollectionEnum collectionName : collections) {
+        collections.forEach(collectionName -> {
             if (mongoTemplate.collectionExists(collectionName.d())) {
                 mongoTemplate.dropCollection(collectionName.d());
                 mongoTemplate.createCollection(collectionName.d());
             } else {
                 mongoTemplate.createCollection(collectionName.d());
             }
-        }
+        });
     }
 
     public void clearDatabase() {

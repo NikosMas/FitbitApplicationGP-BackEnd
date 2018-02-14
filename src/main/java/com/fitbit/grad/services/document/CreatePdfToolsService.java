@@ -18,10 +18,6 @@ import java.util.stream.Stream;
 @Service
 public class CreatePdfToolsService {
 
-    /**
-     * @param table
-     * @param categories
-     */
     public void addTable(PdfPTable table, Stream categories) {
         categories.forEach(columnTitle -> {
             PdfPCell header = new PdfPCell();
@@ -32,10 +28,6 @@ public class CreatePdfToolsService {
         });
     }
 
-    /**
-     * @param table
-     * @param data
-     */
     public void addRowsHeartRate(PdfPTable table, List<HeartRateValue> data) {
         for (HeartRateValue d : data) {
             table.addCell(d.getDate());
@@ -47,10 +39,6 @@ public class CreatePdfToolsService {
         }
     }
 
-    /**
-     * @param table
-     * @param data
-     */
     public void addRows(PdfPTable table, List<CommonDataSample> data) {
         for (CommonDataSample d : data) {
             table.addCell(d.getDateTime());

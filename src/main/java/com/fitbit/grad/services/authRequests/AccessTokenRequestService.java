@@ -1,86 +1,77 @@
 package com.fitbit.grad.services.authRequests;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Base64;
-
+import com.fitbit.grad.config.AuthorizationProperties;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.fitbit.grad.config.AuthorizationProperties;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Collections;
 
 /**
  * Service about receiving access token from fitbit api
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 @Service
 public class AccessTokenRequestService {
 
-	private static String accessToken;
+    private static String accessToken;
 
-	@Autowired
-	private ObjectMapper mapper;
+    private final ObjectMapper mapper;
+    private final AuthorizationProperties authProp;
+    private final RestTemplate restTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-	@Autowired
-	private AuthorizationProperties authProp;
+    @Autowired
+    public AccessTokenRequestService(ObjectMapper mapper, AuthorizationProperties authProp, RestTemplate restTemplate, RedisTemplate<String, String> redisTemplate) {
+        this.mapper = mapper;
+        this.authProp = authProp;
+        this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
+    }
 
-	@Autowired
-	private RestTemplate restTemplate;
+    public String token() throws IOException {
 
-	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
+        String headerAuth = Base64.getEncoder().encodeToString(
+                (redisTemplate.opsForValue().get("Client-id") + ":" + redisTemplate.opsForValue().get("Client-secret"))
+                        .getBytes("utf-8"));
 
-	/**
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public String token() throws IOException {
+        // request parameters
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("clientId", redisTemplate.opsForValue().get("Client-id"));
+        parameters.add("grant_type", authProp.getGrantType());
+        parameters.add("redirect_uri", authProp.getRedirectUri());
+        parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
 
-		String headerAuth = Base64.getEncoder().encodeToString(
-				(redisTemplate.opsForValue().get("Client-id") + ":" + redisTemplate.opsForValue().get("Client-secret"))
-						.getBytes("utf-8"));
+        // request headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", "Basic " + headerAuth);
+        headers.set("Accept", authProp.getHeaderAccept());
 
-		// request parameters
-		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-		parameters.add("clientId", redisTemplate.opsForValue().get("Client-id"));
-		parameters.add("grant_type", authProp.getGrantType());
-		parameters.add("redirect_uri", authProp.getRedirectUri());
-		parameters.add("code", redisTemplate.opsForValue().get("AuthorizationCode"));
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(parameters, headers);
+        ResponseEntity<String> response = restTemplate.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
 
-		// request headers
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.set("Authorization", "Basic " + headerAuth);
-		headers.set("Accept", authProp.getHeaderAccept());
+        JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
+        accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(parameters,headers);
-		ResponseEntity<String> response = restTemplate.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
+        JsonNode jsonResponseRefreshToken = mapper.readTree(response.getBody()).path("refresh_token");
+        String refreshToken = jsonResponseRefreshToken.toString().substring(1,
+                jsonResponseRefreshToken.toString().length() - 1);
 
-		JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
-		accessToken = jsonResponse.toString().substring(1, jsonResponse.toString().length() - 1);
+        redisTemplate.opsForValue().set("RefreshToken", refreshToken);
 
-		JsonNode jsonResponseRefreshToken = mapper.readTree(response.getBody()).path("refresh_token");
-		String refreshToken = jsonResponseRefreshToken.toString().substring(1,
-				jsonResponseRefreshToken.toString().length() - 1);
-
-		redisTemplate.opsForValue().set("RefreshToken", refreshToken);
-
-		return accessToken;
-	}
+        return accessToken;
+    }
 }

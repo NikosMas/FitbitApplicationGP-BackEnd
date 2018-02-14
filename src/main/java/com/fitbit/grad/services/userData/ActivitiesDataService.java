@@ -1,14 +1,14 @@
 package com.fitbit.grad.services.userData;
 
-import java.util.List;
-import java.util.Map;
-
-import com.fitbit.grad.services.operations.RequestsOperationsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.fitbit.grad.config.FitbitApiUrlProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.calendar.CalendarService;
+import com.fitbit.grad.services.operations.RequestsOperationsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service about requesting to Fitbit api for activity data
@@ -25,18 +25,20 @@ public class ActivitiesDataService {
     private static final String FLOORS = "activities-floors";
     private static final String STEPS = "activities-steps";
 
-    @Autowired
-    private FitbitApiUrlProperties urlsProp;
+    private final FitbitApiUrlProperties urlsProp;
+    private final CalendarService calendarService;
+    private final RequestsOperationsService requestsOperationsService;
 
     @Autowired
-    private CalendarService calendarService;
-
-    @Autowired
-    private RequestsOperationsService requestsOperationsService;
+    public ActivitiesDataService(FitbitApiUrlProperties urlsProp, CalendarService calendarService, RequestsOperationsService requestsOperationsService) {
+        this.urlsProp = urlsProp;
+        this.calendarService = calendarService;
+        this.requestsOperationsService = requestsOperationsService;
+    }
 
     public boolean activities(List<Map<String, String>> dates) {
 
-        String p = calendarService.months(dates).stream().filter(pack -> dataRetriever(pack) == false).findFirst()
+        String p = calendarService.months(dates).stream().filter(pack -> !dataRetriever(pack)).findFirst()
                 .orElse(null);
 
         return p == null;

@@ -1,16 +1,7 @@
 package com.fitbit.grad.services.builders;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.fitbit.grad.services.collections.CollectionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fitbit.grad.services.calendar.CalendarService;
+import com.fitbit.grad.services.collections.CollectionService;
 import com.fitbit.grad.services.userData.ActivitiesDataService;
 import com.fitbit.grad.services.userData.HeartDataService;
 import com.fitbit.grad.services.userData.OtherDataService;
@@ -19,11 +10,18 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import static com.vaadin.ui.Notification.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.vaadin.ui.Notification.show;
 
 /**
  * Service about Vaadin checkbox building
@@ -35,34 +33,27 @@ import static com.vaadin.ui.Notification.*;
 public class CheckBoxBuilderService {
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-    List<Map<String, String>> dates = new ArrayList<>();
+    private List<Map<String, String>> dates = new ArrayList<>();
+
+    private final ActivitiesDataService activitiesService;
+    private final HeartDataService heartService;
+    private final OtherDataService otherService;
+    private final SleepDataService sleepService;
+    private final CalendarService calendarService;
+    private final ClearAllBuilderService clearFieldsService;
+    private final CollectionService collectionService;
 
     @Autowired
-    private ActivitiesDataService activitiesService;
+    public CheckBoxBuilderService(ActivitiesDataService activitiesService, HeartDataService heartService, OtherDataService otherService, SleepDataService sleepService, CalendarService calendarService, ClearAllBuilderService clearFieldsService, CollectionService collectionService) {
+        this.activitiesService = activitiesService;
+        this.heartService = heartService;
+        this.otherService = otherService;
+        this.sleepService = sleepService;
+        this.calendarService = calendarService;
+        this.clearFieldsService = clearFieldsService;
+        this.collectionService = collectionService;
+    }
 
-    @Autowired
-    private HeartDataService heartService;
-
-    @Autowired
-    private OtherDataService otherService;
-
-    @Autowired
-    private SleepDataService sleepService;
-
-    @Autowired
-    private CalendarService calendarService;
-
-    @Autowired
-    private ClearAllBuilderService clearFieldsService;
-
-    @Autowired
-    private CollectionService collectionService;
-
-    /**
-     * @param multiCheckBox
-     * @param submitCheckBoxButton
-     * @param content
-     */
     public void checkBoxButton(CheckBoxGroup<String> multiCheckBox, Button submitCheckBoxButton, VerticalLayout content) {
 
         submitCheckBoxButton.setIcon(VaadinIcons.CHECK_CIRCLE);
@@ -132,12 +123,6 @@ public class CheckBoxBuilderService {
         });
     }
 
-    /**
-     * @param submitDates
-     * @param startDate
-     * @param endDate
-     * @param multiCheckBox
-     */
     public void submitDates(Button submitDates, DateField startDate, DateField endDate,
                             CheckBoxGroup<String> multiCheckBox) {
         submitDates.setIcon(VaadinIcons.CHECK_CIRCLE);
@@ -156,9 +141,6 @@ public class CheckBoxBuilderService {
         });
     }
 
-    /**
-     * @param multiCheckBox
-     */
     public void checkBoxBuilder(CheckBoxGroup<String> multiCheckBox) {
 
         multiCheckBox.setCaption("User data categories");

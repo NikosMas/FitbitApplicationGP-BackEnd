@@ -6,18 +6,16 @@ import com.fitbit.grad.models.CommonDataSample;
 import com.fitbit.grad.models.HeartRateValue;
 import com.fitbit.grad.repository.HeartRateZoneRepository;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.print.attribute.DateTimeSyntax;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,24 +26,23 @@ import java.util.stream.Stream;
 @Service
 public class CreatePdfFileService {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private HeartRateZoneRepository heartRateZoneRepository;
-
-    @Autowired
-    private DownloadingProperties downloadingProperties;
-
-    @Autowired
-    private CreatePdfToolsService createPdfToolsService;
+    private final MongoTemplate mongoTemplate;
+    private final HeartRateZoneRepository heartRateZoneRepository;
+    private final DownloadingProperties downloadingProperties;
+    private final CreatePdfToolsService createPdfToolsService;
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
+    @Autowired
+    public CreatePdfFileService(MongoTemplate mongoTemplate, HeartRateZoneRepository heartRateZoneRepository, DownloadingProperties downloadingProperties, CreatePdfToolsService createPdfToolsService) {
+        this.mongoTemplate = mongoTemplate;
+        this.heartRateZoneRepository = heartRateZoneRepository;
+        this.downloadingProperties = downloadingProperties;
+        this.createPdfToolsService = createPdfToolsService;
+    }
+
     /**
      * Check if data exist in database and add them to the pdf document
-     *
-     * @param parameters
      */
     public void createDocumentWithUserData(List<String> parameters) {
         Document document = new Document();
@@ -99,7 +96,7 @@ public class CreatePdfFileService {
                 document.add(tableCalories);
             }
 
-            if (parameters.contains("sleep")){
+            if (parameters.contains("sleep")) {
                 List<CommonDataSample> efficiencyData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_EFFICIENCY.d());
                 List<CommonDataSample> afterWakeUpData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d());
                 List<CommonDataSample> asleepData = mongoTemplate.findAll(CommonDataSample.class, CollectionEnum.S_MINUTES_ASLEEP.d());
@@ -164,7 +161,7 @@ public class CreatePdfFileService {
                 document.add(tableWakeUp);
             }
 
-            if (parameters.contains("heart")){
+            if (parameters.contains("heart")) {
                 List<HeartRateValue> heartRateValues = heartRateZoneRepository.findAll();
 
                 Chunk heart = new Chunk("Heart rate information Table", font);

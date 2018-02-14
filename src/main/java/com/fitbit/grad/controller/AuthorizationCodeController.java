@@ -19,13 +19,16 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 public class AuthorizationCodeController {
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    private DailyDataService dailyDataService;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final DailyDataService dailyDataService;
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+
+    @Autowired
+    public AuthorizationCodeController(RedisTemplate<String, String> redisTemplate, DailyDataService dailyDataService) {
+        this.redisTemplate = redisTemplate;
+        this.dailyDataService = dailyDataService;
+    }
 
     @RequestMapping("fitbitApp/authCode")
     public RedirectView authorization(@RequestParam(value = "code") String code) {

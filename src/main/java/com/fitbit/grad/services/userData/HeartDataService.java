@@ -20,77 +20,63 @@ import java.util.Map;
 
 /**
  * Service about requesting to fitbit api for heart-rate data
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 @Service
 public class HeartDataService {
 
-	// filtered field from response
-	private static final String HEART = "activities-heart";
+    // filtered field from response
+    private static final String HEART = "activities-heart";
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
-	private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+    private final RequestsOperationsService requestsOperationsService;
+    private final CalendarService calendarService;
+    private final MongoTemplate mongoTemplate;
+    private final FitbitApiUrlProperties urlsProp;
 
-	@Autowired
-	private RequestsOperationsService requestsOperationsService;
+    @Autowired
+    public HeartDataService(RequestsOperationsService requestsOperationsService, CalendarService calendarService, MongoTemplate mongoTemplate, FitbitApiUrlProperties urlsProp) {
+        this.requestsOperationsService = requestsOperationsService;
+        this.calendarService = calendarService;
+        this.mongoTemplate = mongoTemplate;
+        this.urlsProp = urlsProp;
+    }
 
-	@Autowired
-	private CalendarService calendarService;
+    public boolean filterHeartRateValues(List<Map<String, String>> dates) {
 
-	@Autowired
-	private MongoTemplate mongoTemplate;
-	
-	@Autowired
-	private FitbitApiUrlProperties urlsProp;
+        String p = calendarService.months(dates).stream().filter(month -> !getFilterHeartRate(month))
+                .findFirst().orElse(null);
 
-	/**
-	 * @param dates
-	 * @return
-	 */
-	public boolean filterHeartRateValues(List<Map<String, String>> dates) {
+        return null == p;
+    }
 
-		String p = calendarService.months(dates).stream().filter(month -> getFilterHeartRate(month) == false)
-				.findFirst().orElse(null);
-
-		return null == p;
-	}
-
-	/**
-	 * Go inside the response and get all the heart rate zones with values and dates 
-	 * 
-	 * @param month
-	 * @return
-	 */
-	private boolean getFilterHeartRate(String month) {
-		try {
-			JSONArray responseDataArray = requestsOperationsService.heartRequests(month, urlsProp.getHeartUrl(), HEART).getOrElse(() -> null);
-			if (null == responseDataArray) return false;
-			for (int rda = 0; rda < responseDataArray.length(); rda++) {
+    /**
+     * Go inside the response and get all the heart rate zones with values and dates
+     */
+    private boolean getFilterHeartRate(String month) {
+        try {
+            JSONArray responseDataArray = requestsOperationsService.heartRequests(month, urlsProp.getHeartUrl(), HEART).getOrElse(() -> null);
+            if (null == responseDataArray) return false;
+            for (int rda = 0; rda < responseDataArray.length(); rda++) {
                 JSONArray heartRateZonesArray = responseDataArray.getJSONObject(rda).getJSONObject("value").getJSONArray("heartRateZones");
                 for (int hrza = 0; hrza < heartRateZonesArray.length(); hrza++)
-					insertHeartRateValues(responseDataArray, rda, heartRateZonesArray, hrza);
+                    insertHeartRateValues(responseDataArray, rda, heartRateZonesArray, hrza);
             }
-			return true;
-		} catch (IOException | JSONException e) {
-			LOG.error("Something went wrong: ", e);
-			return false;
-		}
-	}
+            return true;
+        } catch (IOException | JSONException e) {
+            LOG.error("Something went wrong: ", e);
+            return false;
+        }
+    }
 
-	/**
-	 * @param responseDataArray
-	 * @param rda
-	 * @param heartRateZonesArray
-	 * @param hrza
-	 * @throws JSONException
-	 */
-	private void insertHeartRateValues(JSONArray responseDataArray, int rda, JSONArray heartRateZonesArray, int hrza)
-			throws JSONException {
-		DBObject heartRateZonesValue = (DBObject) JSON.parse(heartRateZonesArray.getJSONObject(hrza).toString());
-		heartRateZonesValue.put("date", responseDataArray.getJSONObject(rda).getString("dateTime"));
-		heartRateZonesValue.put("month", responseDataArray.getJSONObject(rda).getString("dateTime").substring(0, 7));
-		mongoTemplate.insert(heartRateZonesValue, CollectionEnum.FILTERD_A_HEART.d());
-	}
+    private void insertHeartRateValues(JSONArray responseDataArray, int rda, JSONArray heartRateZonesArray, int hrza)
+            throws JSONException {
+        DBObject heartRateZonesValue = (DBObject) JSON.parse(heartRateZonesArray.getJSONObject(hrza).toString());
+        heartRateZonesValue.put("date", responseDataArray.getJSONObject(rda).getString("dateTime"));
+        heartRateZonesValue.put("month", responseDataArray.getJSONObject(rda).getString("dateTime").substring(0, 7));
+        mongoTemplate.insert(heartRateZonesValue, CollectionEnum.FILTERD_A_HEART.d());
+    }
 
 }

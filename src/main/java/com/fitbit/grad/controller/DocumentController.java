@@ -31,14 +31,16 @@ import java.util.List;
 @RestController
 public class DocumentController {
 
-    @Autowired
-    private CreatePdfFileService createPdfFileService;
+    private final CreatePdfFileService createPdfFileService;
+    private final DownloadingProperties downloadingProperties;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    private DownloadingProperties downloadingProperties;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    public DocumentController(CreatePdfFileService createPdfFileService, DownloadingProperties downloadingProperties, MongoTemplate mongoTemplate) {
+        this.createPdfFileService = createPdfFileService;
+        this.downloadingProperties = downloadingProperties;
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @RequestMapping(value = "fitbitApp/export")
     public ResponseEntity<Resource> getFile() throws IOException {

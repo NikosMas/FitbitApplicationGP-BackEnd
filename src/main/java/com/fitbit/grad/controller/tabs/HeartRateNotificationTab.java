@@ -1,8 +1,5 @@
 package com.fitbit.grad.controller.tabs;
 
-import java.io.File;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.fitbit.grad.services.builders.ButtonsBuilderService;
 import com.fitbit.grad.services.builders.ContentBuilderService;
@@ -13,85 +10,79 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
 
 /**
  * controller at /fitbitApp/heartRateFilter waiting the user to fill the form
  * about heart rate & mail info
- * 
+ *
  * @author nikos_mas, alex_kak
  */
 
 public class HeartRateNotificationTab {
 
-	@Title("Heart Rate Notification")
-	@SpringUI(path = "fitbitApp/heartRateNotification")
-	public static class VaadinUI extends UI {
+    @Title("Heart Rate Notification")
+    @SpringUI(path = "fitbitApp/heartRateNotification")
+    public static class VaadinUI extends UI {
 
-		private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-		@Autowired
-		private FieldsBuilderService fieldsService;
+        private final FieldsBuilderService fieldsService;
+        private final ButtonsBuilderService buttonsService;
+        private final ToolsBuilderService toolsService;
+        private final ContentBuilderService contentService;
 
-		@Autowired
-		private ButtonsBuilderService buttonsService;
+        @Autowired
+        public VaadinUI(FieldsBuilderService fieldsService, ButtonsBuilderService buttonsService, ToolsBuilderService toolsService, ContentBuilderService contentService) {
+            this.fieldsService = fieldsService;
+            this.buttonsService = buttonsService;
+            this.toolsService = toolsService;
+            this.contentService = contentService;
+        }
 
-		@Autowired
-		private ToolsBuilderService toolsService;
+        @Override
+        public void init(VaadinRequest request) {
+            VerticalLayout content = new VerticalLayout();
+            setContent(content);
+            setResponsive(true);
 
-		@Autowired
-		private ContentBuilderService contentService;
+            Image image = new Image();
+            image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
 
-		@Override
-		public void init(VaadinRequest request) {
-			VerticalLayout content = new VerticalLayout();
-			setContent(content);
-			setResponsive(true);
+            ComboBox<HeartRateCategoryEnum> select = new ComboBox<>();
+            toolsService.comboBoxBuilder(select);
 
-			Image image = new Image();
-			image.setSource(new FileResource(new File("src/main/resources/images/FitbitLogo.png")));
+            TextField mail = new TextField();
+            fieldsService.mailBuilder(mail);
 
-			ComboBox<HeartRateCategoryEnum> select = new ComboBox<>();
-			toolsService.comboBoxBuilder(select);
+            TextField heartRate = new TextField();
+            fieldsService.heartRateBuilder(heartRate);
 
-			TextField mail = new TextField();
-			fieldsService.mailBuilder(mail);
+            Button skip = new Button();
+            skip.setIcon(VaadinIcons.ARROW_FORWARD);
+            skip.setCaption("skip");
+            skip.setWidth("150");
+            skip.addClickListener(click -> {
+                getPage().setLocation("finalize");
+                getSession().close();
+            });
 
-			TextField heartRate = new TextField();
-			fieldsService.heartRateBuilder(heartRate);
+            Button heartRateMail = new Button();
+            buttonsService.heartRateMailBuilder(skip, heartRateMail, mail, heartRate, select, content);
 
+            Button exit = new Button();
+            exit.setIcon(VaadinIcons.ARROW_FORWARD);
+            exit.setCaption("exit");
+            exit.setWidth("150");
+            exit.addClickListener(click -> {
+                getPage().setLocation("finalize");
+                getSession().close();
+            });
 
-			// business part with redirection is here because of private {@link
-			// Page} at {@link UI}
-			Button skip = new Button();
-			skip.setIcon(VaadinIcons.ARROW_FORWARD);
-			skip.setCaption("skip");
-			skip.setWidth("150");
-			skip.addClickListener(click -> {
-				getPage().setLocation("finalize");
-				getSession().close();
-			});
-
-			Button heartRateMail = new Button();
-			buttonsService.heartRateMailBuilder(skip, heartRateMail, mail, heartRate, select, content);
-
-			// business part with redirection is here because of private {@link
-			// Page} at {@link UI}
-			Button exit = new Button();
-			exit.setIcon(VaadinIcons.ARROW_FORWARD);
-			exit.setCaption("exit");
-			exit.setWidth("150");
-			exit.addClickListener(click -> {
-				getPage().setLocation("finalize");
-				getSession().close();
-			});
-
-			contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit, skip);
-		}
-	}
+            contentService.heartRateFilterContentBuilder(content, image, select, heartRate, mail, heartRateMail, exit, skip);
+        }
+    }
 }

@@ -1,7 +1,10 @@
 package com.fitbit.grad.services.operations;
 
-import java.io.IOException;
-
+import com.fitbit.grad.models.CollectionEnum;
+import com.fitbit.grad.models.CommonDataSample;
+import com.mongodb.BasicDBList;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -9,18 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fitbit.grad.models.CollectionEnum;
-import com.fitbit.grad.models.CommonDataSample;
-import com.fitbit.grad.services.authRequests.AccessTokenRequestService;
-import com.fitbit.grad.services.authRequests.RefreshTokenRequestService;
-import com.mongodb.BasicDBList;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import java.io.IOException;
 
 /**
  * Service about saving user data received to database
@@ -31,22 +26,19 @@ import com.mongodb.util.JSON;
 @Service
 public class SaveOperationsService {
 
-    @Autowired
-    private ObjectMapper mapper;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final ObjectMapper mapper;
+    private final MongoTemplate mongoTemplate;
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
+    @Autowired
+    public SaveOperationsService(ObjectMapper mapper, MongoTemplate mongoTemplate) {
+        this.mapper = mapper;
+        this.mongoTemplate = mongoTemplate;
+    }
+
     /**
      * method that stores the data from API
-     *
-     * @param response
-     * @param collection
-     * @param fcollection
-     * @throws IOException
-     * @throws JsonProcessingException
      */
     public void dataTypeInsert(ResponseEntity<String> response, String collection, String fcollection)
             throws IOException {
@@ -101,9 +93,6 @@ public class SaveOperationsService {
 
     /**
      * finds all data and update the dateTime value to "YYYY-MM" date format
-     *
-     * @param collection    inserted the data
-     * @param newCollection where will be stored the new data
      */
     private void saveByMonth(String collection, String newCollection) {
         for (CommonDataSample v : mongoTemplate.findAll(CommonDataSample.class, collection)) {
@@ -112,10 +101,6 @@ public class SaveOperationsService {
         }
     }
 
-    /**
-     * @param body
-     * @param collection
-     */
     public void dailySave(String body, String collection) {
         try {
             JsonNode responseDataBody = mapper.readTree(body);
