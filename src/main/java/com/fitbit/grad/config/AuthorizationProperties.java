@@ -1,5 +1,8 @@
 package com.fitbit.grad.config;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -9,6 +12,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 
 @ConfigurationProperties("accesstoken")
+@Getter
+@Setter
+@NoArgsConstructor
 public class AuthorizationProperties {
 
     private String grantType;
@@ -17,52 +23,4 @@ public class AuthorizationProperties {
     private String authCodeUri1;
     private String authCodeUri2;
     private String tokenUrl;
-
-    public String getGrantType() {
-        return grantType;
-    }
-
-    public void setGrantType(String grantType) {
-        this.grantType = grantType;
-    }
-
-    public String getRedirectUri() {
-        return redirectUri;
-    }
-
-    public void setRedirectUri(String redirectUri) {
-        this.redirectUri = redirectUri;
-    }
-
-    public String getHeaderAccept() {
-        return headerAccept;
-    }
-
-    public void setHeaderAccept(String headerAccept) {
-        this.headerAccept = headerAccept;
-    }
-
-    public String getAuthCodeUri1() {
-        return authCodeUri1;
-    }
-
-    public void setAuthCodeUri1(String authCodeUri1) {
-        this.authCodeUri1 = authCodeUri1;
-    }
-
-    public String getAuthCodeUri2() {
-        return authCodeUri2;
-    }
-
-    public void setAuthCodeUri2(String authCodeUri2) {
-        this.authCodeUri2 = authCodeUri2;
-    }
-
-    public String getTokenUrl() {
-        return tokenUrl;
-    }
-
-    public void setTokenUrl(String tokenUrl) {
-        this.tokenUrl = tokenUrl;
-    }
 }

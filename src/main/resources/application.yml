@@ -22,10 +22,10 @@ refreshtoken:
 
 # e-mail credentials 
 mailInfo:
-  username: nickma72@gmail.com
-  password: mastronikos
+  username: ..
+  password: ..
   fileName: heartData.pdf
-  sendFrom: nickma72@gmail.com
+  sendFrom: ..
   mailSmtpStartEnable: true
   mailSmtpAuth: true
   mailSmtpHost: smtp.gmail.com
@@ -60,4 +60,4 @@ downloadProps:
 
 # platform
 platformProps:
-  goToPlatformUrl: http://localhost:59607/pages/MainPage.aspx
+  goToPlatformUrl: ..
