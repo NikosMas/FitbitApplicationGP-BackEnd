@@ -1,6 +1,5 @@
 package com.fitbit.grad.services.document;
 
-import com.fitbit.grad.config.DownloadingProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.models.CommonDataSample;
 import com.fitbit.grad.models.HeartRateValue;
@@ -11,6 +10,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +26,19 @@ import java.util.stream.Stream;
 @Service
 public class CreatePdfFileService {
 
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
     private final MongoTemplate mongoTemplate;
     private final HeartRateZoneRepository heartRateZoneRepository;
-    private final DownloadingProperties downloadingProperties;
+    private final Environment env;
     private final CreatePdfToolsService createPdfToolsService;
 
-    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-
     @Autowired
-    public CreatePdfFileService(MongoTemplate mongoTemplate, HeartRateZoneRepository heartRateZoneRepository, DownloadingProperties downloadingProperties, CreatePdfToolsService createPdfToolsService) {
-        this.mongoTemplate = mongoTemplate;
+    public CreatePdfFileService(MongoTemplate mongoTemplate, HeartRateZoneRepository heartRateZoneRepository,
+                                Environment env, CreatePdfToolsService createPdfToolsService) {
         this.heartRateZoneRepository = heartRateZoneRepository;
-        this.downloadingProperties = downloadingProperties;
         this.createPdfToolsService = createPdfToolsService;
+        this.mongoTemplate = mongoTemplate;
+        this.env = env;
     }
 
     /**
@@ -47,7 +47,7 @@ public class CreatePdfFileService {
     public void createDocumentWithUserData(List<String> parameters) {
         Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(downloadingProperties.getExportFileName()));
+            PdfWriter.getInstance(document, new FileOutputStream(env.getProperty("downloadProps.exportFileName")));
             Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 14, BaseColor.BLACK);
             document.open();
 

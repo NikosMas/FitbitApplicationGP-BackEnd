@@ -1,10 +1,10 @@
 package com.fitbit.grad.services.userData;
 
-import com.fitbit.grad.config.FitbitApiUrlProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.calendar.CalendarService;
 import com.fitbit.grad.services.operations.RequestsOperationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,13 +29,14 @@ public class SleepDataService {
 
     private final RequestsOperationsService requestsOperationsService;
     private final CalendarService calendarService;
-    private final FitbitApiUrlProperties urlsProp;
+    private final Environment env;
 
     @Autowired
-    public SleepDataService(RequestsOperationsService requestsOperationsService, CalendarService calendarService, FitbitApiUrlProperties urlsProp) {
+    public SleepDataService(RequestsOperationsService requestsOperationsService, CalendarService calendarService,
+                            Environment env) {
         this.requestsOperationsService = requestsOperationsService;
         this.calendarService = calendarService;
-        this.urlsProp = urlsProp;
+        this.env = env;
     }
 
     public boolean sleep(List<Map<String, String>> dates) {
@@ -47,12 +48,12 @@ public class SleepDataService {
     }
 
     private boolean dataRetriever(String month) {
-        return requestsOperationsService.requests(urlsProp.getTimeInBedUrl(), month, CollectionEnum.S_TIME_IN_BED.d(), TIME_IN_BED)
-                && requestsOperationsService.requests(urlsProp.getMinutesAsleepUrl(), month, CollectionEnum.S_MINUTES_ASLEEP.d(), MINUTES_ASLEEP)
-                && requestsOperationsService.requests(urlsProp.getMinutesAwakeUrl(), month, CollectionEnum.S_MINUTES_AWAKE.d(), MINUTES_AWAKE)
-                && requestsOperationsService.requests(urlsProp.getAfterWakeUpUrl(), month, CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d(), MINUTES_AFTER_WAKE_UP)
-                && requestsOperationsService.requests(urlsProp.getEfficiencyUrl(), month, CollectionEnum.S_EFFICIENCY.d(), EFFICIENCY)
-                && requestsOperationsService.requests(urlsProp.getToFallAsleepUrl(), month, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP);
+        return requestsOperationsService.requests(env.getProperty("fitbitApiUrls.timeInBedUrl"), month, CollectionEnum.S_TIME_IN_BED.d(), TIME_IN_BED)
+                && requestsOperationsService.requests(env.getProperty("fitbitApiUrls.minutesAsleepUrl"), month, CollectionEnum.S_MINUTES_ASLEEP.d(), MINUTES_ASLEEP)
+                && requestsOperationsService.requests(env.getProperty("fitbitApiUrls.minutesAwakeUrl"), month, CollectionEnum.S_MINUTES_AWAKE.d(), MINUTES_AWAKE)
+                && requestsOperationsService.requests(env.getProperty("fitbitApiUrls.afterWakeUpUrl"), month, CollectionEnum.S_MINUTES_AFTER_WAKE_UP.d(), MINUTES_AFTER_WAKE_UP)
+                && requestsOperationsService.requests(env.getProperty("fitbitApiUrls.efficiencyUrl"), month, CollectionEnum.S_EFFICIENCY.d(), EFFICIENCY)
+                && requestsOperationsService.requests(env.getProperty("fitbitApiUrls.toFallAsleepUrl"), month, CollectionEnum.S_MINUTES_TO_FALL_ASLEEP.d(), MINUTES_TO_FALL_ASLEEP);
     }
 
 }

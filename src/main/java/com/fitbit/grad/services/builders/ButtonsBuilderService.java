@@ -1,6 +1,5 @@
 package com.fitbit.grad.services.builders;
 
-import com.fitbit.grad.config.DownloadingProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.models.CommonDataSample;
 import com.fitbit.grad.models.HeartRateCategoryEnum;
@@ -13,6 +12,7 @@ import com.vaadin.ui.Notification.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -31,22 +31,23 @@ import static com.vaadin.ui.Notification.show;
 public class ButtonsBuilderService {
 
 
+    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
+    private static String OS = System.getProperty("os.name");
     private final MongoTemplate mongoTemplate;
-    private final DownloadingProperties downloadingProperties;
+    private final Environment env;
     private final HeartRateFilterService heartRateFilterService;
     private final AuthCodeRequestService codeService;
     private final RedisTemplate<String, String> redisTemplate;
 
-    private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
-    private static String OS = System.getProperty("os.name");
-
     @Autowired
-    public ButtonsBuilderService(MongoTemplate mongoTemplate, DownloadingProperties downloadingProperties, HeartRateFilterService heartRateFilterService, AuthCodeRequestService codeService, RedisTemplate<String, String> redisTemplate) {
-        this.mongoTemplate = mongoTemplate;
-        this.downloadingProperties = downloadingProperties;
+    public ButtonsBuilderService(MongoTemplate mongoTemplate, Environment env,
+                                 HeartRateFilterService heartRateFilterService, AuthCodeRequestService codeService,
+                                 RedisTemplate<String, String> redisTemplate) {
         this.heartRateFilterService = heartRateFilterService;
-        this.codeService = codeService;
+        this.mongoTemplate = mongoTemplate;
         this.redisTemplate = redisTemplate;
+        this.codeService = codeService;
+        this.env = env;
     }
 
     public void authorizationBuilder(Button authorizationCode, TextField clientId, TextField clientSecret, Button exit) {
@@ -121,9 +122,9 @@ public class ButtonsBuilderService {
                 else {
                     try {
                         if (OS.equalsIgnoreCase("linux")) {
-                            Runtime.getRuntime().exec("xdg-open " + downloadingProperties.getExportUrl());
+                            Runtime.getRuntime().exec("xdg-open " + env.getProperty("downloadProps.exportUrl"));
                         } else {
-                            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + downloadingProperties.getExportUrl());
+                            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + env.getProperty("downloadProps.exportUrl"));
                         }
                     } catch (IOException e) {
                         LOG.error("Something went wrong: ", e);

@@ -1,9 +1,9 @@
 package com.fitbit.grad.services.userData;
 
-import com.fitbit.grad.config.FitbitApiUrlProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.operations.RequestsOperationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,24 +20,24 @@ public class OtherDataService {
     private static final String FREQUENCE_CATEGORIES = "categories";
 
     private final RequestsOperationsService requestsOperationsService;
-    private final FitbitApiUrlProperties urlsProp;
+    private final Environment env;
 
     @Autowired
-    public OtherDataService(RequestsOperationsService requestsOperationsService, FitbitApiUrlProperties urlsProp) {
+    public OtherDataService(RequestsOperationsService requestsOperationsService, Environment env) {
         this.requestsOperationsService = requestsOperationsService;
-        this.urlsProp = urlsProp;
+        this.env = env;
     }
 
     public boolean profile() {
-        return requestsOperationsService.otherRequests(urlsProp.getProfileUrl(), CollectionEnum.PROFILE.d(), PROFILE_USER);
+        return requestsOperationsService.otherRequests(env.getProperty("fitbitApiUrls.profileUrl"), CollectionEnum.PROFILE.d(), PROFILE_USER);
     }
 
     public boolean lifetime() {
-        return requestsOperationsService.otherRequests(urlsProp.getLifetimeUrl(), CollectionEnum.A_LIFETIME.d(), null);
+        return requestsOperationsService.otherRequests(env.getProperty("fitbitApiUrls.lifetimeUrl"), CollectionEnum.A_LIFETIME.d(), null);
     }
 
     public boolean frequence() {
-        return requestsOperationsService.otherRequests(urlsProp.getFrequenceUrl(), CollectionEnum.A_FREQUENCE.d(), FREQUENCE_CATEGORIES);
+        return requestsOperationsService.otherRequests(env.getProperty("fitbitApiUrls.frequenceUrl"), CollectionEnum.A_FREQUENCE.d(), FREQUENCE_CATEGORIES);
     }
 
 }

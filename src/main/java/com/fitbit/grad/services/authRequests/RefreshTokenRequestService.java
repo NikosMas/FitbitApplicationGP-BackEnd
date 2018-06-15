@@ -1,11 +1,9 @@
 package com.fitbit.grad.services.authRequests;
 
-import com.fitbit.grad.config.AuthorizationProperties;
-import com.fitbit.grad.config.RefreshTokenProperties;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -26,16 +24,14 @@ import java.util.Collections;
 @Service
 public class RefreshTokenRequestService {
 
-    private final RefreshTokenProperties refreshProp;
-    private final AuthorizationProperties authProp;
+    private final Environment env;
     private final ObjectMapper mapper;
     private final RestTemplate restTemplate;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    public RefreshTokenRequestService(RefreshTokenProperties refreshProp, AuthorizationProperties authProp, ObjectMapper mapper, RestTemplate restTemplate, RedisTemplate<String, String> redisTemplate) {
-        this.refreshProp = refreshProp;
-        this.authProp = authProp;
+    public RefreshTokenRequestService(Environment env, ObjectMapper mapper, RestTemplate restTemplate, RedisTemplate<String, String> redisTemplate) {
+        this.env = env;
         this.mapper = mapper;
         this.restTemplate = restTemplate;
         this.redisTemplate = redisTemplate;
@@ -49,7 +45,7 @@ public class RefreshTokenRequestService {
 
         // request parameters
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-        parameters.add("grant_type", refreshProp.getGrantType());
+        parameters.add("grant_type", env.getProperty("refreshtoken.grantType"));
         parameters.add("refresh_token", redisTemplate.opsForValue().get("RefreshToken"));
 
         // request headers
@@ -57,10 +53,10 @@ public class RefreshTokenRequestService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", "Basic " + headerAuth);
-        headers.set("Accept", refreshProp.getHeaderAccept());
+        headers.set("Accept", env.getProperty("refreshtoken.headerAccept"));
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(parameters, headers);
-        ResponseEntity<String> response = restTemplate.exchange(authProp.getTokenUrl(), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(env.getProperty("accesstoken.tokenUrl"), HttpMethod.POST, entity, String.class);
 
         JsonNode jsonResponse = mapper.readTree(response.getBody()).path("access_token");
 

@@ -1,6 +1,5 @@
 package com.fitbit.grad.services.notification;
 
-import com.fitbit.grad.config.MailInfoProperties;
 import com.fitbit.grad.controller.tabs.HeartRateNotificationTab;
 import com.fitbit.grad.models.HeartRateCategoryEnum;
 import com.fitbit.grad.models.HeartRateValue;
@@ -14,6 +13,7 @@ import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -34,15 +34,15 @@ public class HeartRateFilterService {
 
     private final static Logger LOG = LoggerFactory.getLogger("Fitbit application");
 
-    private final MailInfoProperties properties;
+    private final Environment env;
     private final HeartRateZoneRepository heartRepository;
     private final CreatePdfToolsService createPdfToolsService;
     private final ClearAllBuilderService clearFieldsService;
     private final HeartRateNotificationService sendMailService;
 
     @Autowired
-    public HeartRateFilterService(MailInfoProperties properties, HeartRateZoneRepository heartRepository, CreatePdfToolsService createPdfToolsService, ClearAllBuilderService clearFieldsService, HeartRateNotificationService sendMailService) {
-        this.properties = properties;
+    public HeartRateFilterService(Environment env, HeartRateZoneRepository heartRepository, CreatePdfToolsService createPdfToolsService, ClearAllBuilderService clearFieldsService, HeartRateNotificationService sendMailService) {
+        this.env = env;
         this.heartRepository = heartRepository;
         this.createPdfToolsService = createPdfToolsService;
         this.clearFieldsService = clearFieldsService;
@@ -52,7 +52,7 @@ public class HeartRateFilterService {
     public void heartRateSelect(String mail, Long minutes, HeartRateCategoryEnum category, VerticalLayout content) {
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(properties.getFileName()));
+            PdfWriter.getInstance(document, new FileOutputStream(env.getProperty("mailInfo.fileName")));
             Font font = FontFactory.getFont(FontFactory.COURIER, 14, BaseColor.BLACK);
             document.open();
 

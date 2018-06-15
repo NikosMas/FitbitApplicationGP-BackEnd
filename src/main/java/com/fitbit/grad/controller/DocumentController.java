@@ -1,11 +1,11 @@
 package com.fitbit.grad.controller;
 
-import com.fitbit.grad.config.DownloadingProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.models.CommonDataSample;
 import com.fitbit.grad.models.HeartRateValue;
 import com.fitbit.grad.services.document.CreatePdfFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,13 +32,14 @@ import java.util.List;
 public class DocumentController {
 
     private final CreatePdfFileService createPdfFileService;
-    private final DownloadingProperties downloadingProperties;
+    private final Environment env;
     private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public DocumentController(CreatePdfFileService createPdfFileService, DownloadingProperties downloadingProperties, MongoTemplate mongoTemplate) {
+    public DocumentController(CreatePdfFileService createPdfFileService, Environment env,
+                              MongoTemplate mongoTemplate) {
         this.createPdfFileService = createPdfFileService;
-        this.downloadingProperties = downloadingProperties;
+        this.env = env;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -57,14 +58,14 @@ public class DocumentController {
             parameters.add("heart");
 
         createPdfFileService.createDocumentWithUserData(parameters);
-        File file = new File(downloadingProperties.getExportFileName());
+        File file = new File(env.getProperty("downloadProps.exportFileName"));
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
         return ResponseEntity.ok()
                 .contentLength(file.length())
                 .contentType(MediaType.parseMediaType("application/pdf"))
-                .header("Content-Disposition", "attachment; filename=" + downloadingProperties.getExportFileName())
+                .header("Content-Disposition", "attachment; filename=" + env.getProperty("downloadProps.exportFileName"))
                 .body(resource);
     }
 

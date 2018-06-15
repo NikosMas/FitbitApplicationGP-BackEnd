@@ -1,6 +1,5 @@
 package com.fitbit.grad.services.userData;
 
-import com.fitbit.grad.config.FitbitApiUrlProperties;
 import com.fitbit.grad.models.CollectionEnum;
 import com.fitbit.grad.services.calendar.CalendarService;
 import com.fitbit.grad.services.operations.RequestsOperationsService;
@@ -11,6 +10,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -34,14 +34,15 @@ public class HeartDataService {
     private final RequestsOperationsService requestsOperationsService;
     private final CalendarService calendarService;
     private final MongoTemplate mongoTemplate;
-    private final FitbitApiUrlProperties urlsProp;
+    private final Environment env;
 
     @Autowired
-    public HeartDataService(RequestsOperationsService requestsOperationsService, CalendarService calendarService, MongoTemplate mongoTemplate, FitbitApiUrlProperties urlsProp) {
+    public HeartDataService(RequestsOperationsService requestsOperationsService, CalendarService calendarService,
+                            MongoTemplate mongoTemplate, Environment env) {
         this.requestsOperationsService = requestsOperationsService;
         this.calendarService = calendarService;
         this.mongoTemplate = mongoTemplate;
-        this.urlsProp = urlsProp;
+        this.env = env;
     }
 
     public boolean filterHeartRateValues(List<Map<String, String>> dates) {
@@ -57,7 +58,7 @@ public class HeartDataService {
      */
     private boolean getFilterHeartRate(String month) {
         try {
-            JSONArray responseDataArray = requestsOperationsService.heartRequests(month, urlsProp.getHeartUrl(), HEART).getOrElse(() -> null);
+            JSONArray responseDataArray = requestsOperationsService.heartRequests(month, env.getProperty("fitbitApiUrls.heartUrl"), HEART).getOrElse(() -> null);
             if (null == responseDataArray) return false;
             for (int rda = 0; rda < responseDataArray.length(); rda++) {
                 JSONArray heartRateZonesArray = responseDataArray.getJSONObject(rda).getJSONObject("value").getJSONArray("heartRateZones");
