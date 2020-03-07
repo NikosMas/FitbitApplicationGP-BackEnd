@@ -26,4 +26,5 @@ At "fitbitApp/heartRateNotification" you have to fill the required fields for e-
 
 As soon as you have finish all steps you can "exit" and go to the finalize tab to restart the process with the same user or not and download a pdf file with all user data inside.
 
-Note: The project developed in 2017 and slightly updated in 2018.
+
+### Note: The project developed in 2017 and slightly updated in 2018.
