@@ -1,4 +1,4 @@
-# Desktop Application for retrieving user data from the Fitbit API
+# Desktop Application for retrieving user data from the Fitbit API (Graduation Project)
 
 ## Ιn a few words
 Fitbit App for retreiving user data from the Fitbit API (also you can send an e-mail and download a pdf file).
@@ -26,7 +26,4 @@ At "fitbitApp/heartRateNotification" you have to fill the required fields for e-
 
 As soon as you have finish all steps you can "exit" and go to the finalize tab to restart the process with the same user or not and download a pdf file with all user data inside.
 
-The application is now completed.
-
-
-   
+Note: The project developed in 2017 and slightly updated in 2018.
