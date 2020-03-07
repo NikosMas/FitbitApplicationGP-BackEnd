@@ -4,7 +4,7 @@
 Fitbit App for retreiving user data from the Fitbit API (also you can send an e-mail and download a pdf file).
 
 ## Implementation
-The project is a Spring Boot application partially based on Java Spring framework, Vaadin and Java 8 and built with Maven. The databases used are MongoDB for the stored data and RedisDB for other usefull information needed in auth processes.
+The project is a Spring Boot application partially based on Java Spring framework, Vaadin and Java 8 and built with Maven. The databases used are MongoDB for the stored data and RedisDB for other usefull information needed in auth processes with Fitbit API.
 
 ## Trying it out
 First you have to clone or download the project from github to your workspace "git clone 'project-git-url'"
